@@ -13,7 +13,7 @@ namespace Rocket.Chat.Net.Bot
 
         public void Info(string message)
         {
-            Console.WriteLine(message);
+            Console.WriteLine($"INFO: {message}");
         }
     }
 }

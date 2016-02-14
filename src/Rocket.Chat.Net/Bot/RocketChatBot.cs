@@ -8,11 +8,11 @@
 
     public class RocketChatBot
     {
-        private readonly IChatDriver _driver;
+        private readonly IRocketChatDriver _driver;
         private readonly ILogger _logger;
         private readonly List<IBotResponse> _botResponses = new List<IBotResponse>();
 
-        public RocketChatBot(IChatDriver driver, ILogger logger)
+        public RocketChatBot(IRocketChatDriver driver, ILogger logger)
         {
             _driver = driver;
             _logger = logger;

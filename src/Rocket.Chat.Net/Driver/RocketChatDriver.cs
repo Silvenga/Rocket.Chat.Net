@@ -6,7 +6,7 @@
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
 
-    public class ChatDriver : IChatDriver
+    public class RocketChatDriver : IRocketChatDriver
     {
         public const string MessageTopic = "stream-messages";
         public const int MessageSubscriptionLimit = 10;
@@ -16,11 +16,9 @@
         private readonly ILogger _logger;
         private DdpClient _client;
 
-
-        public event DataReceived DataReceivedRaw;
         public event MessageReceived MessageReceived;
 
-        public ChatDriver(string url, bool useSsl, ILogger logger)
+        public RocketChatDriver(string url, bool useSsl, ILogger logger)
         {
             _url = url;
             _useSsl = useSsl;
@@ -35,7 +33,6 @@
             _logger.Info("Creating client...");
             _client = new DdpClient(_url, _useSsl, _logger);
             _client.DataReceivedRaw += ClientOnDataReceivedRaw;
-            _client.DataReceivedRaw += OnDataReceivedRaw;
         }
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
@@ -75,20 +72,41 @@
             await _client.SubscribeAsync(MessageTopic, roomId, MessageSubscriptionLimit.ToString());
         }
 
-        public async Task<dynamic> LoginWithPasswordAsync(string userName, string password)
+        public async Task<dynamic> LoginWithEmailAsync(string email, string password)
         {
-            _logger.Info($"Logging in with user {userName} using a password...");
-            var passwordHash = DriverHelper.Sha256(password);
+            _logger.Info($"Logging in with user {email} using a email...");
+            var passwordHash = DriverHelper.Sha256Hash(password);
             var request = new
             {
                 user = new
                 {
-                    email = userName
+                    email
                 },
                 password = new
                 {
                     digest = passwordHash,
-                    algorithm = "sha-256"
+                    algorithm = DriverHelper.Sha256
+                }
+            };
+
+            var result = await _client.CallAsync("login", request);
+            return result;
+        }
+
+        public async Task<dynamic> LoginWithUsernameAsync(string username, string password)
+        {
+            _logger.Info($"Logging in with user {username} using a username...");
+            var passwordHash = DriverHelper.Sha256Hash(password);
+            var request = new
+            {
+                user = new
+                {
+                    username
+                },
+                password = new
+                {
+                    digest = passwordHash,
+                    algorithm = DriverHelper.Sha256
                 }
             };
 
@@ -133,12 +151,7 @@
             return await _client.CallAsync("sendMessage", request);
         }
 
-        protected virtual void OnDataReceivedRaw(string type, dynamic o)
-        {
-            DataReceivedRaw?.Invoke(type, o);
-        }
-
-        protected virtual void OnMessageReceived(RocketMessage rocketmessage)
+        protected void OnMessageReceived(RocketMessage rocketmessage)
         {
             MessageReceived?.Invoke(rocketmessage);
         }

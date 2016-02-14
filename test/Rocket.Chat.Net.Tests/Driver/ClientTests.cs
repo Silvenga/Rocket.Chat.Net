@@ -24,10 +24,10 @@
             const string userName = "m@silvenga.com";
             const string password = "silverlight";
 
-            var driver = new ChatDriver("dev0:3000", false, new XUnitLogger(_helper));
+            var driver = new RocketChatDriver("dev0:3000", false, new XUnitLogger(_helper));
 
             await driver.ConnectAsync();
-            var loginResult = await driver.LoginWithPasswordAsync(userName, password);
+            var loginResult = await driver.LoginWithEmailAsync(userName, password);
 
             var roomResult = await driver.GetRoomIdAsync("GENERAL");
             var roomId = roomResult.result.ToString();
@@ -47,10 +47,10 @@
             const string userName = "m@silvenga.com";
             const string password = "bad password";
 
-            var driver = new ChatDriver("dev0:3000", false, new XUnitLogger(_helper));
+            var driver = new RocketChatDriver("dev0:3000", false, new XUnitLogger(_helper));
 
             await driver.ConnectAsync();
-            var loginResult = await driver.LoginWithPasswordAsync(userName, password);
+            var loginResult = await driver.LoginWithEmailAsync(userName, password);
 
             Assert.Equal("403", loginResult.error.error.ToString());
 

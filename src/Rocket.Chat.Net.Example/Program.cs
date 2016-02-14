@@ -9,9 +9,9 @@
 
     public static class Program
     {
-        private static ChatDriver _driver;
+        private static IRocketChatDriver _driver;
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             Task.Run(async () => await MainAsync());
             Console.ReadLine();
@@ -23,19 +23,27 @@
             const string password = "silverlight";
 
             var logger = new ConsoleLogger();
-            _driver = new ChatDriver("dev0:3000", false, logger);
+            _driver = new RocketChatDriver("dev0:3000", false, logger);
 
+            // Request connection to Rocket.Chat
             await _driver.ConnectAsync();
-            await _driver.LoginWithPasswordAsync(userName, password);
+
+            // Login with a email address (opposed to logging in with LDAP or Username)
+            await _driver.LoginWithEmailAsync(userName, password);
 
             var roomResult = await _driver.GetRoomIdAsync("GENERAL");
             var roomId = roomResult.result.ToString();
 
             await _driver.JoinRoomAsync(roomId);
+
+            // Start listening for messages
             await _driver.SubscribeToRoomAsync(roomId);
 
+            // Create the bot - an abstraction of the driver
             var bot = new RocketChatBot(_driver, logger);
 
+            // Add a possible response
+            // This is not thead safe, FYI 
             bot.AddResponse(new GiphyResponse());
         }
     }

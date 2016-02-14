@@ -5,15 +5,16 @@
 
     using Rocket.Chat.Net.Models;
 
-    public interface IChatDriver : IDisposable
+    public interface IRocketChatDriver : IDisposable
     {
         event MessageReceived MessageReceived;
         Task ConnectAsync();
         Task SubscribeToRoomAsync(string roomId);
-        Task<object> LoginWithPasswordAsync(string userName, string password);
+        Task<dynamic> LoginWithEmailAsync(string email, string password);
         Task LoginWithLdapAsync(string username, string password);
-        Task<object> GetRoomIdAsync(string roomId);
+        Task<dynamic> GetRoomIdAsync(string roomId);
         Task JoinRoomAsync(string roomId);
-        Task<object> SendMessageAsync(string text, string roomId);
+        Task<dynamic> SendMessageAsync(string text, string roomId);
+        Task<dynamic> LoginWithUsernameAsync(string username, string password);
     }
 }

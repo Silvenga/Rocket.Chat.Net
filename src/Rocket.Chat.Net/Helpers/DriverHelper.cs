@@ -8,12 +8,14 @@
 
     public static class DriverHelper
     {
+        public const string Sha256 = "sha-256";
+
         public static bool HasProperty(dynamic o, string name)
         {
             return o[name] != null;
         }
 
-        public static string Sha256(string value)
+        public static string Sha256Hash(string value)
         {
             var builder = new StringBuilder();
             var encoding = Encoding.UTF8;
