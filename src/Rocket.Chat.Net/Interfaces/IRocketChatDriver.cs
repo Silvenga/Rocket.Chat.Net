@@ -54,7 +54,7 @@
         /// </summary>
         /// <param name="roomIdOrName">Room name or roomId</param>
         /// <returns></returns>
-        Task<dynamic> GetRoomIdAsync(string roomIdOrName);
+        Task<string> GetRoomIdAsync(string roomIdOrName);
 
         /// <summary>
         /// Joins a room, no effect if already joined

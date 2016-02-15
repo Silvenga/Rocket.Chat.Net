@@ -122,10 +122,11 @@
             return await _client.CallAsync("login", request);
         }
 
-        public async Task<dynamic> GetRoomIdAsync(string roomIdOrName)
+        public async Task<string> GetRoomIdAsync(string roomIdOrName)
         {
             _logger.Info($"Looking up Room ID for: #{roomIdOrName}");
-            return await _client.CallAsync("getRoomIdByNameOrId", roomIdOrName);
+            var result = await _client.CallAsync("getRoomIdByNameOrId", roomIdOrName);
+            return result?.result;
         }
 
         public async Task<string> DeleteMessageAsync(string messageId, string roomId)

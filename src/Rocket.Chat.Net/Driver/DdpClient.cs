@@ -19,9 +19,8 @@
         private readonly WebSocket _socket;
         private readonly ConcurrentDictionary<string, dynamic> _messages = new ConcurrentDictionary<string, dynamic>();
 
-        public string Url { get; set; }
-        public bool UseSsl { get; set; }
-        public string SessionId { get; set; }
+        public string Url { get; }
+        public string SessionId { get; private set; }
 
         public event DataReceived DataReceivedRaw;
 
@@ -29,7 +28,6 @@
         {
             _logger = logger;
             Url = (useSsl ? "wss://" : "ws://") + baseUrl + "/websocket";
-            UseSsl = useSsl;
 
             _socket = new WebSocket(Url);
             AttachEvents();

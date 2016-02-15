@@ -19,32 +19,43 @@
 
         private static async Task MainAsync()
         {
-            const string userName = "m@silvenga.com";
+            const string username = "m@silvenga.com";
             const string password = "silverlight";
+            const string rocketServerUrl = "dev0:3000"; // just the host and port
+            const bool useSsl = false; // Basically use ws or wss.
 
-            var logger = new ConsoleLogger();
-            _driver = new RocketChatDriver("dev0:3000", false, logger);
+            // Basic logger
+            ILogger logger = new ConsoleLogger();
+
+            // Create the rocket driver - will connect the the server using websockets
+            _driver = new RocketChatDriver(rocketServerUrl, useSsl, logger);
 
             // Request connection to Rocket.Chat
             await _driver.ConnectAsync();
 
             // Login with a email address (opposed to logging in with LDAP or Username)
-            await _driver.LoginWithEmailAsync(userName, password);
+            await _driver.LoginWithEmailAsync(username, password);
 
-            var roomResult = await _driver.GetRoomIdAsync("GENERAL");
-            var roomId = roomResult.result.ToString();
+            // Most rooms have a GUID - GENERAL is always called GENERAL
+            string roomId = await _driver.GetRoomIdAsync("GENERAL");
 
+            // Join the room if not already joined
             await _driver.JoinRoomAsync(roomId);
 
             // Start listening for messages
+            // Don't specify a roomId if you want to listen on all channels
             await _driver.SubscribeToRoomAsync(roomId);
 
             // Create the bot - an abstraction of the driver
-            var bot = new RocketChatBot(_driver, logger);
+            RocketChatBot bot = new RocketChatBot(_driver, logger);
 
-            // Add a possible response
+            // Add possible responses to be checked in order
             // This is not thead safe, FYI 
-            bot.AddResponse(new GiphyResponse());
+            IBotResponse giphyResponse = new GiphyResponse();
+            bot.AddResponse(giphyResponse);
+
+            // And that's it
+            // Checkout GiphyResponse in the example project for more info.
         }
     }
 }
