@@ -80,7 +80,7 @@
 
         public async Task<dynamic> Ping()
         {
-            var id = Guid.NewGuid().ToString();
+            var id = CreateId();
             var request = new
             {
                 msg = "ping", id
@@ -103,15 +103,15 @@
             await SendObject(request);
         }
 
-        public async Task ConnectAsync()
+        public async Task ConnectAsync(string ddpVersion = "pre1")
         {
             var request = new
             {
                 msg = "connect",
-                version = "pre1",
+                version = ddpVersion,
                 support = new[]
                 {
-                   "pre1"
+                   ddpVersion
                 }
             };
 
@@ -121,7 +121,7 @@
 
         public async Task<string> SubscribeAsync(string name, params dynamic[] args)
         {
-            var id = Guid.NewGuid().ToString();
+            var id = CreateId();
             var request = new
             {
                 msg = "sub",
@@ -136,7 +136,7 @@
 
         public async Task<dynamic> CallAsync(string method, params object[] args)
         {
-            var id = Guid.NewGuid().ToString();
+            var id = CreateId();
             var request = new
             {
                 msg = "method",
@@ -197,6 +197,11 @@
                     Thread.Sleep(10);
                 }
             });
+        }
+
+        private string CreateId()
+        {
+            return Guid.NewGuid().ToString("N");
         }
     }
 }

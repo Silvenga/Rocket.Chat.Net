@@ -22,7 +22,7 @@
 
         private void DriverOnMessageReceived(RocketMessage rocketMessage)
         {
-            Task.Run(() => // async this to prevent holding up the message loop
+            Task.Run(async () => // async this to prevent holding up the message loop
             {
                 foreach (var botResponse in _botResponses)
                 {
@@ -30,7 +30,7 @@
                     foreach (var response in botResponse.Response(rocketMessage))
                     {
                         hasResponse = true;
-                        _driver.SendMessageAsync(response.Message, response.RoomId).Wait();
+                        await _driver.SendMessageAsync(response.Message, response.RoomId);
                     }
 
                     if (hasResponse)
