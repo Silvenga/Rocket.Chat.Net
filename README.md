@@ -15,7 +15,7 @@ const bool useSsl = false; // Basically use ws or wss.
 // Basic logger
 ILogger logger = new ConsoleLogger();
 
-// Create the rocket driver - will connect the the server using websockets
+// Create the rocket driver - will connect to the server using websockets
 _driver = new RocketChatDriver(rocketServerUrl, useSsl, logger);
 
 // Request connection to Rocket.Chat
