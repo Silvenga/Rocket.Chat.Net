@@ -115,8 +115,9 @@
             var request = new
             {
                 username,
-                password,
-                ldapOptions = new { }
+                ldapPass = password,
+                ldap = true,
+                ldapOptions = new {}
             };
 
             return await _client.CallAsync("login", request);
