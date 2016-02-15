@@ -30,8 +30,7 @@
             await driver.ConnectAsync();
             var loginResult = await driver.LoginWithEmailAsync(userName, password);
 
-            var roomResult = await driver.GetRoomIdAsync("GENERAL");
-            var roomId = roomResult.result.ToString();
+            var roomId = await driver.GetRoomIdAsync("GENERAL");
 
             await driver.JoinRoomAsync(roomId);
 
