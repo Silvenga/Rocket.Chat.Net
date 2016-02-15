@@ -10,9 +10,9 @@
     {
         public const string Sha256 = "sha-256";
 
-        public static bool HasProperty(dynamic o, string name)
+        public static bool HasProperty(dynamic data, string name)
         {
-            return o[name] != null;
+            return data[name] != null;
         }
 
         public static string Sha256Hash(string value)
