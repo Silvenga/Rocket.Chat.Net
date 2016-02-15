@@ -13,6 +13,6 @@
         public User EditedBy { get; set; }
         public DateTime? EditedOn { get; set; }
 
-        public bool IsEdit => EditedOn != null;
+        public bool WasEdited => EditedOn != null;
     }
 }

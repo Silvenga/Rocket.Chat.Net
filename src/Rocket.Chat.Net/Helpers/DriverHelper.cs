@@ -51,6 +51,22 @@
                 Username = data["username"]
             };
         }
+        public static RocketMessage ParseMessage(dynamic data)
+        {
+            var message = new RocketMessage
+            {
+                Id = data["_id"],
+                RoomId = data.rid,
+                Message = data.msg.ToString().Trim(),
+                IsBot = data.bot != null && data.bot == true,
+                CreatedOn = DriverHelper.ParseDateTime(data.ts),
+                CreatedBy = DriverHelper.ParseUser(data.u),
+                EditedOn = DriverHelper.ParseDateTime(data.editedAt),
+                EditedBy = DriverHelper.ParseUser(data.editedBy)
+            };
+
+            return message;
+        }
 
         public static DateTime? ParseDateTime(dynamic data)
         {
