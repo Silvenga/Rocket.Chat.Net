@@ -11,7 +11,9 @@
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
 
-    using WebSocketSharp;
+    using SuperSocket.ClientEngine;
+
+    using WebSocket4Net;
 
     public class DdpClient : IDisposable
     {
@@ -23,6 +25,7 @@
         public string SessionId { get; private set; }
 
         public event DataReceived DataReceivedRaw;
+        public event DdpReconnect DdpReconnect;
 
         public DdpClient(string baseUrl, bool useSsl, ILogger logger)
         {
@@ -31,24 +34,59 @@
 
             _socket = new WebSocket(Url);
             AttachEvents();
-            _socket.Connect();
         }
 
         private void AttachEvents()
         {
-            _socket.OnMessage += SocketOnMessage;
-            _socket.OnClose += (sender, args) => _logger.Debug("CLOSE: " + args.Reason);
-            _socket.OnError += (sender, args) => _logger.Info("ERROR: " + args.Message);
-            _socket.OnOpen += (sender, args) => _logger.Debug("OPEN");
+            _socket.MessageReceived += SocketOnMessage;
+            _socket.Closed += SocketOnClosed;
+            _socket.Error += SocketOnError;
+            _socket.Opened += SocketOnOpened;
         }
 
-        private void SocketOnMessage(object sender, MessageEventArgs messageEventArgs)
+        private void SocketOnClosed(object sender, EventArgs eventArgs)
         {
-            var json = messageEventArgs.Data;
+            _logger.Debug("CLOSE");
+            if (SessionId != null)
+            {
+                ConnectAsync(CancellationToken.None).Wait();
+                OnDdpReconnect();
+            }
+        }
+
+        private void SocketOnError(object sender, ErrorEventArgs errorEventArgs)
+        {
+            _logger.Info("ERROR: " + errorEventArgs.Exception.Message);
+        }
+
+        private void SocketOnOpened(object sender, EventArgs eventArgs)
+        {
+            _logger.Debug("OPEN");
+
+            _logger.Debug("Sending connection request");
+            const string ddpVersion = "pre1";
+            var request = new
+            {
+                msg = "connect",
+                version = ddpVersion,
+                session = SessionId, // Although, it doesn't appear that RC handles resuming sessions
+                support = new[]
+                {
+                    ddpVersion
+                }
+            };
+
+            SendObject(request, CancellationToken.None).Wait();
+        }
+
+        private void SocketOnMessage(object sender, MessageReceivedEventArgs messageEventArgs)
+        {
+            var json = messageEventArgs.Message;
             dynamic data = JsonConvert.DeserializeObject(json);
             _logger.Debug($"RECIEVED: {JsonConvert.SerializeObject(data, Formatting.Indented)}");
 
-            if (DriverHelper.HasProperty(data, "msg"))
+            var isRocketMessage = DriverHelper.HasProperty(data, "msg");
+            if (isRocketMessage)
             {
                 string type = data.msg;
                 InternalHandle(type, data);
@@ -76,7 +114,7 @@
             }
         }
 
-        public async Task<dynamic> Ping()
+        public async Task<dynamic> Ping(CancellationToken token)
         {
             var id = CreateId();
             var request = new
@@ -84,9 +122,9 @@
                 msg = "ping", id
             };
 
-            await SendObject(request);
+            await SendObject(request, token);
 
-            var result = await WaitForIdAsync(id);
+            var result = await WaitForIdAsync(id, token);
 
             return result;
         }
@@ -98,26 +136,16 @@
                 msg = "pong", data.id
             };
 
-            await SendObject(request);
+            await SendObject(request, CancellationToken.None);
         }
 
-        public async Task ConnectAsync(string ddpVersion = "pre1")
+        public async Task ConnectAsync(CancellationToken token)
         {
-            var request = new
-            {
-                msg = "connect",
-                version = ddpVersion,
-                support = new[]
-                {
-                   ddpVersion
-                }
-            };
-
-            await SendObject(request);
-            await WaitForConnect();
+            _socket.Open();
+            await WaitForConnect(token);
         }
 
-        public async Task<string> SubscribeAsync(string name, params dynamic[] args)
+        public async Task<string> SubscribeAsync(string name, CancellationToken token, params dynamic[] args)
         {
             var id = CreateId();
             var request = new
@@ -128,11 +156,11 @@
                 id
             };
 
-            await SendObject(request);
+            await SendObject(request, token);
             return id;
         }
 
-        public async Task<dynamic> CallAsync(string method, params object[] args)
+        public async Task<dynamic> CallAsync(string method, CancellationToken token, params object[] args)
         {
             var id = CreateId();
             var request = new
@@ -143,8 +171,8 @@
                 id
             };
 
-            await SendObject(request);
-            var result = await WaitForIdAsync(id);
+            await SendObject(request, token);
+            var result = await WaitForIdAsync(id, token);
 
             return result;
         }
@@ -159,47 +187,54 @@
             _socket.Close();
         }
 
-        private async Task SendObject(dynamic data)
+        private async Task SendObject(dynamic data, CancellationToken token)
         {
             await Task.Run(() =>
             {
                 var json = JsonConvert.SerializeObject(data, Formatting.Indented);
                 _logger.Debug($"SEND: {json}");
                 _socket.Send(json);
-            });
+            }, token);
         }
 
-        private async Task<dynamic> WaitForIdAsync(string id)
+        private async Task<dynamic> WaitForIdAsync(string id, CancellationToken token)
         {
             var task = Task.Run(() =>
             {
                 while (!_messages.ContainsKey(id))
                 {
+                    token.ThrowIfCancellationRequested();
                     Thread.Sleep(10);
                 }
 
                 dynamic data;
                 _messages.TryRemove(id, out data);
                 return data;
-            });
+            }, token);
 
             return await task;
         }
 
-        private async Task WaitForConnect()
+        private async Task WaitForConnect(CancellationToken token)
         {
             await Task.Run(() =>
             {
                 while (SessionId == null)
                 {
+                    token.ThrowIfCancellationRequested();
                     Thread.Sleep(10);
                 }
-            });
+            }, token);
         }
 
-        private string CreateId()
+        private static string CreateId()
         {
             return Guid.NewGuid().ToString("N");
+        }
+
+        protected virtual void OnDdpReconnect()
+        {
+            DdpReconnect?.Invoke();
         }
     }
 }

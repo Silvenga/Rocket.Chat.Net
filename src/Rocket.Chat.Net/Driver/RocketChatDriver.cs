@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Newtonsoft.Json.Linq;
@@ -22,6 +23,9 @@
         private DdpClient _client;
 
         public event MessageReceived MessageReceived;
+        public event DdpReconnect DdpReconnect;
+
+        public CancellationToken TimeoutToken => CreateTimeoutToken();
 
         public RocketChatDriver(string url, bool useSsl, ILogger logger)
         {
@@ -38,6 +42,7 @@
             _logger.Info("Creating client...");
             _client = new DdpClient(_url, _useSsl, _logger);
             _client.DataReceivedRaw += ClientOnDataReceivedRaw;
+            _client.DdpReconnect += OnDdpReconnect;
         }
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
@@ -55,16 +60,25 @@
             }
         }
 
-        public async Task ConnectAsync(string ddpVersion = "pre1")
+        private CancellationToken CreateTimeoutToken()
+        {
+            _logger.Debug("Created cancellation token.");
+            var source = new CancellationTokenSource();
+            source.CancelAfter(TimeSpan.FromSeconds(30));
+
+            return source.Token;
+        }
+
+        public async Task ConnectAsync()
         {
             _logger.Info($"Connecting client to {_url}...");
-            await _client.ConnectAsync(ddpVersion);
+            await _client.ConnectAsync(TimeoutToken);
         }
 
         public async Task SubscribeToRoomAsync(string roomId = null)
         {
             _logger.Info($"Subscribing to Room: #{roomId}");
-            await _client.SubscribeAsync(MessageTopic, roomId, MessageSubscriptionLimit.ToString());
+            await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString());
         }
 
         public async Task<dynamic> LoginWithEmailAsync(string email, string password)
@@ -84,7 +98,7 @@
                 }
             };
 
-            var result = await _client.CallAsync("login", request);
+            var result = await _client.CallAsync("login", TimeoutToken, request);
             return result;
         }
 
@@ -105,7 +119,7 @@
                 }
             };
 
-            var result = await _client.CallAsync("login", request);
+            var result = await _client.CallAsync("login", TimeoutToken, request);
             return result;
         }
 
@@ -119,13 +133,13 @@
                 ldapOptions = new { }
             };
 
-            return await _client.CallAsync("login", request);
+            return await _client.CallAsync("login", TimeoutToken, request);
         }
 
         public async Task<string> GetRoomIdAsync(string roomIdOrName)
         {
             _logger.Info($"Looking up Room ID for: #{roomIdOrName}");
-            var result = await _client.CallAsync("getRoomIdByNameOrId", roomIdOrName);
+            var result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName);
             return result?.result;
         }
 
@@ -137,26 +151,26 @@
                 rid = roomId,
                 _id = messageId
             };
-            return await _client.CallAsync("deleteMessage", request);
+            return await _client.CallAsync("deleteMessage", TimeoutToken, request);
         }
 
         public async Task<string> CreatePrivateMessageAsync(string username)
         {
             _logger.Info($"Creating private message with {username}");
-            var result = await _client.CallAsync("createDirectMessage", username);
+            var result = await _client.CallAsync("createDirectMessage", TimeoutToken, username);
             return result.result;
         }
 
         public async Task<dynamic> ChannelListAsync()
         {
             _logger.Info("Looking up public channels.");
-            return await _client.CallAsync("channelsList");
+            return await _client.CallAsync("channelsList", TimeoutToken);
         }
 
         public async Task<dynamic> JoinRoomAsync(string roomId)
         {
             _logger.Info($"Joining Room: #{roomId}");
-            return await _client.CallAsync("joinRoom", roomId);
+            return await _client.CallAsync("joinRoom", TimeoutToken, roomId);
         }
 
         public async Task<dynamic> SendMessageAsync(string text, string roomId)
@@ -168,7 +182,7 @@
                 rid = roomId,
                 bot = true
             };
-            return await _client.CallAsync("sendMessage", request);
+            return await _client.CallAsync("sendMessage", TimeoutToken, request);
         }
 
         public async Task<dynamic> UpdateMessageAsync(string messageId, string roomId, string newMessage)
@@ -181,14 +195,14 @@
                 bot = true,
                 _id = messageId
             };
-            return await _client.CallAsync("updateMessage", request);
+            return await _client.CallAsync("updateMessage", TimeoutToken, request);
         }
 
         public async Task<List<RocketMessage>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20, string ls = null)
         {
             _logger.Info($"Loading messages from #{roomId}");
 
-            var rawMessage = await _client.CallAsync("loadHistory", roomId, end, limit, ls);
+            var rawMessage = await _client.CallAsync("loadHistory", TimeoutToken, roomId, end, limit, ls);
             var rawList = rawMessage.result.messages as JArray;
             var messages = new List<RocketMessage>();
 
@@ -209,6 +223,11 @@
         public void Dispose()
         {
             _client.Dispose();
+        }
+
+        protected virtual void OnDdpReconnect()
+        {
+            DdpReconnect?.Invoke();
         }
     }
 }

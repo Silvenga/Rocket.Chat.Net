@@ -13,9 +13,8 @@
         /// <summary>
         /// Connect via the DDP protocol using WebSockets
         /// </summary>
-        /// <param name="ddpVersion">The DDP version to impersonate</param>
         /// <returns></returns>
-        Task ConnectAsync(string ddpVersion = "pre1");
+        Task ConnectAsync();
 
         /// <summary>
         /// Subscribe to messages from given room

@@ -2,4 +2,5 @@
 {
     public delegate void DataReceived(string type, dynamic data);
     public delegate void MessageReceived(RocketMessage rocketMessage);
+    public delegate void DdpReconnect();
 }
