@@ -45,3 +45,9 @@ bot.AddResponse(giphyResponse);
 // And that's it
 // Checkout GiphyResponse in the example project for more info.
 ```
+
+## TODO
+
+* Handle disconnects
+* Get rid of dynamics
+* Handle errors proactively
