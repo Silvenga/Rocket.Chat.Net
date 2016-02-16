@@ -131,7 +131,18 @@
                 username,
                 ldapPass = password,
                 ldap = true,
-                ldapOptions = new {}
+                ldapOptions = new { }
+            };
+
+            return await _client.CallAsync("login", TimeoutToken, request);
+        }
+
+        public async Task<dynamic> LoginResumeAsync(string sessionToken)
+        {
+            _logger.Info($"Resuming session {sessionToken}");
+            var request = new
+            {
+                resume = sessionToken
             };
 
             return await _client.CallAsync("login", TimeoutToken, request);

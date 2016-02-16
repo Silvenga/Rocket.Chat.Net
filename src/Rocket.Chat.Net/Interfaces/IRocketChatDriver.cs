@@ -49,6 +49,13 @@
         Task<dynamic> LoginWithUsernameAsync(string username, string password);
 
         /// <summary>
+        /// Resume a login session
+        /// </summary>
+        /// <param name="sessionToken">Active token given from a previous login</param>
+        /// <returns></returns>
+        Task<dynamic> LoginResumeAsync(string sessionToken);
+
+        /// <summary>
         /// Get roomId by either roomId or room name
         /// </summary>
         /// <param name="roomIdOrName">Room name or roomId</param>
