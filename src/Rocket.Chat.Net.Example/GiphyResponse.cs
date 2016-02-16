@@ -15,10 +15,6 @@
         private const string Rating = "pg-13";
         private readonly RestClient _client = new RestClient("http://api.giphy.com/");
 
-        public GiphyResponse()
-        {
-        }
-
         public IEnumerable<BasicResponse> Response(RocketMessage message)
         {
             if (message.Message.StartsWith(GiphyCommand) && !message.Message.Equals(GiphyCommand))
@@ -38,7 +34,7 @@
 
             var response = _client.Execute<dynamic>(request);
 
-            var url = response.Data["data"]["images"]["fixed_height"]["url"];//.images.fixed_height.url;
+            var url = response.Data["data"]["images"]["fixed_height"]["url"];
 
             return url;
         }
