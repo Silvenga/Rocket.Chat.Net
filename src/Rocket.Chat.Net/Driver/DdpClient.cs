@@ -47,16 +47,15 @@
         private void SocketOnClosed(object sender, EventArgs eventArgs)
         {
             _logger.Debug("CLOSE");
-            if (SessionId != null)
+            if(SessionId != null)
             {
                 ConnectAsync(CancellationToken.None).Wait();
-                OnDdpReconnect();
             }
         }
 
         private void SocketOnError(object sender, ErrorEventArgs errorEventArgs)
         {
-            _logger.Info("ERROR: " + errorEventArgs.Exception.Message);
+            _logger.Info("ERROR: " + errorEventArgs?.Exception?.Message);
         }
 
         private void SocketOnOpened(object sender, EventArgs eventArgs)
@@ -76,7 +75,7 @@
                 }
             };
 
-            SendObject(request, CancellationToken.None).Wait();
+            SendObjectAsync(request, CancellationToken.None).Wait();
         }
 
         private void SocketOnMessage(object sender, MessageReceivedEventArgs messageEventArgs)
@@ -86,7 +85,7 @@
             _logger.Debug($"RECIEVED: {JsonConvert.SerializeObject(data, Formatting.Indented)}");
 
             var isRocketMessage = DriverHelper.HasProperty(data, "msg");
-            if (isRocketMessage)
+            if(isRocketMessage)
             {
                 string type = data.msg;
                 InternalHandle(type, data);
@@ -96,19 +95,25 @@
 
         private void InternalHandle(string type, dynamic data)
         {
-            if (DriverHelper.HasProperty(data, "id"))
+            if(DriverHelper.HasProperty(data, "id"))
             {
                 string id = data.id;
                 _messages.TryAdd(id, data);
             }
 
-            switch (type)
+            switch(type)
             {
                 case "ping": // Required by spec
                     Pong(data);
                     break;
                 case "connected":
+
+                    if(SessionId != null)
+                    {
+                        OnDdpReconnect();
+                    }
                     SessionId = data.session;
+
                     _logger.Debug($"Connected via session {SessionId}.");
                     break;
             }
@@ -119,10 +124,11 @@
             var id = CreateId();
             var request = new
             {
-                msg = "ping", id
+                msg = "ping",
+                id
             };
 
-            await SendObject(request, token);
+            await SendObjectAsync(request, token);
 
             var result = await WaitForIdAsync(id, token);
 
@@ -133,16 +139,17 @@
         {
             var request = new
             {
-                msg = "pong", data.id
+                msg = "pong",
+                data.id
             };
 
-            await SendObject(request, CancellationToken.None);
+            await SendObjectAsync(request, CancellationToken.None);
         }
 
         public async Task ConnectAsync(CancellationToken token)
         {
             _socket.Open();
-            await WaitForConnect(token);
+            await WaitForConnectAsync(token);
         }
 
         public async Task<string> SubscribeAsync(string name, CancellationToken token, params dynamic[] args)
@@ -156,7 +163,7 @@
                 id
             };
 
-            await SendObject(request, token);
+            await SendObjectAsync(request, token);
             return id;
         }
 
@@ -171,7 +178,7 @@
                 id
             };
 
-            await SendObject(request, token);
+            await SendObjectAsync(request, token);
             var result = await WaitForIdAsync(id, token);
 
             return result;
@@ -184,10 +191,11 @@
 
         public void Dispose()
         {
+            SessionId = null;
             _socket.Close();
         }
 
-        private async Task SendObject(dynamic data, CancellationToken token)
+        private async Task SendObjectAsync(dynamic data, CancellationToken token)
         {
             await Task.Run(() =>
             {
@@ -201,7 +209,7 @@
         {
             var task = Task.Run(() =>
             {
-                while (!_messages.ContainsKey(id))
+                while(!_messages.ContainsKey(id))
                 {
                     token.ThrowIfCancellationRequested();
                     Thread.Sleep(10);
@@ -215,11 +223,11 @@
             return await task;
         }
 
-        private async Task WaitForConnect(CancellationToken token)
+        private async Task WaitForConnectAsync(CancellationToken token)
         {
             await Task.Run(() =>
             {
-                while (SessionId == null)
+                while(SessionId == null)
                 {
                     token.ThrowIfCancellationRequested();
                     Thread.Sleep(10);
