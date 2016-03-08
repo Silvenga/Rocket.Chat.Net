@@ -6,11 +6,10 @@
     using Rocket.Chat.Net.Bot;
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
+    using Rocket.Chat.Net.Models.Logins;
 
     public static class Program
     {
-        private static IRocketChatDriver _driver;
-
         public static void Main()
         {
             Task.Run(async () => await MainAsync());
@@ -27,27 +26,22 @@
             // Basic logger
             ILogger logger = new ConsoleLogger();
 
-            // Create the rocket driver - will connect the the server using websockets
-            _driver = new RocketChatDriver(rocketServerUrl, useSsl, logger);
+            // Create the bot - an abstraction of the driver
+            RocketChatBot bot = new RocketChatBot(rocketServerUrl, useSsl, logger);
 
-            // Request connection to Rocket.Chat
-            await _driver.ConnectAsync();
+            // Connect to Rocket.Chat
+            await bot.Connect();
 
-            // Login with a email address (opposed to logging in with LDAP or Username)
-            await _driver.LoginWithEmailAsync(username, password);
-
-            // Most rooms have a GUID - GENERAL is always called GENERAL
-            string roomId = await _driver.GetRoomIdAsync("GENERAL");
-
-            // Join the room if not already joined
-            await _driver.JoinRoomAsync(roomId);
+            // Login
+            ILoginOption loginOption = new EmailLoginOption
+            {
+                Email = username,
+                Password = password
+            };
+            await bot.Login(loginOption);
 
             // Start listening for messages
-            // Don't specify a roomId if you want to listen on all channels
-            await _driver.SubscribeToRoomAsync(roomId);
-
-            // Create the bot - an abstraction of the driver
-            RocketChatBot bot = new RocketChatBot(_driver, logger);
+            await bot.Subscribe();
 
             // Add possible responses to be checked in order
             // This is not thead safe, FYI 

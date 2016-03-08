@@ -1,11 +1,13 @@
 ﻿namespace Rocket.Chat.Net.Models.Results
 {
+    using System;
+
     public class LoginResult : BaseResult
     {
-        public object Id { get; set; }
+        public string Id { get; set; }
 
-        public object Token { get; set; }
+        public string Token { get; set; }
 
-        public object TokenExpires { get; set; }
+        public DateTime TokenExpires { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 {
     using Rocket.Chat.Net.Interfaces;
 
-    public class ResumeLogin : ILogin
+    public class ResumeLoginOption : ILoginOption
     {
         public string Token { get; set; }
     }

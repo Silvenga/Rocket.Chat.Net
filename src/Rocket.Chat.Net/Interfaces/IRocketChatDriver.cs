@@ -44,9 +44,9 @@
         /// <summary>
         /// Login with a ILogin object
         /// </summary>
-        /// <param name="login">Login option to use</param>
+        /// <param name="loginOption">Login option to use</param>
         /// <returns></returns>
-        Task<LoginResult> LoginAsync(ILogin login);
+        Task<LoginResult> LoginAsync(ILoginOption loginOption);
 
         /// <summary>
         /// Login with username
@@ -124,5 +124,7 @@
         /// </summary>
         /// <returns></returns>
         Task<object> ChannelListAsync();
+
+        event DdpReconnect DdpReconnect;
     }
 }

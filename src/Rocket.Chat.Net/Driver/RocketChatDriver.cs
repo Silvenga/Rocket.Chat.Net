@@ -83,30 +83,30 @@
             await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString());
         }
 
-        public async Task<LoginResult> LoginAsync(ILogin login)
+        public async Task<LoginResult> LoginAsync(ILoginOption loginOption)
         {
-            var ldapLogin = login as LdapLogin;
+            var ldapLogin = loginOption as LdapLoginOption;
             if (ldapLogin != null)
             {
                 return await LoginWithLdapAsync(ldapLogin.Username, ldapLogin.Password);
             }
-            var emailLogin = login as EmailLogin;
+            var emailLogin = loginOption as EmailLoginOption;
             if (emailLogin != null)
             {
                 return await LoginWithEmailAsync(emailLogin.Email, emailLogin.Password);
             }
-            var usernameLogin = login as UsernameLogin;
+            var usernameLogin = loginOption as UsernameLoginOption;
             if (usernameLogin != null)
             {
                 return await LoginWithUsernameAsync(usernameLogin.Username, usernameLogin.Password);
             }
-            var resumeLogin = login as ResumeLogin;
+            var resumeLogin = loginOption as ResumeLoginOption;
             if (resumeLogin != null)
             {
                 return await LoginResumeAsync(resumeLogin.Token);
             }
 
-            throw new NotSupportedException($"The given login option `{typeof(ILogin)}` is not supported.");
+            throw new NotSupportedException($"The given login option `{typeof(ILoginOption)}` is not supported.");
         }
 
         public async Task<LoginResult> LoginWithEmailAsync(string email, string password)
@@ -182,7 +182,7 @@
             return result;
         }
 
-        private LoginResult ParseLogin(dynamic data)
+        private static LoginResult ParseLogin(dynamic data)
         {
             var result = new LoginResult();
             if (DriverHelper.HasError(data))

@@ -1,5 +1,6 @@
 ﻿namespace Rocket.Chat.Net.Tests.Driver
 {
+    using System;
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Driver;
@@ -10,13 +11,15 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    public class ClientTests
+    public class ClientTests : IDisposable
     {
         private readonly ITestOutputHelper _helper;
+        private XUnitLogger _xUnitLogger;
 
         public ClientTests(ITestOutputHelper helper)
         {
             _helper = helper;
+            _xUnitLogger = new XUnitLogger(_helper);
         }
 
         // TODO Write real tests
@@ -27,7 +30,7 @@
             const string userName = "m@silvenga.com";
             const string password = "silverlight";
 
-            var driver = new RocketChatDriver("dev0:3000", false, new XUnitLogger(_helper));
+            var driver = new RocketChatDriver("dev0:3000", false, _xUnitLogger);
 
             await driver.ConnectAsync();
             var loginResult = await driver.LoginWithEmailAsync(userName, password);
@@ -49,9 +52,9 @@
             const string userName = "m@silvenga.com";
             const string password = "bad password";
 
-            var driver = new RocketChatDriver("dev0:3000", false, new XUnitLogger(_helper));
+            var driver = new RocketChatDriver("dev0:3000", false, _xUnitLogger);
 
-            var emailLogin = new EmailLogin
+            var emailLogin = new EmailLoginOption
             {
                 Email = userName,
                 Password = password
@@ -72,7 +75,7 @@
             const string userName = "m@silvenga.com";
             const string password = "silverlight";
 
-            IRocketChatDriver driver = new RocketChatDriver("dev0:3000", false, new XUnitLogger(_helper));
+            IRocketChatDriver driver = new RocketChatDriver("dev0:3000", false, _xUnitLogger);
 
             await driver.ConnectAsync();
             var loginResult = await driver.LoginWithEmailAsync(userName, password);
@@ -88,7 +91,7 @@
             const string userName = "m@silvenga.com";
             const string password = "silverlight";
 
-            IRocketChatDriver driver = new RocketChatDriver("dev0:3000", false, new XUnitLogger(_helper));
+            IRocketChatDriver driver = new RocketChatDriver("dev0:3000", false, _xUnitLogger);
 
             await driver.ConnectAsync();
             var loginResult = await driver.LoginWithEmailAsync(userName, password);
@@ -96,6 +99,11 @@
             var result = await driver.LoadMessagesAsync("GENERAL");
 
             driver.Dispose();
+        }
+        
+        public void Dispose()
+        {
+            _xUnitLogger.Dispose();
         }
     }
 }

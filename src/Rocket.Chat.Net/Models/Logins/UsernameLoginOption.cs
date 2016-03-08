@@ -2,7 +2,7 @@
 {
     using Rocket.Chat.Net.Interfaces;
 
-    public class LdapLogin : ILogin
+    public class UsernameLoginOption : ILoginOption
     {
         public string Username { get; set; }
 

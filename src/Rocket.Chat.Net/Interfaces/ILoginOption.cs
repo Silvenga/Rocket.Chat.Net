@@ -1,6 +1,6 @@
 ﻿namespace Rocket.Chat.Net.Interfaces
 {
-    public interface ILogin
+    public interface ILoginOption
     {
     }
 }
