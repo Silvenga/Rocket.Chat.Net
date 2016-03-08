@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Models.Results;
 
     public interface IRocketChatDriver : IDisposable
     {
@@ -30,7 +31,7 @@
         /// <param name="email">Email to use</param>
         /// <param name="password">Plaintext password to use (will be SHA-256 before sending)</param>
         /// <returns></returns>
-        Task<dynamic> LoginWithEmailAsync(string email, string password);
+        Task<LoginResult> LoginWithEmailAsync(string email, string password);
 
         /// <summary>
         /// Login with LDAP
@@ -38,7 +39,14 @@
         /// <param name="username">Email/Username to use</param>
         /// <param name="password">Plaintext password to use</param>
         /// <returns></returns>
-        Task<dynamic> LoginWithLdapAsync(string username, string password);
+        Task<LoginResult> LoginWithLdapAsync(string username, string password);
+
+        /// <summary>
+        /// Login with a ILogin object
+        /// </summary>
+        /// <param name="login">Login option to use</param>
+        /// <returns></returns>
+        Task<LoginResult> LoginAsync(ILogin login);
 
         /// <summary>
         /// Login with username
@@ -46,14 +54,14 @@
         /// <param name="username">Username to use</param>
         /// <param name="password">Plaintext password to use (will be SHA-256 before sending)</param>
         /// <returns></returns>
-        Task<dynamic> LoginWithUsernameAsync(string username, string password);
+        Task<LoginResult> LoginWithUsernameAsync(string username, string password);
 
         /// <summary>
         /// Resume a login session
         /// </summary>
         /// <param name="sessionToken">Active token given from a previous login</param>
         /// <returns></returns>
-        Task<dynamic> LoginResumeAsync(string sessionToken);
+        Task<LoginResult> LoginResumeAsync(string sessionToken);
 
         /// <summary>
         /// Get roomId by either roomId or room name

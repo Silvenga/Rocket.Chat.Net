@@ -11,6 +11,8 @@
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Models.Logins;
+    using Rocket.Chat.Net.Models.Results;
 
     public class RocketChatDriver : IRocketChatDriver
     {
@@ -81,7 +83,33 @@
             await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString());
         }
 
-        public async Task<dynamic> LoginWithEmailAsync(string email, string password)
+        public async Task<LoginResult> LoginAsync(ILogin login)
+        {
+            var ldapLogin = login as LdapLogin;
+            if (ldapLogin != null)
+            {
+                return await LoginWithLdapAsync(ldapLogin.Username, ldapLogin.Password);
+            }
+            var emailLogin = login as EmailLogin;
+            if (emailLogin != null)
+            {
+                return await LoginWithEmailAsync(emailLogin.Email, emailLogin.Password);
+            }
+            var usernameLogin = login as UsernameLogin;
+            if (usernameLogin != null)
+            {
+                return await LoginWithUsernameAsync(usernameLogin.Username, usernameLogin.Password);
+            }
+            var resumeLogin = login as ResumeLogin;
+            if (resumeLogin != null)
+            {
+                return await LoginResumeAsync(resumeLogin.Token);
+            }
+
+            throw new NotSupportedException($"The given login option `{typeof(ILogin)}` is not supported.");
+        }
+
+        public async Task<LoginResult> LoginWithEmailAsync(string email, string password)
         {
             _logger.Info($"Logging in with user {email} using a email...");
             var passwordHash = DriverHelper.Sha256Hash(password);
@@ -98,11 +126,12 @@
                 }
             };
 
-            var result = await _client.CallAsync("login", TimeoutToken, request);
+            var data = await _client.CallAsync("login", TimeoutToken, request);
+            var result = ParseLogin(data);
             return result;
         }
 
-        public async Task<dynamic> LoginWithUsernameAsync(string username, string password)
+        public async Task<LoginResult> LoginWithUsernameAsync(string username, string password)
         {
             _logger.Info($"Logging in with user {username} using a username...");
             var passwordHash = DriverHelper.Sha256Hash(password);
@@ -119,11 +148,12 @@
                 }
             };
 
-            var result = await _client.CallAsync("login", TimeoutToken, request);
+            var data = await _client.CallAsync("login", TimeoutToken, request);
+            var result = ParseLogin(data);
             return result;
         }
 
-        public async Task<dynamic> LoginWithLdapAsync(string username, string password)
+        public async Task<LoginResult> LoginWithLdapAsync(string username, string password)
         {
             _logger.Info($"Logging in with user {username} using LDAP...");
             var request = new
@@ -134,10 +164,12 @@
                 ldapOptions = new { }
             };
 
-            return await _client.CallAsync("login", TimeoutToken, request);
+            var data = await _client.CallAsync("login", TimeoutToken, request);
+            var result = ParseLogin(data);
+            return result;
         }
 
-        public async Task<dynamic> LoginResumeAsync(string sessionToken)
+        public async Task<LoginResult> LoginResumeAsync(string sessionToken)
         {
             _logger.Info($"Resuming session {sessionToken}");
             var request = new
@@ -145,7 +177,26 @@
                 resume = sessionToken
             };
 
-            return await _client.CallAsync("login", TimeoutToken, request);
+            var data = await _client.CallAsync("login", TimeoutToken, request);
+            var result = ParseLogin(data);
+            return result;
+        }
+
+        private LoginResult ParseLogin(dynamic data)
+        {
+            var result = new LoginResult();
+            if (DriverHelper.HasError(data))
+            {
+                var error = DriverHelper.ParseError(data);
+                result.ErrorData = error;
+                return result;
+            }
+
+            result.Id = data.result.id;
+            result.Token = data.result.token;
+            result.TokenExpires = DriverHelper.ParseDateTime(data.result.tokenExpires);
+
+            return result;
         }
 
         public async Task<string> GetRoomIdAsync(string roomIdOrName)
@@ -210,7 +261,8 @@
             return await _client.CallAsync("updateMessage", TimeoutToken, request);
         }
 
-        public async Task<List<RocketMessage>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20, string ls = null)
+        public async Task<List<RocketMessage>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20,
+                                                                 string ls = null)
         {
             _logger.Info($"Loading messages from #{roomId}");
 

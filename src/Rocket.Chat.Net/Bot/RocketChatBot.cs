@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
 
@@ -17,7 +18,20 @@
             _driver = driver;
             _logger = logger;
 
-            driver.MessageReceived += DriverOnMessageReceived;
+            AttachEvents();
+        }
+
+        public RocketChatBot(string url, bool useSsl, ILogger logger)
+        {
+            _driver = new RocketChatDriver(url, useSsl, logger);
+            _logger = logger;
+
+            AttachEvents();
+        }
+
+        private void AttachEvents()
+        {
+            _driver.MessageReceived += DriverOnMessageReceived;
         }
 
         private void DriverOnMessageReceived(RocketMessage rocketMessage)

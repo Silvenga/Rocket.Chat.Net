@@ -5,6 +5,7 @@
     using System.Text;
 
     using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Models.Results;
 
     public static class DriverHelper
     {
@@ -78,6 +79,30 @@
             var rawValue = data["$date"].ToString(); // TODO Figure out why I can't just use the value as a long
             var epoch = long.Parse(rawValue);
             return DriverHelper.FromEpoch(epoch);
+        }
+
+        public static bool HasError(dynamic data)
+        {
+            return data?.error != null;
+        }
+
+        public static ErrorData ParseError(dynamic data)
+        {
+            if (data == null || data.error == null)
+            {
+                return null;
+            }
+
+            var error = data.error;
+            var result = new ErrorData
+            {
+                Error = error.error,
+                Reason = error.reason,
+                Message = error.message,
+                ErrorType = error.errorType
+            };
+
+            return result;
         }
     }
 }

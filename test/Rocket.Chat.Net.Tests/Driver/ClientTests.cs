@@ -4,6 +4,8 @@
 
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
+    using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Models.Logins;
 
     using Xunit;
     using Xunit.Abstractions;
@@ -49,10 +51,17 @@
 
             var driver = new RocketChatDriver("dev0:3000", false, new XUnitLogger(_helper));
 
+            var emailLogin = new EmailLogin
+            {
+                Email = userName,
+                Password = password
+            };
+
             await driver.ConnectAsync();
             var loginResult = await driver.LoginWithEmailAsync(userName, password);
 
-            Assert.Equal("403", loginResult.error.error.ToString());
+            Assert.True(loginResult.HasError);
+            Assert.Equal(403, loginResult.ErrorData.Error);
 
             driver.Dispose();
         }
