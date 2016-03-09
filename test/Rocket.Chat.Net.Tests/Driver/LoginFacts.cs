@@ -38,8 +38,7 @@
             loginResult.HasError.Should().BeFalse();
             loginResult.Token.Should().NotBeNull();
         }
-
-
+        
         [Fact]
         public async Task Can_login_with_username()
         {

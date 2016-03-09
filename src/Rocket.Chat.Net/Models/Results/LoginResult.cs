@@ -4,7 +4,7 @@
 
     public class LoginResult : BaseResult
     {
-        public string Id { get; set; }
+        public string UserId { get; set; }
 
         public string Token { get; set; }
 

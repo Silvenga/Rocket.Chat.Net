@@ -33,6 +33,8 @@
 
         public CancellationToken TimeoutToken => CreateTimeoutToken();
 
+        public string UserId { get; private set; }
+
         public RocketChatDriver(string url, bool useSsl, ILogger logger)
         {
             _url = url;
@@ -99,9 +101,11 @@
             {
                 var messageRaw = data.fields.args[1];
                 RocketMessage message = DriverHelper.ParseMessage(messageRaw);
+                message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
 
                 var edit = message.WasEdited ? "(EDIT)" : "";
-                _logger.Info($"Message from {message.CreatedBy.Username}@{message.RoomId}{edit}: {message.Message}");
+                var mentioned = message.IsBotMentioned ? "(Mentioned)" : "";
+                _logger.Info($"Message from {message.CreatedBy.Username}@{message.RoomId}{edit}{mentioned}: {message.Message}");
 
                 OnMessageReceived(message);
             }
@@ -173,6 +177,7 @@
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
             var result = ParseLogin(data);
+            UserId = result.UserId;
             return result;
         }
 
@@ -195,6 +200,7 @@
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
             var result = ParseLogin(data);
+            UserId = result.UserId;
             return result;
         }
 
@@ -211,6 +217,7 @@
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
             var result = ParseLogin(data);
+            UserId = result.UserId;
             return result;
         }
 
@@ -224,6 +231,7 @@
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
             var result = ParseLogin(data);
+            UserId = result.UserId;
             return result;
         }
 
@@ -237,7 +245,7 @@
                 return result;
             }
 
-            result.Id = data.result.id;
+            result.UserId = data.result.id;
             result.Token = data.result.token;
             result.TokenExpires = DriverHelper.ParseDateTime(data.result.tokenExpires);
 
