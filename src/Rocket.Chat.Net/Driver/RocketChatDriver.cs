@@ -1,6 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Driver
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -23,6 +24,9 @@
         private readonly bool _useSsl;
         private readonly ILogger _logger;
         private DdpClient _client;
+
+        private readonly ConcurrentDictionary<string, StreamCollection> _collections =
+            new ConcurrentDictionary<string, StreamCollection>();
 
         public event MessageReceived MessageReceived;
         public event DdpReconnect DdpReconnect;
@@ -49,6 +53,47 @@
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
         {
+            if (type == "added")
+            {
+                string collectionName = data.collection;
+                string id = data.id;
+                object field = data.fields;
+
+                var collection = _collections.GetOrAdd(collectionName, new StreamCollection
+                {
+                    Name = collectionName
+                });
+
+                collection.Added(id, field);
+            }
+
+            if (type == "changed")
+            {
+                string collectionName = data.collection;
+                string id = data.id;
+                object field = data.fields;
+
+                var collection = _collections.GetOrAdd(collectionName, new StreamCollection
+                {
+                    Name = collectionName
+                });
+
+                collection.Changed(id, field);
+            }
+
+            if (type == "removed")
+            {
+                string collectionName = data.collection;
+                string id = data.id;
+
+                var collection = _collections.GetOrAdd(collectionName, new StreamCollection
+                {
+                    Name = collectionName
+                });
+
+                collection.Removed(id);
+            }
+
             var isMessage = type == "added" && data.collection == MessageTopic && data.fields.args != null;
             if (isMessage)
             {

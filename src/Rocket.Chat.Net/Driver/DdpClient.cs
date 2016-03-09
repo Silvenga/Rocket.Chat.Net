@@ -63,7 +63,7 @@
             _logger.Debug("OPEN");
 
             _logger.Debug("Sending connection request");
-            const string ddpVersion = "pre1";
+            const string ddpVersion = "1";
             var request = new
             {
                 msg = "connect",
