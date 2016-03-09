@@ -1,6 +1,8 @@
 ﻿namespace Rocket.Chat.Net.Helpers
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
 
@@ -52,18 +54,34 @@
                 Username = data["username"]
             };
         }
+
+        public static IEnumerable<User> ParseMentions(dynamic data)
+        {
+            if (data == null)
+            {
+                yield break;
+            }
+
+            foreach (var user in data)
+            {
+                yield return ParseUser(user);
+            }
+        }
+
         public static RocketMessage ParseMessage(dynamic data)
         {
             var message = new RocketMessage
             {
                 Id = data["_id"],
+                Type = data.t, // Assuming this is what this means.
                 RoomId = data.rid,
                 Message = data.msg.ToString().Trim(),
                 IsBot = data.bot != null && data.bot == true,
                 CreatedOn = DriverHelper.ParseDateTime(data.ts),
                 CreatedBy = DriverHelper.ParseUser(data.u),
                 EditedOn = DriverHelper.ParseDateTime(data.editedAt),
-                EditedBy = DriverHelper.ParseUser(data.editedBy)
+                EditedBy = DriverHelper.ParseUser(data.editedBy),
+                Mentions = Enumerable.ToList(DriverHelper.ParseMentions(data.mentions))
             };
 
             return message;

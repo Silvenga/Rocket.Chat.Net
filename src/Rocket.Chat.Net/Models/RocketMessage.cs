@@ -1,6 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Models
 {
     using System;
+    using System.Collections.Generic;
 
     public class RocketMessage
     {
@@ -12,7 +13,10 @@
         public DateTime? CreatedOn { get; set; }
         public User EditedBy { get; set; }
         public DateTime? EditedOn { get; set; }
+        public bool IsBotMentioned { get; set; }
 
         public bool WasEdited => EditedOn != null;
+        public string Type { get; set; }
+        public List<User> Mentions { get; set; }
     }
 }
