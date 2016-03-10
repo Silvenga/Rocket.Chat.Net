@@ -26,6 +26,18 @@
             _collection.TryRemove(id, out value);
         }
 
+        public bool ContainsId(string id)
+        {
+            return _collection.ContainsKey(id);
+        }
+
+        public T GetById<T>(string id) where T : class
+        {
+            object result;
+            var success = _collection.TryGetValue(id, out result);
+            return success ? result as T : null;
+        }
+
         public IEnumerable<KeyValuePair<string, T>> Enumerator<T>() where T : class
         {
             return _collection

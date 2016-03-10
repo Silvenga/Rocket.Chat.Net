@@ -19,10 +19,16 @@
         public bool WasEdited => EditedOn != null;
 
         /// <summary>
-        /// uj: User joined
+        /// uj: User joined room
+        /// ua: user invited to room
         /// </summary>
         public string Type { get; set; }
         public List<User> Mentions { get; set; }
         public List<User> Starred { get; set; }
+
+        public override string ToString()
+        {
+            return $"{CreatedBy?.Username ?? "UnknownUser"}: {Message}";
+        }
     }
 }

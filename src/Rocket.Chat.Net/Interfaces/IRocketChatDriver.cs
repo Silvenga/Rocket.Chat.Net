@@ -95,14 +95,15 @@
         Task<object> UpdateMessageAsync(string messageId, string roomId, string newMessage);
 
         /// <summary>
-        /// Load the message history of a room ordered by timestamp
+        /// Load the message history of a room ordered by timestamp newest first
         /// </summary>
         /// <param name="roomId">Room to list history of</param>
         /// <param name="end">No idea, something with timespan</param>
         /// <param name="limit">Max number of messages to load</param>
-        /// <param name="ls">No idea, something with timespan and count (wont return different data)</param>
+        /// <param name="ls">No idea, something with timespan, maybe less than?</param>
         /// <returns></returns>
-        Task<List<RocketMessage>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20, string ls = null);
+        Task<List<RocketMessage>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20,
+                                                    string ls = null);
 
         /// <summary>
         /// Delete message
@@ -126,5 +127,28 @@
         Task<object> ChannelListAsync();
 
         event DdpReconnect DdpReconnect;
+
+        /// <summary>
+        /// Subscribe to the filtered users list. Can be called multiple times with different filter information.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        Task SubscribeToFilteredUsersAsync(string username = "");
+
+        /// <summary>
+        /// Ping Rocket.Chat server (a kind of keep alive). 
+        /// Can be used at any time when connected. 
+        /// </summary>
+        /// <returns></returns>
+        Task PingAsync();
+
+        /// <summary>
+        /// Searches the messages for the given room.
+        /// </summary>
+        /// <param name="query">Query to search for (can use 'from:', 'mention:', etc.)</param>
+        /// <param name="roomId">RoomId to search for</param>
+        /// <param name="limit">Limit the number of messages (default 100)</param>
+        /// <returns></returns>
+        Task<List<RocketMessage>> SearchMessagesAsync(string query, string roomId, int limit = 100);
     }
 }

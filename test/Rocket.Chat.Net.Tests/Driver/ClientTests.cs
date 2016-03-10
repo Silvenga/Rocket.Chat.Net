@@ -1,6 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Tests.Driver
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Driver;
@@ -27,6 +28,9 @@
         [Fact]
         public async Task Can_login()
         {
+            //const string password = "SilverLight";
+
+            //var driver = new RocketChatDriver("demo.rocket.chat", true, _xUnitLogger);
             const string userName = "m@silvenga.com";
             const string password = "silverlight";
 
@@ -41,7 +45,7 @@
 
             await driver.SubscribeToRoomAsync(roomId);
 
-            await driver.SendMessageAsync("hello world", roomId);
+            var messages = await driver.SearchMessagesAsync($"from:{driver.Username}", roomId);
 
             driver.Dispose();
         }
@@ -100,7 +104,7 @@
 
             driver.Dispose();
         }
-        
+
         public void Dispose()
         {
             _xUnitLogger.Dispose();

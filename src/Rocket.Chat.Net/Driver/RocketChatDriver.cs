@@ -34,6 +34,7 @@
         public CancellationToken TimeoutToken => CreateTimeoutToken();
 
         public string UserId { get; private set; }
+        public string Username { get; private set; }
 
         public RocketChatDriver(string url, bool useSsl, ILogger logger)
         {
@@ -106,7 +107,8 @@
 
                 var edit = message.WasEdited ? "(EDIT)" : "";
                 var mentioned = message.IsBotMentioned ? "(Mentioned)" : "";
-                _logger.Info($"Message from {message.CreatedBy.Username}@{message.RoomId}{edit}{mentioned}: {message.Message}");
+                _logger.Info(
+                    $"Message from {message.CreatedBy.Username}@{message.RoomId}{edit}{mentioned}: {message.Message}");
 
                 OnMessageReceived(message);
             }
@@ -129,8 +131,22 @@
 
         public async Task SubscribeToRoomAsync(string roomId = null)
         {
-            _logger.Info($"Subscribing to Room: #{roomId}");
+            _logger.Info($"Subscribing to Room: #{roomId ?? "ALLROOMS"}");
             await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString());
+        }
+
+        public async Task SubscribeToFilteredUsersAsync(string username = "")
+        {
+            //_logger.Info($"Subscribing to filtered users searching for {username ?? "ANY"}.");
+            //await _client.SubscribeAsync("filteredUsers", TimeoutToken, username);
+            _logger.Info($"Subscribing to filtered users searching for {username ?? "ANY"}.");
+            await _client.SubscribeAsync("userData", TimeoutToken);
+        }
+
+        public async Task PingAsync()
+        {
+            _logger.Info("Pinging server.");
+            await _client.Ping(TimeoutToken);
         }
 
         public async Task<LoginResult> LoginAsync(ILoginOption loginOption)
@@ -177,8 +193,11 @@
             };
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = ParseLogin(data);
-            UserId = result.UserId;
+            LoginResult result = ParseLogin(data);
+            if (!result.HasError)
+            {
+                await SetUserInfo(result.UserId);
+            }
             return result;
         }
 
@@ -200,8 +219,11 @@
             };
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = ParseLogin(data);
-            UserId = result.UserId;
+            LoginResult result = ParseLogin(data);
+            if (!result.HasError)
+            {
+                await SetUserInfo(result.UserId);
+            }
             return result;
         }
 
@@ -213,12 +235,16 @@
                 username,
                 ldapPass = password,
                 ldap = true,
-                ldapOptions = new { }
+                ldapOptions = new {}
             };
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = ParseLogin(data);
-            UserId = result.UserId;
+            LoginResult result = ParseLogin(data);
+            if (!result.HasError)
+            {
+                await SetUserInfo(result.UserId);
+            }
+
             return result;
         }
 
@@ -231,8 +257,11 @@
             };
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = ParseLogin(data);
-            UserId = result.UserId;
+            LoginResult result = ParseLogin(data);
+            if (!result.HasError)
+            {
+                await SetUserInfo(result.UserId);
+            }
             return result;
         }
 
@@ -251,6 +280,15 @@
             result.TokenExpires = DriverHelper.ParseDateTime(data.result.tokenExpires);
 
             return result;
+        }
+
+        private async Task SetUserInfo(string userId)
+        {
+            UserId = userId;
+            var collection = await WaitForCollection("users", userId, TimeoutToken);
+            var user = collection.GetById<dynamic>(userId);
+            string username = user.username;
+            Username = username;
         }
 
         public async Task<string> GetRoomIdAsync(string roomIdOrName)
@@ -331,6 +369,44 @@
             messages.AddRange(rawList.Select(DriverHelper.ParseMessage));
 
             return messages;
+        }
+
+        public async Task<List<RocketMessage>> SearchMessagesAsync(string query, string roomId, int limit = 100)
+        {
+            _logger.Info($"Searching for messages in #{roomId} using `{query}`.");
+
+            var rawMessage = await _client.CallAsync("messageSearch", TimeoutToken, query, roomId, limit);
+            var rawList = rawMessage.result.messages as JArray;
+            var messages = new List<RocketMessage>();
+
+            if (rawList == null)
+            {
+                return messages;
+            }
+            messages.AddRange(rawList.Select(DriverHelper.ParseMessage));
+
+            return messages;
+        }
+
+        private async Task<StreamCollection> WaitForCollection(string collectionName, string id, CancellationToken token)
+        {
+            return await Task.Run(() =>
+            {
+                while (true)
+                {
+                    StreamCollection collection;
+                    var success = _collections.TryGetValue(collectionName, out collection);
+
+                    var collectonPopulated = success && collection.ContainsId(id);
+                    if (collectonPopulated)
+                    {
+                        return collection;
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    Thread.Sleep(10);
+                }
+            }, token);
         }
 
         protected void OnMessageReceived(RocketMessage rocketmessage)
