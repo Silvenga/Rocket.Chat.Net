@@ -14,9 +14,15 @@
         public User EditedBy { get; set; }
         public DateTime? EditedOn { get; set; }
         public bool IsBotMentioned { get; set; }
+        public bool IsFromMyself { get; set; }
 
         public bool WasEdited => EditedOn != null;
+
+        /// <summary>
+        /// uj: User joined
+        /// </summary>
         public string Type { get; set; }
         public List<User> Mentions { get; set; }
+        public List<User> Starred { get; set; }
     }
 }

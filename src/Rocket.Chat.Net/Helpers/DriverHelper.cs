@@ -68,6 +68,22 @@
             }
         }
 
+        private static IEnumerable<User> ParseStarred(dynamic data)
+        {
+            if (data == null)
+            {
+                yield break;
+            }
+
+            foreach (var user in data)
+            {
+                yield return new User
+                {
+                    Id = user["_id"]
+                };
+            }
+        }
+
         public static RocketMessage ParseMessage(dynamic data)
         {
             var message = new RocketMessage
@@ -81,7 +97,8 @@
                 CreatedBy = DriverHelper.ParseUser(data.u),
                 EditedOn = DriverHelper.ParseDateTime(data.editedAt),
                 EditedBy = DriverHelper.ParseUser(data.editedBy),
-                Mentions = Enumerable.ToList(DriverHelper.ParseMentions(data.mentions))
+                Mentions = Enumerable.ToList(DriverHelper.ParseMentions(data.mentions)),
+                Starred = Enumerable.ToList(DriverHelper.ParseStarred(data.starred)),
             };
 
             return message;

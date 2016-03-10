@@ -102,6 +102,7 @@
                 var messageRaw = data.fields.args[1];
                 RocketMessage message = DriverHelper.ParseMessage(messageRaw);
                 message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
+                message.IsFromMyself = message.CreatedBy.Id == UserId;
 
                 var edit = message.WasEdited ? "(EDIT)" : "";
                 var mentioned = message.IsBotMentioned ? "(Mentioned)" : "";
