@@ -4,6 +4,7 @@
 
     using RestSharp;
 
+    using Rocket.Chat.Net.Bot;
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
@@ -15,7 +16,7 @@
         private const string Rating = "pg-13";
         private readonly RestClient _client = new RestClient("http://api.giphy.com/");
 
-        public IEnumerable<BasicResponse> Response(RocketMessage message)
+        public IEnumerable<BasicResponse> Response(RocketMessage message, RocketChatBot caller)
         {
             if (message.Message.StartsWith(GiphyCommand) && !message.Message.Equals(GiphyCommand))
             {

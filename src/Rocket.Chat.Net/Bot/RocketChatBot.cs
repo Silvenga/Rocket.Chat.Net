@@ -8,13 +8,15 @@
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
 
-    public class RocketChatBot
+    public class RocketChatBot : IDisposable
     {
         private readonly ILogger _logger;
         private readonly List<IBotResponse> _botResponses = new List<IBotResponse>();
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public IRocketChatDriver Driver { get; }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public string LoginToken { get; private set; }
 
         public RocketChatBot(string url, bool useSsl, ILogger logger)
@@ -69,18 +71,25 @@
             {
                 foreach (var botResponse in _botResponses)
                 {
-                    _logger.Info($"Trying response {botResponse.GetType()}.");
-                    var hasResponse = false;
-                    foreach (var response in botResponse.Response(rocketMessage))
+                    try
                     {
-                        hasResponse = true;
-                        await Driver.SendMessageAsync(response.Message, response.RoomId);
-                    }
+                        _logger.Debug($"Trying response {botResponse.GetType()}.");
+                        var hasResponse = false;
+                        foreach (var response in botResponse.Response(rocketMessage, this))
+                        {
+                            hasResponse = true;
+                            await Driver.SendMessageAsync(response.Message, response.RoomId);
+                        }
 
-                    if (hasResponse)
+                        if (hasResponse)
+                        {
+                            _logger.Debug("Response succeeded.");
+                            break;
+                        }
+                    }
+                    catch (Exception e)
                     {
-                        _logger.Info("Response succeeded.");
-                        break;
+                       _logger.Info($"ERROR: {e}");
                     }
                 }
             });
@@ -88,7 +97,7 @@
 
         private void DriverOnDdpReconnect()
         {
-            _logger.Info($"Reconnect requested...");
+            _logger.Info("Reconnect requested...");
             Task.Run(async () => await Resume());
         }
 
@@ -96,6 +105,11 @@
         {
             _logger.Info($"Added response {botResponse.GetType()}.");
             _botResponses.Add(botResponse);
+        }
+
+        public void Dispose()
+        {
+            Driver.Dispose();
         }
     }
 }
