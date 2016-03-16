@@ -17,8 +17,8 @@
 
     public class RocketChatDriver : IRocketChatDriver
     {
-        public const string MessageTopic = "stream-messages";
-        public const int MessageSubscriptionLimit = 10;
+        private const string MessageTopic = "stream-messages";
+        private const int MessageSubscriptionLimit = 10;
 
         private readonly string _url;
         private readonly bool _useSsl;
@@ -31,7 +31,7 @@
         public event MessageReceived MessageReceived;
         public event DdpReconnect DdpReconnect;
 
-        public CancellationToken TimeoutToken => CreateTimeoutToken();
+        private CancellationToken TimeoutToken => CreateTimeoutToken();
 
         public string UserId { get; private set; }
         public string Username { get; private set; }
@@ -56,17 +56,25 @@
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
         {
+            HandleCreateCollection(type, data);
+
+            HandleRocketMessage(type, data);
+        }
+
+        private void HandleCreateCollection(string type, dynamic data)
+        {
+            Func<string, StreamCollection> createCollection = name => new StreamCollection
+            {
+                Name = name
+            };
+
             if (type == "added")
             {
                 string collectionName = data.collection;
                 string id = data.id;
                 object field = data.fields;
 
-                var collection = _collections.GetOrAdd(collectionName, new StreamCollection
-                {
-                    Name = collectionName
-                });
-
+                var collection = _collections.GetOrAdd(collectionName, createCollection);
                 collection.Added(id, field);
             }
 
@@ -76,11 +84,7 @@
                 string id = data.id;
                 object field = data.fields;
 
-                var collection = _collections.GetOrAdd(collectionName, new StreamCollection
-                {
-                    Name = collectionName
-                });
-
+                var collection = _collections.GetOrAdd(collectionName, createCollection);
                 collection.Changed(id, field);
             }
 
@@ -89,29 +93,30 @@
                 string collectionName = data.collection;
                 string id = data.id;
 
-                var collection = _collections.GetOrAdd(collectionName, new StreamCollection
-                {
-                    Name = collectionName
-                });
-
+                var collection = _collections.GetOrAdd(collectionName, createCollection);
                 collection.Removed(id);
             }
+        }
 
+        private void HandleRocketMessage(string type, dynamic data)
+        {
             var isMessage = type == "added" && data.collection == MessageTopic && data.fields.args != null;
-            if (isMessage)
+            if (!isMessage)
             {
-                var messageRaw = data.fields.args[1];
-                RocketMessage message = DriverHelper.ParseMessage(messageRaw);
-                message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
-                message.IsFromMyself = message.CreatedBy.Id == UserId;
-
-                var edit = message.WasEdited ? "(EDIT)" : "";
-                var mentioned = message.IsBotMentioned ? "(Mentioned)" : "";
-                _logger.Info(
-                    $"Message from {message.CreatedBy.Username}@{message.RoomId}{edit}{mentioned}: {message.Message}");
-
-                OnMessageReceived(message);
+                return;
             }
+
+            var messageRaw = data.fields.args[1];
+            RocketMessage message = DriverHelper.ParseMessage(messageRaw);
+            message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
+            message.IsFromMyself = message.CreatedBy.Id == UserId;
+
+            var edit = message.WasEdited ? "(EDIT)" : "";
+            var mentioned = message.IsBotMentioned ? "(Mentioned)" : "";
+            _logger.Info(
+                $"Message from {message.CreatedBy.Username}@{message.RoomId}{edit}{mentioned}: {message.Message}");
+
+            OnMessageReceived(message);
         }
 
         private CancellationToken CreateTimeoutToken()
@@ -409,9 +414,17 @@
             }, token);
         }
 
-        protected void OnMessageReceived(RocketMessage rocketmessage)
+        private void OnMessageReceived(RocketMessage rocketmessage)
         {
             MessageReceived?.Invoke(rocketmessage);
+        }
+
+        public StreamCollection GetCollection(string collectionName)
+        {
+            StreamCollection value;
+            var results = _collections.TryGetValue(collectionName, out value);
+
+            return results ? value : null;
         }
 
         public void Dispose()

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.Results;
 
@@ -20,8 +21,7 @@
         /// <summary>
         /// Subscribe to messages from given room
         /// </summary>
-        /// <param name="roomId">The room to listen to. Null will listen to all authorized rooms. 
-        /// This may or may not be correct. </param>
+        /// <param name="roomId">The room to listen to. Null will listen to all authorized rooms. This may or may not be correct. </param>
         /// <returns></returns>
         Task SubscribeToRoomAsync(string roomId = null);
 
@@ -42,13 +42,6 @@
         Task<LoginResult> LoginWithLdapAsync(string username, string password);
 
         /// <summary>
-        /// Login with a ILogin object
-        /// </summary>
-        /// <param name="loginOption">Login option to use</param>
-        /// <returns></returns>
-        Task<LoginResult> LoginAsync(ILoginOption loginOption);
-
-        /// <summary>
         /// Login with username
         /// </summary>
         /// <param name="username">Username to use</param>
@@ -62,6 +55,13 @@
         /// <param name="sessionToken">Active token given from a previous login</param>
         /// <returns></returns>
         Task<LoginResult> LoginResumeAsync(string sessionToken);
+
+        /// <summary>
+        /// Login with a ILogin object
+        /// </summary>
+        /// <param name="loginOption">Login option to use</param>
+        /// <returns></returns>
+        Task<LoginResult> LoginAsync(ILoginOption loginOption);
 
         /// <summary>
         /// Get roomId by either roomId or room name
@@ -126,6 +126,9 @@
         /// <returns></returns>
         Task<object> ChannelListAsync();
 
+        /// <summary>
+        /// Called when the Ddp Clients reconnects, can be used to log back in or resubscribe.
+        /// </summary>
         event DdpReconnect DdpReconnect;
 
         /// <summary>
@@ -150,5 +153,12 @@
         /// <param name="limit">Limit the number of messages (default 100)</param>
         /// <returns></returns>
         Task<List<RocketMessage>> SearchMessagesAsync(string query, string roomId, int limit = 100);
+
+        /// <summary>
+        /// Get a streaming collection.
+        /// </summary>
+        /// <param name="collectionName">Name of the collection to get (e.g. users).</param>
+        /// <returns>Collection requested, null if it does not exist.</returns>
+        StreamCollection GetCollection(string collectionName);
     }
 }
