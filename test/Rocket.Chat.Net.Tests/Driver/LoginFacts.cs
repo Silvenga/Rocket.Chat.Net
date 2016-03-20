@@ -11,7 +11,7 @@
     using Xunit;
     using Xunit.Abstractions;
 
-    [Collection("Driver")]
+    [Trait("Category", "Driver")]
     public class LoginFacts : IDisposable
     {
         private const string Email = "m@silvenga.com";
@@ -39,7 +39,7 @@
             loginResult.HasError.Should().BeFalse();
             loginResult.Token.Should().NotBeNull();
         }
-        
+
         [Fact]
         public async Task Can_login_with_username()
         {

@@ -1,22 +1,21 @@
 ﻿namespace Rocket.Chat.Net.Tests.Driver
 {
     using System;
-    using System.Threading;
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
-    using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.Logins;
 
     using Xunit;
     using Xunit.Abstractions;
 
-    [Collection("Driver")]
+    [Trait("Category", "Driver")]
     public class ClientTests : IDisposable
     {
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ITestOutputHelper _helper;
-        private XUnitLogger _xUnitLogger;
+        private readonly XUnitLogger _xUnitLogger;
 
         public ClientTests(ITestOutputHelper helper)
         {

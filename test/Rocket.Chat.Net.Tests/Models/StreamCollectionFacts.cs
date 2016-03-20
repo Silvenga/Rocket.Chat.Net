@@ -1,7 +1,5 @@
 ﻿namespace Rocket.Chat.Net.Tests.Models
 {
-    using System.ComponentModel;
-
     using FluentAssertions;
 
     using Newtonsoft.Json.Linq;
@@ -12,7 +10,7 @@
 
     using Xunit;
 
-    [Category("Models")]
+    [Trait("Category", "Models")]
     public class StreamCollectionFacts
     {
         private readonly Fixture _autoFixture = new Fixture();

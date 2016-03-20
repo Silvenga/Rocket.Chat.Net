@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="Driver\ClientTests.cs" />
     <Compile Include="Driver\LoginFacts.cs" />
+    <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\DummyLoginOption.cs" />
     <Compile Include="Models\StreamCollectionFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
