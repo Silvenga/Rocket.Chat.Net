@@ -24,7 +24,7 @@
         public LoginFacts(ITestOutputHelper helper)
         {
             _xUnitLogger = new XUnitLogger(helper);
-            _rocketChatDriver = new RocketChatDriver("dev0:3000", false, _xUnitLogger);
+            _rocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
         }
 
         [Fact]

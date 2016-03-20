@@ -6,6 +6,7 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models.Logins;
+    using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
     using Xunit.Abstractions;
@@ -34,7 +35,7 @@
             const string userName = "m@silvenga.com";
             const string password = "silverlight";
 
-            var driver = new RocketChatDriver("dev0:3000", false, _xUnitLogger);
+            var driver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
 
             await driver.ConnectAsync();
             var loginResult = await driver.LoginWithEmailAsync(userName, password);
@@ -79,7 +80,7 @@
             const string userName = "m@silvenga.com";
             const string password = "silverlight";
 
-            IRocketChatDriver driver = new RocketChatDriver("dev0:3000", false, _xUnitLogger);
+            IRocketChatDriver driver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
 
             await driver.ConnectAsync();
             var loginResult = await driver.LoginWithEmailAsync(userName, password);
@@ -95,7 +96,7 @@
             const string userName = "m@silvenga.com";
             const string password = "silverlight";
 
-            IRocketChatDriver driver = new RocketChatDriver("dev0:3000", false, _xUnitLogger);
+            IRocketChatDriver driver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
 
             await driver.ConnectAsync();
             var loginResult = await driver.LoginWithEmailAsync(userName, password);

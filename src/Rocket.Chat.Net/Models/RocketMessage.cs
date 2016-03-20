@@ -79,6 +79,7 @@
 
         /// <summary>
         /// List of user Id's that this message was starred by.
+        /// WARNING: This may break in the future.
         /// </summary>
         public List<User> Starred { get; set; }
 

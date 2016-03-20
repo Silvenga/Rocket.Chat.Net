@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Chat.Net.Tests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Chat.Net.Example", "src\Rocket.Chat.Net.Example\Rocket.Chat.Net.Example.csproj", "{EFB12AE6-706D-42B5-B2CC-54D60C4DC02B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EFB763AD-9566-48EB-8917-3FBDA963BFF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{55BAE418-9468-4A62-A6FA-F92ECBEAD8A5} = {EFB763AD-9566-48EB-8917-3FBDA963BFF9}
 	EndGlobalSection
 EndGlobal
