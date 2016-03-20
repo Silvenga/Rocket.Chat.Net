@@ -12,6 +12,7 @@
     using Xunit;
     using Xunit.Abstractions;
 
+    [Collection("Driver")]
     public class ClientTests : IDisposable
     {
         private readonly ITestOutputHelper _helper;

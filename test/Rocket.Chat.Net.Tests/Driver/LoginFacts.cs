@@ -11,6 +11,7 @@
     using Xunit;
     using Xunit.Abstractions;
 
+    [Collection("Driver")]
     public class LoginFacts : IDisposable
     {
         private const string Email = "m@silvenga.com";

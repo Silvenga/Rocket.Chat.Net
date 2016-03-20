@@ -1,6 +1,10 @@
 ﻿namespace Rocket.Chat.Net.Tests.Models
 {
+    using System.ComponentModel;
+
     using FluentAssertions;
+
+    using Newtonsoft.Json.Linq;
 
     using Ploeh.AutoFixture;
 
@@ -8,6 +12,7 @@
 
     using Xunit;
 
+    [Category("Models")]
     public class StreamCollectionFacts
     {
         private readonly Fixture _autoFixture = new Fixture();
@@ -29,7 +34,7 @@
             var collection = new StreamCollection();
 
             // Act
-            collection.Added(item.Id, item);
+            collection.Added(item.Id, JObject.FromObject(item));
 
             // Assert
             var result = collection.GetAnonymousTypeById(item.Id, item);
@@ -54,7 +59,7 @@
             var collection = new StreamCollection();
 
             // Act
-            collection.Added(item.Id, item);
+            collection.Added(item.Id, JObject.FromObject(item));
             var exists = collection.ContainsId(item.Id);
 
             // Assert
@@ -101,7 +106,7 @@
             var collection = new StreamCollection();
 
             // Act
-            collection.Added(item.Id, item);
+            collection.Added(item.Id, JObject.FromObject(item));
 
             // Assert
             var result = collection.GetDynamicById(item.Id);
@@ -163,8 +168,8 @@
             var collection = new StreamCollection();
 
             // Act
-            collection.Added(existing.Id, existing);
-            collection.Added(existing.Id, item);
+            collection.Added(existing.Id, JObject.FromObject(existing));
+            collection.Added(existing.Id, JObject.FromObject(item));
 
             // Assert
             var result = collection.GetAnonymousTypeById(existing.Id, item);
@@ -182,6 +187,7 @@
                 Int = _autoFixture.Create<int>(),
                 Obj = new
                 {
+                    OldValue = _autoFixture.Create<string>(),
                     Value = _autoFixture.Create<string>()
                 }
             };
@@ -192,7 +198,9 @@
                 Int = _autoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    OldVaue = item.Obj.OldValue,
+                    Value = _autoFixture.Create<string>(),
+                    NewValue = _autoFixture.Create<string>()
                 },
                 NewValue = _autoFixture.Create<string>()
             };
@@ -200,17 +208,22 @@
             var collection = new StreamCollection();
 
             // Act
-            collection.Added(item.Id, item);
-            collection.Changed(item.Id, other);
+            collection.Added(item.Id, JObject.FromObject(item));
+            collection.Changed(item.Id, JObject.FromObject(other));
 
             // Assert
-            var result = collection.GetAnonymousTypeById(item.Id, item);
+            var result = collection.GetAnonymousTypeById(item.Id, other);
 
             result.Int.Should().Be(other.Int);
             result.Str.Should().Be(other.Str);
             result.Obj.Should().Be(other.Obj);
 
-            result.Id.Should().Be(item.Id);
+            other.Should().NotBeSameAs(result);
+
+            var result2 = collection.GetAnonymousTypeById(item.Id, item);
+            result2.Id.Should().Be(item.Id);
+
+            item.Should().NotBeSameAs(result2);
         }
 
         [Fact]
@@ -234,8 +247,8 @@
             var collection = new StreamCollection();
 
             // Act
-            collection.Added(item.Id, item);
-            collection.Changed(item.Id, other);
+            collection.Added(item.Id, JObject.FromObject(item));
+            collection.Changed(item.Id, JObject.FromObject(other));
 
             // Assert
             var result = collection.GetAnonymousTypeById(item.Id, item);
@@ -272,7 +285,7 @@
             var collection = new StreamCollection();
 
             // Act
-            collection.Added(item.Id, item);
+            collection.Added(item.Id, JObject.FromObject(item));
             collection.Removed(item.Id);
 
             // Assert

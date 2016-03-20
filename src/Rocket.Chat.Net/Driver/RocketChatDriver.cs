@@ -75,7 +75,7 @@
                 object field = data.fields;
 
                 var collection = _collections.GetOrAdd(collectionName, createCollection);
-                collection.Added(id, field);
+                collection.Added(id, JObject.FromObject(field));
             }
 
             if (type == "changed")
@@ -85,7 +85,7 @@
                 object field = data.fields;
 
                 var collection = _collections.GetOrAdd(collectionName, createCollection);
-                collection.Changed(id, field);
+                collection.Changed(id, JObject.FromObject(field));
             }
 
             if (type == "removed")

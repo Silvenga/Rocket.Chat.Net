@@ -1,16 +1,30 @@
 ﻿namespace Rocket.Chat.Net.Driver
 {
+    using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
 
+    using Newtonsoft.Json.Linq;
+
     using Rocket.Chat.Net.Helpers;
 
     public class StreamCollection
     {
-        private readonly ConcurrentDictionary<string, IDictionary<string, object>> _collection =
-            new ConcurrentDictionary<string, IDictionary<string, object>>();
+        private readonly ConcurrentDictionary<string, JObject> _collection =
+            new ConcurrentDictionary<string, JObject>();
+
+        private readonly Func<JObject, JObject, JObject> _merge = (left, right) =>
+        {
+            var mergeSettings = new JsonMergeSettings
+            {
+                MergeArrayHandling = MergeArrayHandling.Union
+            };
+
+            left.Merge(right, mergeSettings);
+            return left;
+        };
 
         public string Name { get; set; }
 
@@ -19,11 +33,9 @@
         /// </summary>
         /// <param name="id">UUID of the changed object</param>
         /// <param name="fields">Value of object updated, will be merged into existing object</param>
-        public void Changed(string id, object fields)
+        public void Changed(string id, JObject fields)
         {
-            var fieldsDictionary = fields.AsDictionary();
-            _collection.AddOrUpdate(id, fieldsDictionary,
-                (existingId, existingField) => Combine(existingField, fieldsDictionary));
+            _collection.AddOrUpdate(id, fields, (s, o) => _merge(o, fields));
         }
 
         /// <summary>
@@ -31,10 +43,9 @@
         /// </summary>
         /// <param name="id">UUID of the new object</param>
         /// <param name="fields">Value of object added, will override existing object</param>
-        public void Added(string id, object fields)
+        public void Added(string id, JObject fields)
         {
-            var fieldsDictionary = fields.AsDictionary();
-            _collection.AddOrUpdate(id, fieldsDictionary, (existingId, existingField) => fieldsDictionary);
+            _collection.AddOrUpdate(id, fields, (existingId, existingField) => fields);
         }
 
         /// <summary>
@@ -43,7 +54,7 @@
         /// <param name="id">UUID of the removed object</param>
         public void Removed(string id)
         {
-            IDictionary<string, object> value;
+            JObject value;
             _collection.TryRemove(id, out value);
         }
 
@@ -65,7 +76,7 @@
         /// <returns>The object requested, null if object doesn't exist, null if object could not be created</returns>
         public T GetById<T>(string id) where T : class
         {
-            IDictionary<string, object> result;
+            JObject result;
             var success = _collection.TryGetValue(id, out result);
             return success ? result as T : null;
         }
@@ -77,7 +88,7 @@
         /// <returns>The object requested, null if object doesn't exist</returns>
         public dynamic GetDynamicById(string id)
         {
-            IDictionary<string, object> result;
+            JObject result;
             var success = _collection.TryGetValue(id, out result);
 
             if (!success)
@@ -85,15 +96,7 @@
                 return null;
             }
 
-            var eo = new ExpandoObject();
-            var eoColl = (ICollection<KeyValuePair<string, object>>) eo;
-
-            foreach (var kvp in result)
-            {
-                eoColl.Add(kvp);
-            }
-
-            return eo;
+            return result;
         }
 
         /// <summary>
@@ -105,10 +108,10 @@
         /// <returns>The object requested, null if object doesn't exist</returns>
         public T GetAnonymousTypeById<T>(string id, T type) where T : class
         {
-            IDictionary<string, object> result;
+            JObject result;
             var success = _collection.TryGetValue(id, out result);
 
-            return success ? result.ToAnonymousObject(type) : null;
+            return success ? result.ToObject<T>() : null;
         }
 
         /// <summary>
