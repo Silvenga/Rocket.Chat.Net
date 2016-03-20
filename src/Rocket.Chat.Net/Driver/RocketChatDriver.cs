@@ -432,7 +432,7 @@
             _client.Dispose();
         }
 
-        protected virtual void OnDdpReconnect()
+        protected void OnDdpReconnect()
         {
             DdpReconnect?.Invoke();
         }

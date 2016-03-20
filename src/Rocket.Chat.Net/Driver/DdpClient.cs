@@ -240,7 +240,7 @@
             return Guid.NewGuid().ToString("N");
         }
 
-        protected virtual void OnDdpReconnect()
+        protected void OnDdpReconnect()
         {
             DdpReconnect?.Invoke();
         }

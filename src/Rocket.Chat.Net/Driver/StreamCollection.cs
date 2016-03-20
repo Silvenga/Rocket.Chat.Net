@@ -3,12 +3,9 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Dynamic;
     using System.Linq;
 
     using Newtonsoft.Json.Linq;
-
-    using Rocket.Chat.Net.Helpers;
 
     public class StreamCollection
     {
@@ -91,12 +88,7 @@
             JObject result;
             var success = _collection.TryGetValue(id, out result);
 
-            if (!success)
-            {
-                return null;
-            }
-
-            return result;
+            return !success ? null : result;
         }
 
         /// <summary>
@@ -106,6 +98,7 @@
         /// <param name="id">UUID of the object</param>
         /// <param name="type">Anonymous type to create</param>
         /// <returns>The object requested, null if object doesn't exist</returns>
+        // ReSharper disable once UnusedParameter.Global
         public T GetAnonymousTypeById<T>(string id, T type) where T : class
         {
             JObject result;
@@ -123,20 +116,7 @@
         {
             return _collection
                 .ToList()
-                .Select(value => new KeyValuePair<string, T>(value.Key, value.Value as T));
-        }
-
-        private static IDictionary<string, object> Combine(IDictionary<string, object> leftItem,
-                                                           IDictionary<string, object> rightItem)
-        {
-            var result = new Dictionary<string, object>();
-
-            foreach (var pair in leftItem.Concat(rightItem))
-            {
-                result[pair.Key] = pair.Value;
-            }
-
-            return result;
+                .Select(value => new KeyValuePair<string, T>(value.Key, value.Value.ToObject<T>()));
         }
     }
 }
