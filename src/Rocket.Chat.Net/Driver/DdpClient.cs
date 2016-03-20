@@ -105,7 +105,7 @@
             switch (type)
             {
                 case "ping": // Required by spec
-                    Pong(data);
+                    PongAsync(data);
                     break;
                 case "connected":
 
@@ -120,7 +120,7 @@
             }
         }
 
-        public async Task<dynamic> Ping(CancellationToken token)
+        public async Task<dynamic> PingAsync(CancellationToken token)
         {
             var id = CreateId();
             var request = new
@@ -136,7 +136,7 @@
             return result;
         }
 
-        private async Task Pong(dynamic data)
+        private async Task PongAsync(dynamic data)
         {
             var request = new
             {

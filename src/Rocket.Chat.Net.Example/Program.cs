@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Bot;
-    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models.Logins;
 
@@ -30,7 +29,7 @@
             RocketChatBot bot = new RocketChatBot(rocketServerUrl, useSsl, logger);
 
             // Connect to Rocket.Chat
-            await bot.Connect();
+            await bot.ConnectAsync();
 
             // Login
             ILoginOption loginOption = new EmailLoginOption
@@ -38,10 +37,10 @@
                 Email = username,
                 Password = password
             };
-            await bot.Login(loginOption);
+            await bot.LoginAsync(loginOption);
 
             // Start listening for messages
-            await bot.Subscribe();
+            await bot.SubscribeAsync();
 
             // Add possible responses to be checked in order
             // This is not thead safe, FYI 

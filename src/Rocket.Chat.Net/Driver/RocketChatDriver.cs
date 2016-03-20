@@ -20,13 +20,14 @@
         private const string MessageTopic = "stream-messages";
         private const int MessageSubscriptionLimit = 10;
 
+        private readonly ConcurrentDictionary<string, StreamCollection> _collections =
+            new ConcurrentDictionary<string, StreamCollection>();
+
         private readonly string _url;
         private readonly bool _useSsl;
         private readonly ILogger _logger;
-        private DdpClient _client;
 
-        private readonly ConcurrentDictionary<string, StreamCollection> _collections =
-            new ConcurrentDictionary<string, StreamCollection>();
+        private DdpClient _client;
 
         public event MessageReceived MessageReceived;
         public event DdpReconnect DdpReconnect;
@@ -151,7 +152,7 @@
         public async Task PingAsync()
         {
             _logger.Info("Pinging server.");
-            await _client.Ping(TimeoutToken);
+            await _client.PingAsync(TimeoutToken);
         }
 
         public async Task<LoginResult> LoginAsync(ILoginOption loginOption)
@@ -201,7 +202,7 @@
             LoginResult result = ParseLogin(data);
             if (!result.HasError)
             {
-                await SetUserInfo(result.UserId);
+                await SetUserInfoAsync(result.UserId);
             }
             return result;
         }
@@ -227,7 +228,7 @@
             LoginResult result = ParseLogin(data);
             if (!result.HasError)
             {
-                await SetUserInfo(result.UserId);
+                await SetUserInfoAsync(result.UserId);
             }
             return result;
         }
@@ -247,7 +248,7 @@
             LoginResult result = ParseLogin(data);
             if (!result.HasError)
             {
-                await SetUserInfo(result.UserId);
+                await SetUserInfoAsync(result.UserId);
             }
 
             return result;
@@ -265,7 +266,7 @@
             LoginResult result = ParseLogin(data);
             if (!result.HasError)
             {
-                await SetUserInfo(result.UserId);
+                await SetUserInfoAsync(result.UserId);
             }
             return result;
         }
@@ -287,10 +288,10 @@
             return result;
         }
 
-        private async Task SetUserInfo(string userId)
+        private async Task SetUserInfoAsync(string userId)
         {
             UserId = userId;
-            var collection = await WaitForCollection("users", userId, TimeoutToken);
+            var collection = await WaitForCollectionAsync("users", userId, TimeoutToken);
             var user = collection.GetById<dynamic>(userId);
             string username = user.username;
             Username = username;
@@ -393,7 +394,8 @@
             return messages;
         }
 
-        private async Task<StreamCollection> WaitForCollection(string collectionName, string id, CancellationToken token)
+        private async Task<StreamCollection> WaitForCollectionAsync(string collectionName, string id,
+                                                                    CancellationToken token)
         {
             return await Task.Run(() =>
             {

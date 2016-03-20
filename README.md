@@ -19,7 +19,7 @@ ILogger logger = new ConsoleLogger();
 RocketChatBot bot = new RocketChatBot(rocketServerUrl, useSsl, logger);
 
 // Connect to Rocket.Chat
-await bot.Connect();
+await bot.ConnectAsync();
 
 // Login
 ILoginOption loginOption = new EmailLoginOption
@@ -27,10 +27,10 @@ ILoginOption loginOption = new EmailLoginOption
     Email = username,
     Password = password
 };
-await bot.Login(loginOption);
+await bot.LoginAsync(loginOption);
 
 // Start listening for messages
-await bot.Subscribe();
+await bot.SubscribeAsync();
 
 // Add possible responses to be checked in order
 // This is not thead safe, FYI 
@@ -43,6 +43,9 @@ bot.AddResponse(giphyResponse);
 
 ## TODO
 
-* Handle disconnects
-* Get rid of dynamics
-* Handle errors proactively
+- [X] Handle disconnects (Needs testing)
+- [ ] Get rid of dynamics (Moving over to JObjects)
+- [ ] Handle errors proactively (Some methods are covered, e.g. login)
+- [ ] An api similar to Margie Bot for Slack (e.g. inline lambda responders, standalone Responders, etc.)
+- [ ] Programmatic bot modifications (e.g. change avatar, etc.)
+- [ ] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)

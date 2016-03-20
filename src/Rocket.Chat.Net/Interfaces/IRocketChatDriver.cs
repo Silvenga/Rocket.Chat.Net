@@ -2,12 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.Results;
 
+    [SuppressMessage("ReSharper", "UnusedMemberInSuper.Global")]
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public interface IRocketChatDriver : IDisposable
     {
         event MessageReceived MessageReceived;

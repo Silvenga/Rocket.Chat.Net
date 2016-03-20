@@ -28,12 +28,12 @@
             Driver.DdpReconnect += DriverOnDdpReconnect;
         }
 
-        public async Task Connect()
+        public async Task ConnectAsync()
         {
             await Driver.ConnectAsync();
         }
 
-        public async Task Login(ILoginOption loginOption)
+        public async Task LoginAsync(ILoginOption loginOption)
         {
             _logger.Info("Logging-in.");
             var result = await Driver.LoginAsync(loginOption);
@@ -45,12 +45,12 @@
             LoginToken = result.Token;
         }
 
-        public async Task Subscribe()
+        public async Task SubscribeAsync()
         {
             await Driver.SubscribeToRoomAsync();
         }
 
-        public async Task Resume()
+        public async Task ResumeAsync()
         {
             if (LoginToken == null)
             {
@@ -89,7 +89,7 @@
                     }
                     catch (Exception e)
                     {
-                       _logger.Info($"ERROR: {e}");
+                        _logger.Info($"ERROR: {e}");
                     }
                 }
             });
@@ -98,7 +98,7 @@
         private void DriverOnDdpReconnect()
         {
             _logger.Info("Reconnect requested...");
-            Task.Run(async () => await Resume());
+            Task.Run(async () => await ResumeAsync());
         }
 
         public void AddResponse(IBotResponse botResponse)
