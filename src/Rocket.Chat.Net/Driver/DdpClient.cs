@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
@@ -19,7 +20,7 @@
     {
         private readonly ILogger _logger;
         private readonly WebSocket _socket;
-        private readonly ConcurrentDictionary<string, dynamic> _messages = new ConcurrentDictionary<string, dynamic>();
+        private readonly ConcurrentDictionary<string, JObject> _messages = new ConcurrentDictionary<string, JObject>();
 
         public string Url { get; }
         public string SessionId { get; private set; }
@@ -47,7 +48,7 @@
         private void SocketOnClosed(object sender, EventArgs eventArgs)
         {
             _logger.Debug("CLOSE");
-            if(SessionId != null)
+            if (SessionId != null)
             {
                 ConnectAsync(CancellationToken.None).Wait();
             }
@@ -85,7 +86,7 @@
             _logger.Debug($"RECIEVED: {JsonConvert.SerializeObject(data, Formatting.Indented)}");
 
             var isRocketMessage = DriverHelper.HasProperty(data, "msg");
-            if(isRocketMessage)
+            if (isRocketMessage)
             {
                 string type = data.msg;
                 InternalHandle(type, data);
@@ -95,20 +96,20 @@
 
         private void InternalHandle(string type, dynamic data)
         {
-            if(DriverHelper.HasProperty(data, "id"))
+            if (DriverHelper.HasProperty(data, "id"))
             {
                 string id = data.id;
                 _messages.TryAdd(id, data);
             }
 
-            switch(type)
+            switch (type)
             {
                 case "ping": // Required by spec
                     Pong(data);
                     break;
                 case "connected":
 
-                    if(SessionId != null)
+                    if (SessionId != null)
                     {
                         OnDdpReconnect();
                     }
@@ -209,13 +210,13 @@
         {
             var task = Task.Run(() =>
             {
-                while(!_messages.ContainsKey(id))
+                while (!_messages.ContainsKey(id))
                 {
                     token.ThrowIfCancellationRequested();
                     Thread.Sleep(10);
                 }
 
-                dynamic data;
+                JObject data;
                 _messages.TryRemove(id, out data);
                 return data;
             }, token);
@@ -227,7 +228,7 @@
         {
             await Task.Run(() =>
             {
-                while(SessionId == null)
+                while (SessionId == null)
                 {
                     token.ThrowIfCancellationRequested();
                     Thread.Sleep(10);

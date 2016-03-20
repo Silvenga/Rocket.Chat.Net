@@ -7,6 +7,9 @@
 
     using Newtonsoft.Json.Linq;
 
+    /// <summary>
+    /// Collection containing objects taken from a DDP stream.
+    /// </summary>
     public class StreamCollection
     {
         private readonly ConcurrentDictionary<string, JObject> _collection =
@@ -23,6 +26,9 @@
             return left;
         };
 
+        /// <summary>
+        /// The name of the collection.
+        /// </summary>
         public string Name { get; set; }
 
         /// <summary>
