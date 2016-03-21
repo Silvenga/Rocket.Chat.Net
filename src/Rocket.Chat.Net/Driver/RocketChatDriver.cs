@@ -149,6 +149,11 @@
             await _client.SubscribeAsync("userData", TimeoutToken);
         }
 
+        public async Task SubscribeToAsync(string streamName)
+        {
+            await _client.SubscribeAsync(streamName, TimeoutToken);
+        }
+
         public async Task PingAsync()
         {
             _logger.Info("Pinging server.");
