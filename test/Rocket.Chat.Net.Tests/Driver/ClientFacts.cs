@@ -1,0 +1,35 @@
+﻿namespace Rocket.Chat.Net.Tests.Driver
+{
+    using System.Threading.Tasks;
+
+    using Rocket.Chat.Net.Tests.Helpers;
+
+    using Xunit;
+    using Xunit.Abstractions;
+
+    public class ClientFacts : DriverFactsBase
+    {
+        // TODO Fix make these tests test
+
+        public ClientFacts(ITestOutputHelper helper) : base(helper)
+        {
+            RocketChatDriver.ConnectAsync().Wait();
+        }
+
+        [Fact]
+        public async Task Load_message_history_loads_past_messages()
+        {
+            var loginResult = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
+
+            var result = await RocketChatDriver.LoadMessagesAsync("GENERAL");
+        }
+
+        [Fact]
+        public async Task List_channel_should_return_list_of_channels()
+        {
+            var loginResult = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
+
+            var result = await RocketChatDriver.ChannelListAsync();
+        }
+    }
+}

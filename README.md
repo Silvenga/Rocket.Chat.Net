@@ -49,3 +49,4 @@ bot.AddResponse(giphyResponse);
 - [ ] An api similar to Margie Bot for Slack (e.g. inline lambda responders, standalone Responders, etc.)
 - [ ] Programmatic bot modifications (e.g. change avatar, etc.)
 - [ ] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)
+- [ ] Get test converage

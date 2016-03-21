@@ -5,36 +5,38 @@
 
     using FluentAssertions;
 
-    using Rocket.Chat.Net.Driver;
+    using Ploeh.AutoFixture;
+
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
     using Xunit.Abstractions;
 
     [Trait("Category", "Driver")]
-    public class LoginFacts : IDisposable
+    public class LoginFacts : DriverFactsBase
     {
-        private const string Email = "m@silvenga.com";
-        private const string Username = "mark.lopez";
-        private const string Password = "silverlight";
-
-        private readonly RocketChatDriver _rocketChatDriver;
-        private readonly XUnitLogger _xUnitLogger;
-
-        public LoginFacts(ITestOutputHelper helper)
+        public LoginFacts(ITestOutputHelper helper) : base(helper)
         {
-            _xUnitLogger = new XUnitLogger(helper);
-            _rocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
+            RocketChatDriver.ConnectAsync().Wait();
+        }
+
+        [Fact]
+        public void Connecting_multiple_times_should_throw()
+        {
+            // Act
+            Action action = () => RocketChatDriver.ConnectAsync().Wait();
+
+            // Assert
+            action.ShouldThrow<Exception>();
         }
 
         [Fact]
         public async Task Can_login_with_email()
         {
-            var driver = _rocketChatDriver;
+            // Act
+            var loginResult = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
 
-            await driver.ConnectAsync();
-            var loginResult = await driver.LoginWithEmailAsync(Email, Password);
-
+            // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeFalse();
             loginResult.Token.Should().NotBeNull();
@@ -43,11 +45,10 @@
         [Fact]
         public async Task Can_login_with_username()
         {
-            var driver = _rocketChatDriver;
+            // Act
+            var loginResult = await RocketChatDriver.LoginWithUsernameAsync(Constants.Username, Constants.Password);
 
-            await driver.ConnectAsync();
-            var loginResult = await driver.LoginWithUsernameAsync(Username, Password);
-
+            // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeFalse();
             loginResult.Token.Should().NotBeNull();
@@ -56,12 +57,12 @@
         [Fact]
         public async Task Can_login_with_token()
         {
-            var driver = _rocketChatDriver;
+            var tokenResult = await RocketChatDriver.LoginWithUsernameAsync(Constants.Username, Constants.Password);
 
-            await driver.ConnectAsync();
-            var tokenResult = await driver.LoginWithUsernameAsync(Username, Password);
-            var loginResult = await driver.LoginResumeAsync(tokenResult.Token);
+            // Act
+            var loginResult = await RocketChatDriver.LoginResumeAsync(tokenResult.Token);
 
+            // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeFalse();
             loginResult.Token.Should().Be(tokenResult.Token);
@@ -70,31 +71,38 @@
         [Fact]
         public async Task Bad_login_should_have_error_data()
         {
-            var driver = _rocketChatDriver;
+            // Act
+            var loginResult =
+                await RocketChatDriver.LoginWithUsernameAsync(Constants.Username, AutoFixture.Create<string>());
 
-            await driver.ConnectAsync();
-            var loginResult = await driver.LoginWithUsernameAsync(Username, "Bad password");
-
+            // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeTrue();
             loginResult.ErrorData.Message.Should().Be("Incorrect password [403]");
         }
 
         [Fact]
-        public async Task Unknown_login_option_should_throw()
+        public async Task When_logging_in_with_a_non_existing_user_return_error()
         {
-            var driver = _rocketChatDriver;
+            // Act
+            var loginResult =
+                await
+                    RocketChatDriver.LoginWithUsernameAsync(AutoFixture.Create<string>(), AutoFixture.Create<string>());
 
-            await driver.ConnectAsync();
-            Action action = () => driver.LoginAsync(new DummyLoginOption()).Wait();
-
-            action.ShouldThrow<NotSupportedException>();
+            // Assert
+            loginResult.Should().NotBeNull();
+            loginResult.HasError.Should().BeTrue();
+            loginResult.ErrorData.Message.Should().Be("User not found [403]");
         }
 
-        public void Dispose()
+        [Fact]
+        public void Unknown_login_option_should_throw()
         {
-            _xUnitLogger.Dispose();
-            _rocketChatDriver.Dispose();
+            // Act
+            Action action = () => RocketChatDriver.LoginAsync(new DummyLoginOption()).Wait();
+
+            // Assert
+            action.ShouldThrow<NotSupportedException>();
         }
     }
 }
