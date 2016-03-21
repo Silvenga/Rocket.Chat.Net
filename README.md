@@ -50,3 +50,4 @@ bot.AddResponse(giphyResponse);
 - [ ] Programmatic bot modifications (e.g. change avatar, etc.)
 - [ ] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)
 - [ ] Get test converage
+- [ ] A way to unsub

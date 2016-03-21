@@ -149,9 +149,14 @@
             await _client.SubscribeAsync("userData", TimeoutToken);
         }
 
-        public async Task SubscribeToAsync(string streamName)
+        public async Task SubscribeToAsync(string streamName, params dynamic[] o)
         {
-            await _client.SubscribeAsync(streamName, TimeoutToken);
+            await _client.SubscribeAsync(streamName, TimeoutToken, o);
+        }
+
+        public async Task SubscribeToFullUserDataAsync(string username)
+        {
+            await _client.SubscribeAsync("fullUserData", TimeoutToken, username, 1);
         }
 
         public async Task PingAsync()

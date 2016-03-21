@@ -168,7 +168,15 @@
         /// Subscribe to stream using no params
         /// </summary>
         /// <param name="streamName">Name of the stream to subscribe to</param>
+        /// <param name="o">Parameters to include in the subscription</param>
         /// <returns></returns>
-        Task SubscribeToAsync(string streamName);
+        Task SubscribeToAsync(string streamName, params object[] o);
+
+        /// <summary>
+        /// Subscribe to a user's data
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        Task SubscribeToFullUserDataAsync(string username);
     }
 }
