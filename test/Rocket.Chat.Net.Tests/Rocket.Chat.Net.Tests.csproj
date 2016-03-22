@@ -93,6 +93,8 @@
     <Compile Include="Driver\LoginFacts.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\DummyLoginOption.cs" />
+    <Compile Include="Helpers\MeteorDateSerializerModel.cs" />
+    <Compile Include="Models\MeteorDateSerializerFacts.cs" />
     <Compile Include="Models\StreamCollectionFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XUnitLogger.cs" />

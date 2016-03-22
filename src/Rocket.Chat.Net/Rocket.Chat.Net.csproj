@@ -53,6 +53,9 @@
     <Compile Include="Bot\RocketChatBot.cs" />
     <Compile Include="Driver\DdpClient.cs" />
     <Compile Include="Driver\StreamCollection.cs" />
+    <Compile Include="Helpers\MeteorDateSerializer.cs" />
+    <Compile Include="Models\Email.cs" />
+    <Compile Include="Models\FullUser.cs" />
     <Compile Include="Models\Results\ErrorData.cs" />
     <Compile Include="Models\Results\BaseResult.cs" />
     <Compile Include="Models\Results\LoginResult.cs" />

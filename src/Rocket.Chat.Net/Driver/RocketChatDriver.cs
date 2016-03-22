@@ -120,15 +120,6 @@
             OnMessageReceived(message);
         }
 
-        private CancellationToken CreateTimeoutToken()
-        {
-            _logger.Debug("Created cancellation token.");
-            var source = new CancellationTokenSource();
-            source.CancelAfter(TimeSpan.FromSeconds(30));
-
-            return source.Token;
-        }
-
         public async Task ConnectAsync()
         {
             _logger.Info($"Connecting client to {_url}...");
@@ -143,8 +134,6 @@
 
         public async Task SubscribeToFilteredUsersAsync(string username = "")
         {
-            //_logger.Info($"Subscribing to filtered users searching for {username ?? "ANY"}.");
-            //await _client.SubscribeAsync("filteredUsers", TimeoutToken, username);
             _logger.Info($"Subscribing to filtered users searching for {username ?? "ANY"}.");
             await _client.SubscribeAsync("userData", TimeoutToken);
         }
@@ -154,9 +143,19 @@
             await _client.SubscribeAsync(streamName, TimeoutToken, o);
         }
 
-        public async Task SubscribeToFullUserDataAsync(string username)
+        public async Task<FullUser> GetFullUserDataAsync(string username)
         {
-            await _client.SubscribeAsync("fullUserData", TimeoutToken, username, 1);
+            await _client.SubscribeAndWaitAsync("fullUserData", TimeoutToken, username, 1);
+            StreamCollection data;
+            _collections.TryGetValue("users", out data);
+            var userPair = data?.Items<FullUser>().FirstOrDefault(x => x.Value.Username == username);
+            var user = userPair?.Value;
+            if (user == null)
+            {
+                return null;
+            }
+            user.Id = userPair.Value.Key;
+            return user;
         }
 
         public async Task PingAsync()
@@ -447,6 +446,15 @@
         protected void OnDdpReconnect()
         {
             DdpReconnect?.Invoke();
+        }
+
+        private CancellationToken CreateTimeoutToken()
+        {
+            _logger.Debug("Created cancellation token.");
+            var source = new CancellationTokenSource();
+            source.CancelAfter(TimeSpan.FromSeconds(30));
+
+            return source.Token;
         }
     }
 }

@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Driver;
-    using Rocket.Chat.Net.Models.Logins;
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;

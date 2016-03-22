@@ -2,6 +2,8 @@
 {
     using System.Threading.Tasks;
 
+    using FluentAssertions;
+
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
@@ -31,6 +33,20 @@
             var loginResult = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
 
             var result = await RocketChatDriver.ChannelListAsync();
+        }
+
+        [Fact]
+        public async Task FullUserData_returns_user_data()
+        {
+            const string userTest = "test";
+            await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
+
+            // Act
+            var userData = await RocketChatDriver.GetFullUserDataAsync(userTest);
+
+            // Assert
+            userData.Username.Should().Be(userTest);
+            userData.Emails.Should().Contain(x => x.Address.Contains("test@silvenga.com"));
         }
     }
 }

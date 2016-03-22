@@ -41,6 +41,12 @@
             return epoch.AddMilliseconds(unixTime);
         }
 
+        public static long ToEpoch(DateTime date)
+        {
+            var span = date.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return Convert.ToInt64(span.TotalMilliseconds);
+        }
+
         public static User ParseUser(dynamic data)
         {
             if (data == null)

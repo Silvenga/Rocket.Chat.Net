@@ -5,7 +5,9 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Serialization;
 
     /// <summary>
     /// Collection containing objects taken from a DDP stream.
@@ -120,9 +122,16 @@
         /// <returns></returns>
         public IEnumerable<KeyValuePair<string, T>> Items<T>() where T : class
         {
+            var settings = new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            var jsonSerializer = JsonSerializer.CreateDefault(settings);
+
             return _collection
                 .ToList()
-                .Select(value => new KeyValuePair<string, T>(value.Key, value.Value.ToObject<T>()));
+                .Select(value => new KeyValuePair<string, T>(value.Key, value.Value.ToObject<T>(jsonSerializer)));
         }
     }
 }

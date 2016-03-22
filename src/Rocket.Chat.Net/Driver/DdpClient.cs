@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -117,6 +119,15 @@
 
                     _logger.Debug($"Connected via session {SessionId}.");
                     break;
+                case "ready":
+                    var subs = data["subs"];
+                    List<string> ids = subs?.ToObject<List<string>>();
+                    var id = ids?.FirstOrDefault();
+                    if (id != null)
+                    {
+                        _messages.TryAdd(id, data);
+                    }
+                    break;
             }
         }
 
@@ -168,6 +179,22 @@
             return id;
         }
 
+        public async Task<string> SubscribeAndWaitAsync(string name, CancellationToken token, params dynamic[] args)
+        {
+            var id = CreateId();
+            var request = new
+            {
+                msg = "sub",
+                @params = args,
+                name,
+                id
+            };
+
+            await SendObjectAsync(request, token);
+            await WaitForIdAsync(id, token);
+            return id;
+        }
+
         public async Task<dynamic> CallAsync(string method, CancellationToken token, params object[] args)
         {
             var id = CreateId();
@@ -210,14 +237,12 @@
         {
             var task = Task.Run(() =>
             {
-                while (!_messages.ContainsKey(id))
+                JObject data;
+                while (!_messages.TryRemove(id, out data))
                 {
                     token.ThrowIfCancellationRequested();
                     Thread.Sleep(10);
                 }
-
-                JObject data;
-                _messages.TryRemove(id, out data);
                 return data;
             }, token);
 

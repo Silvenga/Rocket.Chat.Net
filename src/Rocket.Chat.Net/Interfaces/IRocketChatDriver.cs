@@ -177,6 +177,6 @@
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        Task SubscribeToFullUserDataAsync(string username);
+        Task<FullUser> GetFullUserDataAsync(string username);
     }
 }
