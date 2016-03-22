@@ -285,14 +285,16 @@
             var result = new LoginResult();
             if (DriverHelper.HasError(data))
             {
-                var error = DriverHelper.ParseError(data);
-                result.ErrorData = error;
+                var error = ((JObject) data).ToObject<LoginResult>();
+                result.ErrorData = error.ErrorData;
                 return result;
             }
 
-            result.UserId = data.result.id;
-            result.Token = data.result.token;
-            result.TokenExpires = DriverHelper.ParseDateTime(data.result.tokenExpires);
+            var loginResult = ((JObject) data.result).ToObject<LoginResult>();
+
+            result.UserId = loginResult.UserId;
+            result.Token = loginResult.Token;
+            result.TokenExpires = loginResult.TokenExpires;
 
             return result;
         }
