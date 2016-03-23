@@ -10,6 +10,7 @@
     using Xunit.Abstractions;
 
     [Trait("Category", "Driver")]
+    [Collection("Driver")]
     public class ClientFacts : DriverFactsBase
     {
         // TODO Fix make these tests test

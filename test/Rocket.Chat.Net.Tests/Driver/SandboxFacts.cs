@@ -10,6 +10,7 @@
     using Xunit.Abstractions;
 
     [Trait("Category", "Sandbox")]
+    [Collection("Driver")]
     public class SandboxFacts : IDisposable
     {
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable

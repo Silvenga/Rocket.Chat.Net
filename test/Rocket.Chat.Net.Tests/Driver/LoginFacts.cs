@@ -13,6 +13,7 @@
     using Xunit.Abstractions;
 
     [Trait("Category", "Driver")]
+    [Collection("Driver")]
     public class LoginFacts : DriverFactsBase
     {
         public LoginFacts(ITestOutputHelper helper) : base(helper)
