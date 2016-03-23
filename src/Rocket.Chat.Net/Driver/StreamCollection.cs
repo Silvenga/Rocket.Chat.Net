@@ -28,6 +28,11 @@
             return left;
         };
 
+        public StreamCollection(string name)
+        {
+            Name = name;
+        }
+
         /// <summary>
         /// The name of the collection.
         /// </summary>

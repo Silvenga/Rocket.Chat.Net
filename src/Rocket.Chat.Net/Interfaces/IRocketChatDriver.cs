@@ -113,8 +113,7 @@
         /// </summary>
         /// <param name="messageId">The message to delete</param>
         /// <param name="roomId">The room where that message sits</param>
-        /// <returns>The private RoomId</returns>
-        Task<string> DeleteMessageAsync(string messageId, string roomId);
+        Task DeleteMessageAsync(string messageId, string roomId);
 
         /// <summary>
         /// Create a private message room with target user

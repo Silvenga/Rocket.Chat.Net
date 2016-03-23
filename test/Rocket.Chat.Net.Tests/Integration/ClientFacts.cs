@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Tests.Driver
+﻿namespace Rocket.Chat.Net.Tests.Integration
 {
     using System.Threading.Tasks;
 

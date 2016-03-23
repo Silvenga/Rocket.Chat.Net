@@ -1,7 +1,6 @@
 ﻿namespace Rocket.Chat.Net.Driver
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -20,14 +19,11 @@
         private const string MessageTopic = "stream-messages";
         private const int MessageSubscriptionLimit = 10;
 
-        private readonly ConcurrentDictionary<string, StreamCollection> _collections =
-            new ConcurrentDictionary<string, StreamCollection>();
+        private readonly IStreamCollectionDatabase _collections;
 
-        private readonly string _url;
-        private readonly bool _useSsl;
         private readonly ILogger _logger;
 
-        private DdpClient _client;
+        private readonly IDdpClient _client;
 
         public event MessageReceived MessageReceived;
         public event DdpReconnect DdpReconnect;
@@ -39,43 +35,38 @@
 
         public RocketChatDriver(string url, bool useSsl, ILogger logger)
         {
-            _url = url;
-            _useSsl = useSsl;
-            _logger = logger;
             _logger = logger;
 
-            Initialize();
-        }
+            _collections = new StreamCollectionDatabase();
 
-        private void Initialize()
-        {
             _logger.Info("Creating client...");
-            _client = new DdpClient(_url, _useSsl, _logger);
+            _client = new DdpClient(url, useSsl, _logger);
             _client.DataReceivedRaw += ClientOnDataReceivedRaw;
             _client.DdpReconnect += OnDdpReconnect;
+        }
+
+        public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabase)
+        {
+            _logger = logger;
+            _client = client;
+            _collections = collectionDatabase;
         }
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
         {
             HandleCreateCollection(type, data);
-
             HandleRocketMessage(type, data);
         }
 
         private void HandleCreateCollection(string type, dynamic data)
         {
-            Func<string, StreamCollection> createCollection = name => new StreamCollection
-            {
-                Name = name
-            };
-
             if (type == "added")
             {
                 string collectionName = data.collection;
                 string id = data.id;
                 object field = data.fields;
 
-                var collection = _collections.GetOrAdd(collectionName, createCollection);
+                var collection = _collections.GetOrAddCollection(collectionName);
                 collection.Added(id, JObject.FromObject(field));
             }
 
@@ -85,7 +76,7 @@
                 string id = data.id;
                 object field = data.fields;
 
-                var collection = _collections.GetOrAdd(collectionName, createCollection);
+                var collection = _collections.GetOrAddCollection(collectionName);
                 collection.Changed(id, JObject.FromObject(field));
             }
 
@@ -94,7 +85,7 @@
                 string collectionName = data.collection;
                 string id = data.id;
 
-                var collection = _collections.GetOrAdd(collectionName, createCollection);
+                var collection = _collections.GetOrAddCollection(collectionName);
                 collection.Removed(id);
             }
         }
@@ -122,7 +113,7 @@
 
         public async Task ConnectAsync()
         {
-            _logger.Info($"Connecting client to {_url}...");
+            _logger.Info($"Connecting client to {_client.Url}...");
             await _client.ConnectAsync(TimeoutToken);
         }
 
@@ -147,7 +138,7 @@
         {
             await _client.SubscribeAndWaitAsync("fullUserData", TimeoutToken, username, 1);
             StreamCollection data;
-            _collections.TryGetValue("users", out data);
+            _collections.TryGetCollection("users", out data);
             var userPair = data?.Items<FullUser>().FirstOrDefault(x => x.Value.Username == username);
             var user = userPair?.Value;
             if (user == null)
@@ -208,7 +199,7 @@
             };
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            LoginResult result = ParseLogin(data);
+            var result = ParseLogin(data);
             if (!result.HasError)
             {
                 await SetUserInfoAsync(result.UserId);
@@ -234,7 +225,7 @@
             };
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            LoginResult result = ParseLogin(data);
+            var result = ParseLogin(data);
             if (!result.HasError)
             {
                 await SetUserInfoAsync(result.UserId);
@@ -254,7 +245,7 @@
             };
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            LoginResult result = ParseLogin(data);
+            var result = ParseLogin(data);
             if (!result.HasError)
             {
                 await SetUserInfoAsync(result.UserId);
@@ -272,7 +263,7 @@
             };
 
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            LoginResult result = ParseLogin(data);
+            var result = ParseLogin(data);
             if (!result.HasError)
             {
                 await SetUserInfoAsync(result.UserId);
@@ -302,8 +293,8 @@
         private async Task SetUserInfoAsync(string userId)
         {
             UserId = userId;
-            var collection = await WaitForCollectionAsync("users", userId, TimeoutToken);
-            var user = collection.GetById<dynamic>(userId);
+            var collection = await _collections.WaitForCollectionAsync("users", userId, TimeoutToken);
+            var user = collection.GetDynamicById(userId);
             string username = user.username;
             Username = username;
         }
@@ -311,11 +302,11 @@
         public async Task<string> GetRoomIdAsync(string roomIdOrName)
         {
             _logger.Info($"Looking up Room ID for: #{roomIdOrName}");
-            var result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName);
+            dynamic result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName);
             return result?.result;
         }
 
-        public async Task<string> DeleteMessageAsync(string messageId, string roomId)
+        public async Task DeleteMessageAsync(string messageId, string roomId)
         {
             _logger.Info($"Deleting message {messageId}");
             var request = new
@@ -323,13 +314,13 @@
                 rid = roomId,
                 _id = messageId
             };
-            return await _client.CallAsync("deleteMessage", TimeoutToken, request);
+            await _client.CallAsync("deleteMessage", TimeoutToken, request);
         }
 
         public async Task<string> CreatePrivateMessageAsync(string username)
         {
             _logger.Info($"Creating private message with {username}");
-            var result = await _client.CallAsync("createDirectMessage", TimeoutToken, username);
+            dynamic result = await _client.CallAsync("createDirectMessage", TimeoutToken, username);
             return result.result;
         }
 
@@ -375,7 +366,7 @@
         {
             _logger.Info($"Loading messages from #{roomId}");
 
-            var rawMessage = await _client.CallAsync("loadHistory", TimeoutToken, roomId, end, limit, ls);
+            dynamic rawMessage = await _client.CallAsync("loadHistory", TimeoutToken, roomId, end, limit, ls);
             var rawList = rawMessage.result.messages as JArray;
             var messages = new List<RocketMessage>();
 
@@ -392,7 +383,7 @@
         {
             _logger.Info($"Searching for messages in #{roomId} using `{query}`.");
 
-            var rawMessage = await _client.CallAsync("messageSearch", TimeoutToken, query, roomId, limit);
+            dynamic rawMessage = await _client.CallAsync("messageSearch", TimeoutToken, query, roomId, limit);
             var rawList = rawMessage.result.messages as JArray;
             var messages = new List<RocketMessage>();
 
@@ -405,28 +396,6 @@
             return messages;
         }
 
-        private async Task<StreamCollection> WaitForCollectionAsync(string collectionName, string id,
-                                                                    CancellationToken token)
-        {
-            return await Task.Run(() =>
-            {
-                while (true)
-                {
-                    StreamCollection collection;
-                    var success = _collections.TryGetValue(collectionName, out collection);
-
-                    var collectonPopulated = success && collection.ContainsId(id);
-                    if (collectonPopulated)
-                    {
-                        return collection;
-                    }
-
-                    token.ThrowIfCancellationRequested();
-                    Thread.Sleep(10);
-                }
-            }, token);
-        }
-
         private void OnMessageReceived(RocketMessage rocketmessage)
         {
             MessageReceived?.Invoke(rocketmessage);
@@ -435,7 +404,7 @@
         public StreamCollection GetCollection(string collectionName)
         {
             StreamCollection value;
-            var results = _collections.TryGetValue(collectionName, out value);
+            var results = _collections.TryGetCollection(collectionName, out value);
 
             return results ? value : null;
         }
@@ -445,7 +414,7 @@
             _client.Dispose();
         }
 
-        protected void OnDdpReconnect()
+        private void OnDdpReconnect()
         {
             DdpReconnect?.Invoke();
         }

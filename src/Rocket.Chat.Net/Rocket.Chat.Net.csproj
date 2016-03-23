@@ -56,7 +56,10 @@
   <ItemGroup>
     <Compile Include="Bot\RocketChatBot.cs" />
     <Compile Include="Driver\DdpClient.cs" />
+    <Compile Include="Interfaces\IDdpClient.cs" />
+    <Compile Include="Interfaces\IStreamCollectionDatabase.cs" />
     <Compile Include="Driver\StreamCollection.cs" />
+    <Compile Include="Driver\StreamCollectionDatabase.cs" />
     <Compile Include="Helpers\MeteorDateSerializer.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\FullUser.cs" />

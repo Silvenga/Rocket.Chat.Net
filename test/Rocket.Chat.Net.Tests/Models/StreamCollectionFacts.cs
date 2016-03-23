@@ -13,23 +13,25 @@
     [Trait("Category", "Models")]
     public class StreamCollectionFacts
     {
-        private readonly Fixture _autoFixture = new Fixture();
+        private static readonly Fixture AutoFixture = new Fixture();
+
+        private readonly string _name = AutoFixture.Create<string>();
 
         [Fact]
         public void When_object_is_added_and_collection_is_empty_add_new_object()
         {
             var item = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>()
                 }
             };
 
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
             collection.Added(item.Id, JObject.FromObject(item));
@@ -45,16 +47,16 @@
         {
             var item = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>()
                 }
             };
 
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
             collection.Added(item.Id, JObject.FromObject(item));
@@ -69,16 +71,16 @@
         {
             var item = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>()
                 }
             };
 
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
             var exists = collection.ContainsId(item.Id);
@@ -92,16 +94,16 @@
         {
             var item = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>()
                 }
             };
 
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
             collection.Added(item.Id, JObject.FromObject(item));
@@ -115,12 +117,12 @@
         [Fact]
         public void When_objects_not_exists_return_dynamic()
         {
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
 
             // Assert
-            var result = collection.GetDynamicById(_autoFixture.Create<string>());
+            var result = collection.GetDynamicById(AutoFixture.Create<string>());
 
             ((object) result).Should().BeNull();
         }
@@ -128,8 +130,8 @@
         [Fact]
         public void When_name_is_set_store_it()
         {
-            var collection = new StreamCollection();
-            var name = _autoFixture.Create<string>();
+            var collection = new StreamCollection(_name);
+            var name = AutoFixture.Create<string>();
 
             // Act
             collection.Name = name;
@@ -143,27 +145,27 @@
         {
             var existing = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>()
                 }
             };
 
             var item = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>()
                 }
             };
 
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
             collection.Added(existing.Id, JObject.FromObject(existing));
@@ -180,30 +182,30 @@
         {
             var item = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    OldValue = _autoFixture.Create<string>(),
-                    Value = _autoFixture.Create<string>()
+                    OldValue = AutoFixture.Create<string>(),
+                    Value = AutoFixture.Create<string>()
                 }
             };
 
             var other = new
             {
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
                     OldVaue = item.Obj.OldValue,
-                    Value = _autoFixture.Create<string>(),
-                    NewValue = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>(),
+                    NewValue = AutoFixture.Create<string>()
                 },
-                NewValue = _autoFixture.Create<string>()
+                NewValue = AutoFixture.Create<string>()
             };
 
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
             collection.Added(item.Id, JObject.FromObject(item));
@@ -229,12 +231,12 @@
         {
             var item = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>()
                 }
             };
 
@@ -242,7 +244,7 @@
             {
             };
 
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
             collection.Added(item.Id, JObject.FromObject(item));
@@ -257,12 +259,12 @@
         [Fact]
         public void When_object_doesnt_exist_return_null()
         {
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
 
             // Assert
-            var result = collection.GetById<object>(_autoFixture.Create<string>());
+            var result = collection.GetById<object>(AutoFixture.Create<string>());
 
             result.Should().BeNull();
         }
@@ -272,15 +274,15 @@
         {
             var item = new
             {
-                Id = _autoFixture.Create<string>(),
-                Str = _autoFixture.Create<string>(),
-                Int = _autoFixture.Create<int>(),
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
                 Obj = new
                 {
-                    Value = _autoFixture.Create<string>()
+                    Value = AutoFixture.Create<string>()
                 }
             };
-            var collection = new StreamCollection();
+            var collection = new StreamCollection(_name);
 
             // Act
             collection.Added(item.Id, JObject.FromObject(item));

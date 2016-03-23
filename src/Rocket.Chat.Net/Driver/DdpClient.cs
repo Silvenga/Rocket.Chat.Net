@@ -18,7 +18,7 @@
 
     using WebSocket4Net;
 
-    public class DdpClient : IDisposable
+    public class DdpClient : IDdpClient
     {
         private readonly ILogger _logger;
         private readonly WebSocket _socket;
@@ -84,23 +84,23 @@
         private void SocketOnMessage(object sender, MessageReceivedEventArgs messageEventArgs)
         {
             var json = messageEventArgs.Message;
-            dynamic data = JsonConvert.DeserializeObject(json);
+            var data = JObject.Parse(json);
             _logger.Debug($"RECIEVED: {JsonConvert.SerializeObject(data, Formatting.Indented)}");
 
             var isRocketMessage = DriverHelper.HasProperty(data, "msg");
             if (isRocketMessage)
             {
-                string type = data.msg;
+                var type = data["msg"].ToObject<string>();
                 InternalHandle(type, data);
                 OnDataReceived(type, data);
             }
         }
 
-        private void InternalHandle(string type, dynamic data)
+        private void InternalHandle(string type, JObject data)
         {
             if (DriverHelper.HasProperty(data, "id"))
             {
-                string id = data.id;
+                var id = data["id"].ToObject<string>();
                 _messages.TryAdd(id, data);
             }
 
@@ -115,13 +115,13 @@
                     {
                         OnDdpReconnect();
                     }
-                    SessionId = data.session;
+                    SessionId = data["session"].ToObject<string>();
 
                     _logger.Debug($"Connected via session {SessionId}.");
                     break;
                 case "ready":
                     var subs = data["subs"];
-                    List<string> ids = subs?.ToObject<List<string>>();
+                    var ids = subs?.ToObject<List<string>>();
                     var id = ids?.FirstOrDefault();
                     if (id != null)
                     {
@@ -131,7 +131,7 @@
             }
         }
 
-        public async Task<dynamic> PingAsync(CancellationToken token)
+        public async Task PingAsync(CancellationToken token)
         {
             var id = CreateId();
             var request = new
@@ -141,18 +141,15 @@
             };
 
             await SendObjectAsync(request, token);
-
-            var result = await WaitForIdAsync(id, token);
-
-            return result;
+            await WaitForIdAsync(id, token);
         }
 
-        private async Task PongAsync(dynamic data)
+        private async Task PongAsync(JObject data)
         {
             var request = new
             {
                 msg = "pong",
-                data.id
+                id = data["id"].ToObject<string>()
             };
 
             await SendObjectAsync(request, CancellationToken.None);
@@ -164,7 +161,7 @@
             await WaitForConnectAsync(token);
         }
 
-        public async Task<string> SubscribeAsync(string name, CancellationToken token, params dynamic[] args)
+        public async Task<string> SubscribeAsync(string name, CancellationToken token, params object[] args)
         {
             var id = CreateId();
             var request = new
@@ -179,7 +176,7 @@
             return id;
         }
 
-        public async Task<string> SubscribeAndWaitAsync(string name, CancellationToken token, params dynamic[] args)
+        public async Task<string> SubscribeAndWaitAsync(string name, CancellationToken token, params object[] args)
         {
             var id = CreateId();
             var request = new
@@ -195,7 +192,7 @@
             return id;
         }
 
-        public async Task<dynamic> CallAsync(string method, CancellationToken token, params object[] args)
+        public async Task<JObject> CallAsync(string method, CancellationToken token, params object[] args)
         {
             var id = CreateId();
             var request = new
@@ -212,7 +209,7 @@
             return result;
         }
 
-        private void OnDataReceived(string type, dynamic data)
+        private void OnDataReceived(string type, JObject data)
         {
             DataReceivedRaw?.Invoke(type, data);
         }
@@ -223,17 +220,17 @@
             _socket.Close();
         }
 
-        private async Task SendObjectAsync(dynamic data, CancellationToken token)
+        private async Task SendObjectAsync(object payload, CancellationToken token)
         {
             await Task.Run(() =>
             {
-                var json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
                 _logger.Debug($"SEND: {json}");
                 _socket.Send(json);
             }, token);
         }
 
-        private async Task<dynamic> WaitForIdAsync(string id, CancellationToken token)
+        private async Task<JObject> WaitForIdAsync(string id, CancellationToken token)
         {
             var task = Task.Run(() =>
             {
@@ -266,7 +263,7 @@
             return Guid.NewGuid().ToString("N");
         }
 
-        protected void OnDdpReconnect()
+        private void OnDdpReconnect()
         {
             DdpReconnect?.Invoke();
         }

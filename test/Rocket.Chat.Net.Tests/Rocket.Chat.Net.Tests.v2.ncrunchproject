@@ -23,4 +23,15 @@
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <MSTestThreadApartmentState>STA</MSTestThreadApartmentState>
   <BuildProcessArchitecture>x86</BuildProcessArchitecture>
+  <IgnoredTests>
+    <FixtureTestSelector>
+      <FixtureName>Rocket.Chat.Net.Tests.Driver.ClientFacts</FixtureName>
+    </FixtureTestSelector>
+    <FixtureTestSelector>
+      <FixtureName>Rocket.Chat.Net.Tests.Driver.LoginFacts</FixtureName>
+    </FixtureTestSelector>
+    <FixtureTestSelector>
+      <FixtureName>Rocket.Chat.Net.Tests.Driver.SandboxFacts</FixtureName>
+    </FixtureTestSelector>
+  </IgnoredTests>
 </ProjectConfiguration>
