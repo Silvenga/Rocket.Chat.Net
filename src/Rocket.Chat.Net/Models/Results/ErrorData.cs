@@ -1,7 +1,5 @@
 namespace Rocket.Chat.Net.Models.Results
 {
-    using Newtonsoft.Json;
-
     public class ErrorData
     {
         public int Error { get; set; }

@@ -6,7 +6,7 @@
 
     using Rocket.Chat.Net.Helpers;
 
-    public class LoginResult : BaseResult
+    public class LoginResult
     {
         [JsonProperty(PropertyName = "id")]
         public string UserId { get; set; }

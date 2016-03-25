@@ -1,6 +1,9 @@
 ﻿namespace Rocket.Chat.Net.Tests.Helpers
 {
     using System;
+    using System.Threading.Tasks;
+
+    using FluentAssertions;
 
     using Ploeh.AutoFixture;
 
@@ -19,6 +22,13 @@
         {
             XUnitLogger = new XUnitLogger(helper);
             RocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, XUnitLogger);
+        }
+
+        protected async Task DefaultAccountLogin()
+        {
+            await RocketChatDriver.ConnectAsync();
+            var result = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
+            result.HasError.Should().BeFalse();
         }
 
         public void Dispose()

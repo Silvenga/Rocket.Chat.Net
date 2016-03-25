@@ -107,7 +107,7 @@
             switch (type)
             {
                 case "ping": // Required by spec
-                    PongAsync(data);
+                    PongAsync(data).Wait();
                     break;
                 case "connected":
 

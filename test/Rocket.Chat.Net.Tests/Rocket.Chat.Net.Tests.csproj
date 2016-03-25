@@ -92,9 +92,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Driver\RocketChatDriverFacts.cs" />
+    <Compile Include="Integration\AdministrationFacts.cs" />
     <Compile Include="Integration\ClientFacts.cs" />
     <Compile Include="Helpers\DriverFactsBase.cs" />
     <Compile Include="Integration\MessagingFacts.cs" />
+    <Compile Include="Integration\RoomFacts.cs" />
     <Compile Include="Integration\SandboxFacts.cs" />
     <Compile Include="Integration\LoginFacts.cs" />
     <Compile Include="Helpers\Constants.cs" />

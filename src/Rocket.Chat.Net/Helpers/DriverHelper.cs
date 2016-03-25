@@ -33,9 +33,9 @@
             return builder.ToString();
         }
 
-        public static RocketMessage ParseMessage(dynamic data)
+        public static RocketMessage ParseMessage(JObject data)
         {
-            var message = ((JObject) data).ToObject<RocketMessage>();
+            var message = data.ToObject<RocketMessage>();
             return message;
         }
 

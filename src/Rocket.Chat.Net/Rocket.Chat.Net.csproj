@@ -76,6 +76,8 @@
     <Compile Include="Models\Logins\UsernameLoginOption.cs" />
     <Compile Include="Models\BasicResponse.cs" />
     <Compile Include="Models\Delegates.cs" />
+    <Compile Include="Models\Results\RocketResult.cs" />
+    <Compile Include="Models\Results\StatisticsResult.cs" />
     <Compile Include="Models\RocketMessage.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Bot\ConsoleLogger.cs" />
@@ -85,7 +87,7 @@
     <Compile Include="Driver\RocketChatDriver.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="Models\app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

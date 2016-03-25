@@ -40,7 +40,7 @@
             // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeFalse();
-            loginResult.Token.Should().NotBeNull();
+            loginResult.Result.Token.Should().NotBeNull();
         }
 
         [Fact]
@@ -52,7 +52,7 @@
             // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeFalse();
-            loginResult.Token.Should().NotBeNull();
+            loginResult.Result.Token.Should().NotBeNull();
         }
 
         [Fact]
@@ -61,12 +61,12 @@
             var tokenResult = await RocketChatDriver.LoginWithUsernameAsync(Constants.Username, Constants.Password);
 
             // Act
-            var loginResult = await RocketChatDriver.LoginResumeAsync(tokenResult.Token);
+            var loginResult = await RocketChatDriver.LoginResumeAsync(tokenResult.Result.Token);
 
             // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeFalse();
-            loginResult.Token.Should().Be(tokenResult.Token);
+            loginResult.Result.Token.Should().Be(tokenResult.Result.Token);
         }
 
         [Fact]

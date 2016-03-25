@@ -36,7 +36,6 @@
         public RocketChatDriver(string url, bool useSsl, ILogger logger)
         {
             _logger = logger;
-
             _collections = new StreamCollectionDatabase();
 
             _logger.Info("Creating client...");
@@ -54,11 +53,11 @@
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
         {
-            HandleCreateCollection(type, data);
+            HandleStreamingCollections(type, data);
             HandleRocketMessage(type, data);
         }
 
-        private void HandleCreateCollection(string type, dynamic data)
+        private void HandleStreamingCollections(string type, dynamic data)
         {
             if (type == "added")
             {
@@ -155,7 +154,7 @@
             await _client.PingAsync(TimeoutToken);
         }
 
-        public async Task<LoginResult> LoginAsync(ILoginOption loginOption)
+        public async Task<RocketResult<LoginResult>> LoginAsync(ILoginOption loginOption)
         {
             var ldapLogin = loginOption as LdapLoginOption;
             if (ldapLogin != null)
@@ -181,7 +180,7 @@
             throw new NotSupportedException($"The given login option `{typeof(ILoginOption)}` is not supported.");
         }
 
-        public async Task<LoginResult> LoginWithEmailAsync(string email, string password)
+        public async Task<RocketResult<LoginResult>> LoginWithEmailAsync(string email, string password)
         {
             _logger.Info($"Logging in with user {email} using a email...");
             var passwordHash = DriverHelper.Sha256Hash(password);
@@ -202,12 +201,12 @@
             var result = ParseLogin(data);
             if (!result.HasError)
             {
-                await SetUserInfoAsync(result.UserId);
+                await SetUserInfoAsync(result.Result.UserId);
             }
             return result;
         }
 
-        public async Task<LoginResult> LoginWithUsernameAsync(string username, string password)
+        public async Task<RocketResult<LoginResult>> LoginWithUsernameAsync(string username, string password)
         {
             _logger.Info($"Logging in with user {username} using a username...");
             var passwordHash = DriverHelper.Sha256Hash(password);
@@ -228,12 +227,12 @@
             var result = ParseLogin(data);
             if (!result.HasError)
             {
-                await SetUserInfoAsync(result.UserId);
+                await SetUserInfoAsync(result.Result.UserId);
             }
             return result;
         }
 
-        public async Task<LoginResult> LoginWithLdapAsync(string username, string password)
+        public async Task<RocketResult<LoginResult>> LoginWithLdapAsync(string username, string password)
         {
             _logger.Info($"Logging in with user {username} using LDAP...");
             var request = new
@@ -248,13 +247,13 @@
             var result = ParseLogin(data);
             if (!result.HasError)
             {
-                await SetUserInfoAsync(result.UserId);
+                await SetUserInfoAsync(result.Result.UserId);
             }
 
             return result;
         }
 
-        public async Task<LoginResult> LoginResumeAsync(string sessionToken)
+        public async Task<RocketResult<LoginResult>> LoginResumeAsync(string sessionToken)
         {
             _logger.Info($"Resuming session {sessionToken}");
             var request = new
@@ -266,27 +265,14 @@
             var result = ParseLogin(data);
             if (!result.HasError)
             {
-                await SetUserInfoAsync(result.UserId);
+                await SetUserInfoAsync(result.Result.UserId);
             }
             return result;
         }
 
-        private static LoginResult ParseLogin(dynamic data)
+        private static RocketResult<LoginResult> ParseLogin(JObject data)
         {
-            var result = new LoginResult();
-            if (DriverHelper.HasError(data))
-            {
-                var error = ((JObject) data).ToObject<LoginResult>();
-                result.ErrorData = error.ErrorData;
-                return result;
-            }
-
-            var loginResult = ((JObject) data.result).ToObject<LoginResult>();
-
-            result.UserId = loginResult.UserId;
-            result.Token = loginResult.Token;
-            result.TokenExpires = loginResult.TokenExpires;
-
+            var result = data.ToObject<RocketResult<LoginResult>>();
             return result;
         }
 
@@ -302,8 +288,8 @@
         public async Task<string> GetRoomIdAsync(string roomIdOrName)
         {
             _logger.Info($"Looking up Room ID for: #{roomIdOrName}");
-            dynamic result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName);
-            return result?.result;
+            var result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName);
+            return result?["result"].ToObject<string>();
         }
 
         public async Task DeleteMessageAsync(string messageId, string roomId)
@@ -374,7 +360,7 @@
             {
                 return messages;
             }
-            messages.AddRange(rawList.Select(DriverHelper.ParseMessage));
+            messages.AddRange(rawList.Cast<JObject>().Select(DriverHelper.ParseMessage));
 
             return messages;
         }
@@ -391,9 +377,17 @@
             {
                 return messages;
             }
-            messages.AddRange(rawList.Select(DriverHelper.ParseMessage));
+            messages.AddRange(rawList.Cast<JObject>().Select(DriverHelper.ParseMessage));
 
             return messages;
+        }
+
+        public async Task<RocketResult<StatisticsResult>> GetStatisticsAsync(bool refresh = false)
+        {
+            _logger.Info("Requesting statistics.");
+            var results = await _client.CallAsync("getStatistics", TimeoutToken);
+
+            return results.ToObject<RocketResult<StatisticsResult>>();
         }
 
         private void OnMessageReceived(RocketMessage rocketmessage)

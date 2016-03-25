@@ -42,7 +42,7 @@
                 throw new Exception($"Login failed: {result.ErrorData.Message}.");
             }
 
-            LoginToken = result.Token;
+            LoginToken = result.Result.Token;
         }
 
         public async Task SubscribeAsync()
