@@ -149,7 +149,7 @@
             var request = new
             {
                 msg = "pong",
-                id = data["id"].ToObject<string>()
+                id = data["id"]?.ToObject<string>()
             };
 
             await SendObjectAsync(request, CancellationToken.None);

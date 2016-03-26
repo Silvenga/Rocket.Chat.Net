@@ -17,22 +17,32 @@
 
         public ClientFacts(ITestOutputHelper helper) : base(helper)
         {
-            RocketChatDriver.ConnectAsync().Wait();
         }
 
         [Fact]
         public async Task Load_message_history_loads_past_messages()
         {
-            var loginResult = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
+            await DefaultAccountLogin();
 
             var result = await RocketChatDriver.LoadMessagesAsync("GENERAL");
+        }
+
+        [Fact]
+        public async Task Ping_should_send_keep_alive()
+        {
+            await DefaultAccountLogin();
+
+            // Act
+            await RocketChatDriver.PingAsync();
+
+            // Assert
         }
 
         [Fact]
         public async Task FullUserData_returns_user_data()
         {
             const string userTest = "test";
-            await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
+            await DefaultAccountLogin();
 
             // Act
             var userData = await RocketChatDriver.GetFullUserDataAsync(userTest);

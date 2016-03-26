@@ -51,4 +51,4 @@ bot.AddResponse(giphyResponse);
 - [ ] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)
 - [ ] Get test converage
 - [ ] A way to unsub
-- [ ] Figure out why tests are stuck when running in parallel.
+- [X] Figure out why tests are stuck when running in parallel. - No idea, maybe a network issue?
