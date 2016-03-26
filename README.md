@@ -41,6 +41,10 @@ bot.AddResponse(giphyResponse);
 // Checkout GiphyResponse in the example project for more info.
 ```
 
+## Building/Testing
+
+[docs/environment.md](docs/environment.md)
+
 ## TODO
 
 [docs/todo.md](docs/todo.md)
