@@ -139,19 +139,20 @@
         {
             base.Dispose();
 
-            if (RoomsCreatedByName.Any())
+            if (!RoomsCreatedByName.Any())
             {
-                using (var driver = new RocketChatDriver(Constants.RocketServer, false))
-                {
-                    driver.ConnectAsync().Wait();
-                    driver.LoginWithEmailAsync(Constants.Email, Constants.Password).Wait();
-                    var rooms = driver.ChannelListAsync().Result;
-                    var toDelete = rooms.Result.Channels.Where(x => RoomsCreatedByName.Contains(x.Name));
+                return;
+            }
+            using (var driver = new RocketChatDriver(Constants.RocketServer, false))
+            {
+                driver.ConnectAsync().Wait();
+                driver.LoginWithEmailAsync(Constants.Email, Constants.Password).Wait();
+                var rooms = driver.ChannelListAsync().Result;
+                var toDelete = rooms.Result.Channels.Where(x => RoomsCreatedByName.Contains(x.Name));
 
-                    foreach (var room in toDelete)
-                    {
-                        driver.EraseRoomAsync(room.Id).Wait();
-                    }
+                foreach (var room in toDelete)
+                {
+                    driver.EraseRoomAsync(room.Id).Wait();
                 }
             }
         }

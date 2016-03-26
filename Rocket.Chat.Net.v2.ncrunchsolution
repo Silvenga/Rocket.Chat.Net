@@ -11,5 +11,6 @@
   <NCrunchCacheStoragePath></NCrunchCacheStoragePath>
   <EngineModes>Run all tests automatically:BFRydWU=:BFRydWU=:BFRydWU=:False;Run all tests manually:BUZhbHNl:BFRydWU=:BFRydWU=:False;Run impacted tests automatically, others manually:CklzSW1wYWN0ZWQ=:BFRydWU=:BFRydWU=:False;Run pinned tests automatically, others manually:CElzUGlubmVk:BFRydWU=:BFRydWU=:True;Rocket.Chat.Net.Tests:E0RvZXNOb3RIYXZlQ2F0ZWdvcnkGRHJpdmVy:BFRydWU=:BFRydWU=:False</EngineModes>
   <MetricsExclusionList>
+src\Rocket.Chat.Net.Example\Rocket.Chat.Net.Example.csproj
 </MetricsExclusionList>
 </SolutionConfiguration>
