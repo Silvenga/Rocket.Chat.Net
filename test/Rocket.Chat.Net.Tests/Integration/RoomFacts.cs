@@ -8,7 +8,6 @@
 
     using Ploeh.AutoFixture;
 
-    using Rocket.Chat.Net.Bot;
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Tests.Helpers;
 
@@ -142,7 +141,7 @@
 
             if (RoomsCreatedByName.Any())
             {
-                using (var driver = new RocketChatDriver(Constants.RocketServer, false, new ConsoleLogger()))
+                using (var driver = new RocketChatDriver(Constants.RocketServer, false))
                 {
                     driver.ConnectAsync().Wait();
                     driver.LoginWithEmailAsync(Constants.Email, Constants.Password).Wait();

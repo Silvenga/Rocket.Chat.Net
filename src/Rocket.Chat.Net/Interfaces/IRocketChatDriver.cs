@@ -24,7 +24,8 @@
         /// <summary>
         /// Subscribe to messages from given room
         /// </summary>
-        /// <param name="roomId">The room to listen to. Null will listen to all authorized rooms. This may or may not be correct. </param>
+        /// <param name="roomId">The room to listen to. Null will listen to all authorized rooms. 
+        /// This may or may not be correct. </param>
         /// <returns></returns>
         Task SubscribeToRoomAsync(string roomId = null);
 
@@ -201,7 +202,7 @@
         Task<RocketResult<CreateRoomResult>> HideRoomAsync(string roomId);
 
         /// <summary>
-        /// Deletes a room.
+        /// Deletes a room. This requires permissions (admin for now?). 
         /// </summary>
         /// <param name="roomId">Room to delete by id</param>
         /// <returns>Number impacted?</returns>

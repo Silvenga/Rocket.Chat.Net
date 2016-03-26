@@ -8,6 +8,7 @@
 
     using Newtonsoft.Json.Linq;
 
+    using Rocket.Chat.Net.Bot;
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
@@ -31,9 +32,9 @@
         public string UserId { get; private set; }
         public string Username { get; private set; }
 
-        public RocketChatDriver(string url, bool useSsl, ILogger logger)
+        public RocketChatDriver(string url, bool useSsl, ILogger logger = null)
         {
-            _logger = logger;
+            _logger = logger ?? new DummyLogger();
             _collectionDatabase = new StreamCollectionDatabase();
 
             _logger.Info("Creating client...");

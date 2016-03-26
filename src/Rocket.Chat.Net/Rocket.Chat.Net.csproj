@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bot\DummyLogger.cs" />
     <Compile Include="Bot\RocketChatBot.cs" />
     <Compile Include="Driver\DdpClient.cs" />
     <Compile Include="Interfaces\IDdpClient.cs" />
