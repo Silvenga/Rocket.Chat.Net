@@ -17,8 +17,8 @@
         public T Result { get; set; }
 
         [JsonProperty(PropertyName = "error")]
-        public ErrorData ErrorData { get; set; }
+        public ErrorResult ErrorResult { get; set; }
 
-        public bool HasError => ErrorData != null;
+        public bool HasError => ErrorResult != null;
     }
 }

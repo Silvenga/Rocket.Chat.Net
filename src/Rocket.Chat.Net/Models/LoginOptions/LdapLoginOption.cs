@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Models.Logins
+﻿namespace Rocket.Chat.Net.Models.LoginOptions
 {
     using System.Diagnostics.CodeAnalysis;
 

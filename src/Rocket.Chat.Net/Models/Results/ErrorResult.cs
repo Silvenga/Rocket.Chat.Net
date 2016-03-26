@@ -1,6 +1,6 @@
 namespace Rocket.Chat.Net.Models.Results
 {
-    public class ErrorData
+    public class ErrorResult
     {
         public int Error { get; set; }
 

@@ -11,6 +11,6 @@ namespace Rocket.Chat.Net.Interfaces
         StreamCollection GetOrAddCollection(string collectionName);
 
         Task<StreamCollection> WaitForCollectionAsync(string collectionName, string id,
-                                                CancellationToken token);
+                                                      CancellationToken token);
     }
 }

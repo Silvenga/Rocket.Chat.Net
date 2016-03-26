@@ -11,7 +11,7 @@
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
-    using Rocket.Chat.Net.Models.Logins;
+    using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Models.Results;
 
     public class RocketChatDriver : IRocketChatDriver
@@ -19,10 +19,8 @@
         private const string MessageTopic = "stream-messages";
         private const int MessageSubscriptionLimit = 10;
 
-        private readonly IStreamCollectionDatabase _collections;
-
+        private readonly IStreamCollectionDatabase _collectionDatabase;
         private readonly ILogger _logger;
-
         private readonly IDdpClient _client;
 
         public event MessageReceived MessageReceived;
@@ -36,7 +34,7 @@
         public RocketChatDriver(string url, bool useSsl, ILogger logger)
         {
             _logger = logger;
-            _collections = new StreamCollectionDatabase();
+            _collectionDatabase = new StreamCollectionDatabase();
 
             _logger.Info("Creating client...");
             _client = new DdpClient(url, useSsl, _logger);
@@ -44,11 +42,11 @@
             _client.DdpReconnect += OnDdpReconnect;
         }
 
-        public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabase)
+        public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabaseDatabase)
         {
             _logger = logger;
             _client = client;
-            _collections = collectionDatabase;
+            _collectionDatabase = collectionDatabaseDatabase;
         }
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
@@ -65,7 +63,7 @@
                 string id = data.id;
                 object field = data.fields;
 
-                var collection = _collections.GetOrAddCollection(collectionName);
+                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
                 collection.Added(id, JObject.FromObject(field));
             }
 
@@ -75,7 +73,7 @@
                 string id = data.id;
                 object field = data.fields;
 
-                var collection = _collections.GetOrAddCollection(collectionName);
+                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
                 collection.Changed(id, JObject.FromObject(field));
             }
 
@@ -84,7 +82,7 @@
                 string collectionName = data.collection;
                 string id = data.id;
 
-                var collection = _collections.GetOrAddCollection(collectionName);
+                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
                 collection.Removed(id);
             }
         }
@@ -128,7 +126,7 @@
             await _client.SubscribeAsync("userData", TimeoutToken);
         }
 
-        public async Task SubscribeToAsync(string streamName, params dynamic[] o)
+        public async Task SubscribeToAsync(string streamName, params object[] o)
         {
             await _client.SubscribeAsync(streamName, TimeoutToken, o);
         }
@@ -136,15 +134,19 @@
         public async Task<FullUser> GetFullUserDataAsync(string username)
         {
             await _client.SubscribeAndWaitAsync("fullUserData", TimeoutToken, username, 1);
+
             StreamCollection data;
-            _collections.TryGetCollection("users", out data);
-            var userPair = data?.Items<FullUser>().FirstOrDefault(x => x.Value.Username == username);
-            var user = userPair?.Value;
-            if (user == null)
+            var success = _collectionDatabase.TryGetCollection("users", out data);
+            if (!success)
             {
                 return null;
             }
-            user.Id = userPair.Value.Key;
+
+            var userPair = data
+                .Items<FullUser>()
+                .FirstOrDefault(x => x.Value.Username == username);
+            var user = userPair.Value;
+            user.Id = userPair.Key;
             return user;
         }
 
@@ -197,13 +199,7 @@
                 }
             };
 
-            var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = ParseLogin(data);
-            if (!result.HasError)
-            {
-                await SetUserInfoAsync(result.Result.UserId);
-            }
-            return result;
+            return await InternalLoginAsync(request);
         }
 
         public async Task<RocketResult<LoginResult>> LoginWithUsernameAsync(string username, string password)
@@ -223,13 +219,7 @@
                 }
             };
 
-            var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = ParseLogin(data);
-            if (!result.HasError)
-            {
-                await SetUserInfoAsync(result.Result.UserId);
-            }
-            return result;
+            return await InternalLoginAsync(request);
         }
 
         public async Task<RocketResult<LoginResult>> LoginWithLdapAsync(string username, string password)
@@ -243,14 +233,7 @@
                 ldapOptions = new {}
             };
 
-            var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = ParseLogin(data);
-            if (!result.HasError)
-            {
-                await SetUserInfoAsync(result.Result.UserId);
-            }
-
-            return result;
+            return await InternalLoginAsync(request);
         }
 
         public async Task<RocketResult<LoginResult>> LoginResumeAsync(string sessionToken)
@@ -261,8 +244,13 @@
                 resume = sessionToken
             };
 
+            return await InternalLoginAsync(request);
+        }
+
+        private async Task<RocketResult<LoginResult>> InternalLoginAsync(object request)
+        {
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = ParseLogin(data);
+            var result = data.ToObject<RocketResult<LoginResult>>();
             if (!result.HasError)
             {
                 await SetUserInfoAsync(result.Result.UserId);
@@ -270,16 +258,10 @@
             return result;
         }
 
-        private static RocketResult<LoginResult> ParseLogin(JObject data)
-        {
-            var result = data.ToObject<RocketResult<LoginResult>>();
-            return result;
-        }
-
         private async Task SetUserInfoAsync(string userId)
         {
             UserId = userId;
-            var collection = await _collections.WaitForCollectionAsync("users", userId, TimeoutToken);
+            var collection = await _collectionDatabase.WaitForCollectionAsync("users", userId, TimeoutToken);
             var user = collection.GetDynamicById(userId);
             string username = user.username;
             Username = username;
@@ -398,7 +380,7 @@
         public StreamCollection GetCollection(string collectionName)
         {
             StreamCollection value;
-            var results = _collections.TryGetCollection(collectionName, out value);
+            var results = _collectionDatabase.TryGetCollection(collectionName, out value);
 
             return results ? value : null;
         }
