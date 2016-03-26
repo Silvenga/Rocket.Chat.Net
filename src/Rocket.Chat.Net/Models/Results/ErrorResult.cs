@@ -2,7 +2,7 @@ namespace Rocket.Chat.Net.Models.Results
 {
     public class ErrorResult
     {
-        public int Error { get; set; }
+        public string Error { get; set; }
 
         public string Reason { get; set; }
 

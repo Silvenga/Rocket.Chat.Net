@@ -63,6 +63,8 @@
     <Compile Include="Helpers\MeteorDateSerializer.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\FullUser.cs" />
+    <Compile Include="Models\Results\ChannelListResult.cs" />
+    <Compile Include="Models\Results\CreateRoomResult.cs" />
     <Compile Include="Models\Results\ErrorResult.cs" />
     <Compile Include="Models\Results\LoginResult.cs" />
     <Compile Include="Helpers\BotHelper.cs" />

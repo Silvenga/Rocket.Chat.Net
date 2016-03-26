@@ -1,6 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Tests.Helpers
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -31,7 +32,17 @@
             result.HasError.Should().BeFalse();
         }
 
-        public void Dispose()
+        protected async Task CleanupRooms()
+        {
+            var rooms = await RocketChatDriver.ChannelListAsync();
+            rooms.HasError.Should().BeFalse();
+            foreach (var room in rooms.Result.Channels.Where(x => x.Id != "GENERAL"))
+            {
+                await RocketChatDriver.EraseRoomAsync(room.Id);
+            }
+        }
+
+        public virtual void Dispose()
         {
             RocketChatDriver.Dispose();
             XUnitLogger.Dispose();

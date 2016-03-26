@@ -39,7 +39,7 @@
             var result = await Driver.LoginAsync(loginOption);
             if (result.HasError)
             {
-                throw new Exception($"Login failed: {result.ErrorResult.Message}.");
+                throw new Exception($"Login failed: {result.Error.Message}.");
             }
 
             LoginToken = result.Result.Token;
@@ -61,7 +61,7 @@
             var result = await Driver.LoginResumeAsync(LoginToken);
             if (result.HasError)
             {
-                throw new Exception($"Resume failed: {result.ErrorResult.Message}.");
+                throw new Exception($"Resume failed: {result.Error.Message}.");
             }
         }
 

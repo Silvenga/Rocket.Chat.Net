@@ -79,7 +79,7 @@
             // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeTrue();
-            loginResult.ErrorResult.Message.Should().Be("Incorrect password [403]");
+            loginResult.Error.Message.Should().Be("Incorrect password [403]");
         }
 
         [Fact]
@@ -93,7 +93,7 @@
             // Assert
             loginResult.Should().NotBeNull();
             loginResult.HasError.Should().BeTrue();
-            loginResult.ErrorResult.Message.Should().Be("User not found [403]");
+            loginResult.Error.Message.Should().Be("User not found [403]");
         }
 
         [Fact]

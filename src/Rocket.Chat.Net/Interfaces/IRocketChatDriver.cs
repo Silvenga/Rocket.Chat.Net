@@ -126,7 +126,7 @@
         /// List authorized channels
         /// </summary>
         /// <returns></returns>
-        Task<object> ChannelListAsync();
+        Task<RocketResult<ChannelListResult>> ChannelListAsync();
 
         /// <summary>
         /// Called when the Ddp Clients reconnects, can be used to log back in or resubscribe.
@@ -184,5 +184,27 @@
         /// <param name="refresh">Should permissions be flushed first</param>
         /// <returns></returns>
         Task<RocketResult<StatisticsResult>> GetStatisticsAsync(bool refresh = false);
+
+        /// <summary>
+        /// Creates a new room.
+        /// </summary>
+        /// <param name="roomName">Name of the room to create</param>
+        /// <param name="members">Optional. A list of users to add to the room on creation</param>
+        /// <returns>The id of the room that was created when successful</returns>
+        Task<RocketResult<CreateRoomResult>> CreateRoomAsync(string roomName, IList<string> members = null);
+
+        /// <summary>
+        /// Hide a room.
+        /// </summary>
+        /// <param name="roomId">Room to hide by id</param>
+        /// <returns></returns>
+        Task<RocketResult<CreateRoomResult>> HideRoomAsync(string roomId);
+
+        /// <summary>
+        /// Deletes a room.
+        /// </summary>
+        /// <param name="roomId">Room to delete by id</param>
+        /// <returns>Number impacted?</returns>
+        Task<RocketResult<int>> EraseRoomAsync(string roomId);
     }
 }

@@ -29,14 +29,6 @@
         }
 
         [Fact]
-        public async Task List_channel_should_return_list_of_channels()
-        {
-            var loginResult = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
-
-            var result = await RocketChatDriver.ChannelListAsync();
-        }
-
-        [Fact]
         public async Task FullUserData_returns_user_data()
         {
             const string userTest = "test";

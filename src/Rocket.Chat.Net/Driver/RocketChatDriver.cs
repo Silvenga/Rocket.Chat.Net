@@ -292,10 +292,11 @@
             return result.result;
         }
 
-        public async Task<dynamic> ChannelListAsync()
+        public async Task<RocketResult<ChannelListResult>> ChannelListAsync()
         {
             _logger.Info("Looking up public channels.");
-            return await _client.CallAsync("channelsList", TimeoutToken);
+            var result = await _client.CallAsync("channelsList", TimeoutToken);
+            return result.ToObject<RocketResult<ChannelListResult>>();
         }
 
         public async Task<dynamic> JoinRoomAsync(string roomId)
@@ -370,6 +371,33 @@
             var results = await _client.CallAsync("getStatistics", TimeoutToken);
 
             return results.ToObject<RocketResult<StatisticsResult>>();
+        }
+
+        public async Task<RocketResult<CreateRoomResult>> CreateRoomAsync(string roomName, IList<string> members = null)
+        {
+            _logger.Info($"Creating room {roomName}.");
+            var results =
+                await _client.CallAsync("createChannel", TimeoutToken, roomName, members ?? new List<string>());
+
+            return results.ToObject<RocketResult<CreateRoomResult>>();
+        }
+
+        public async Task<RocketResult<CreateRoomResult>> HideRoomAsync(string roomId)
+        {
+            _logger.Info($"Hiding room {roomId}.");
+            var results =
+                await _client.CallAsync("hideRoom", TimeoutToken, roomId);
+
+            return results.ToObject<RocketResult<CreateRoomResult>>();
+        }
+
+        public async Task<RocketResult<int>> EraseRoomAsync(string roomId)
+        {
+            _logger.Info($"Deleting room {roomId}.");
+            var results =
+                await _client.CallAsync("eraseRoom", TimeoutToken, roomId);
+
+            return results.ToObject<RocketResult<int>>();
         }
 
         private void OnMessageReceived(RocketMessage rocketmessage)
