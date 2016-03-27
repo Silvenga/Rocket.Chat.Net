@@ -26,6 +26,7 @@
 
         public string Url { get; }
         public string SessionId { get; private set; }
+        public bool IsDisposed { get; private set; }
 
         public event DataReceived DataReceivedRaw;
         public event DdpReconnect DdpReconnect;
@@ -50,7 +51,7 @@
         private void SocketOnClosed(object sender, EventArgs eventArgs)
         {
             _logger.Debug("CLOSE");
-            if (SessionId != null)
+            if (SessionId != null && !IsDisposed)
             {
                 ConnectAsync(CancellationToken.None).Wait();
             }
@@ -216,6 +217,7 @@
 
         public void Dispose()
         {
+            IsDisposed = true;
             SessionId = null;
             _socket.Close();
         }

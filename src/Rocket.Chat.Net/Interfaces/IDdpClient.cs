@@ -12,6 +12,7 @@ namespace Rocket.Chat.Net.Interfaces
     {
         string Url { get; }
         string SessionId { get; }
+        bool IsDisposed { get; }
 
         event DataReceived DataReceivedRaw;
         event DdpReconnect DdpReconnect;

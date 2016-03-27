@@ -48,6 +48,8 @@
             _logger = logger;
             _client = client;
             _collectionDatabase = collectionDatabaseDatabase;
+            _client.DataReceivedRaw += ClientOnDataReceivedRaw;
+            _client.DdpReconnect += OnDdpReconnect;
         }
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
@@ -136,7 +138,7 @@
         {
             await _client.SubscribeAndWaitAsync("fullUserData", TimeoutToken, username, 1);
 
-            StreamCollection data;
+            IStreamCollection data;
             var success = _collectionDatabase.TryGetCollection("users", out data);
             if (!success)
             {
@@ -406,9 +408,9 @@
             MessageReceived?.Invoke(rocketmessage);
         }
 
-        public StreamCollection GetCollection(string collectionName)
+        public IStreamCollection GetCollection(string collectionName)
         {
-            StreamCollection value;
+            IStreamCollection value;
             var results = _collectionDatabase.TryGetCollection(collectionName, out value);
 
             return results ? value : null;
@@ -427,8 +429,9 @@
         private CancellationToken CreateTimeoutToken()
         {
             _logger.Debug("Created cancellation token.");
+            const int timeoutSeconds = 30;
             var source = new CancellationTokenSource();
-            source.CancelAfter(TimeSpan.FromSeconds(30));
+            source.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
 
             return source.Token;
         }

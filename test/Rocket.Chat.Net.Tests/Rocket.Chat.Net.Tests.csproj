@@ -91,6 +91,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Helpers\DummyDdpClient.cs" />
     <Compile Include="Driver\RocketChatDriverFacts.cs" />
     <Compile Include="Integration\AdministrationFacts.cs" />
     <Compile Include="Integration\ClientFacts.cs" />

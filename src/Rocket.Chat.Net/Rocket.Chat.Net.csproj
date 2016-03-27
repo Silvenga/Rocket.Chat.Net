@@ -56,7 +56,9 @@
   <ItemGroup>
     <Compile Include="Bot\DummyLogger.cs" />
     <Compile Include="Bot\RocketChatBot.cs" />
+    <Compile Include="Driver\CollectionResult.cs" />
     <Compile Include="Driver\DdpClient.cs" />
+    <Compile Include="Driver\IStreamCollection.cs" />
     <Compile Include="Interfaces\IDdpClient.cs" />
     <Compile Include="Interfaces\IStreamCollectionDatabase.cs" />
     <Compile Include="Driver\StreamCollection.cs" />
