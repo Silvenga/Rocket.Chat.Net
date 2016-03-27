@@ -58,35 +58,29 @@
             HandleRocketMessage(type, data);
         }
 
-        private void HandleStreamingCollections(string type, dynamic data)
+        private void HandleStreamingCollections(string type, JObject data)
         {
-            if (type == "added")
+            var collectionResult = data.ToObject<CollectionResult>();
+            if (collectionResult.Name == null)
             {
-                string collectionName = data.collection;
-                string id = data.id;
-                object field = data.fields;
-
-                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
-                collection.Added(id, JObject.FromObject(field));
+                return;
             }
 
-            if (type == "changed")
+            var collection = _collectionDatabase.GetOrAddCollection(collectionResult.Name);
+
+            switch (type)
             {
-                string collectionName = data.collection;
-                string id = data.id;
-                object field = data.fields;
-
-                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
-                collection.Changed(id, JObject.FromObject(field));
-            }
-
-            if (type == "removed")
-            {
-                string collectionName = data.collection;
-                string id = data.id;
-
-                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
-                collection.Removed(id);
+                case "added":
+                    collection.Added(collectionResult.Id, JObject.FromObject(collectionResult.Fields));
+                    break;
+                case "changed":
+                    collection.Changed(collectionResult.Id, JObject.FromObject(collectionResult.Fields));
+                    break;
+                case "removed":
+                    collection.Removed(collectionResult.Id);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Incountered a unknown subscription update type {type}.");
             }
         }
 

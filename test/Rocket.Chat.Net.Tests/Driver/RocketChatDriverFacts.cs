@@ -193,5 +193,23 @@
             // Assert
             mockCollection.Received().Removed(payload.id);
         }
+
+        [Fact]
+        public void Non_streaming_messages_should_not_change_collections()
+        {
+            var callingClient = (DummyDdpClient) _mockClient;
+            var payload = new
+            {
+                id = _autoFixture.Create<string>(),
+                msg = _autoFixture.Create<string>(),
+                random = _autoFixture.Create<int>()
+            };
+
+            // Act
+            callingClient.CallDataReceivedRaw(payload.msg, JObject.FromObject(payload));
+
+            // Assert
+            _collectionDatabase.DidNotReceive().GetOrAddCollection(Arg.Any<string>());
+        }
     }
 }

@@ -1,4 +1,4 @@
-namespace Rocket.Chat.Net.Driver
+namespace Rocket.Chat.Net.Models.Results
 {
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
