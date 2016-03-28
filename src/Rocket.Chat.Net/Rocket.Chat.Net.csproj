@@ -54,8 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bot\DummyLogger.cs" />
     <Compile Include="Bot\RocketChatBot.cs" />
+    <Compile Include="Loggers\ConsoleLogger.cs" />
+    <Compile Include="Loggers\DummyLogger.cs" />
     <Compile Include="Models\Results\CollectionResult.cs" />
     <Compile Include="Driver\DdpClient.cs" />
     <Compile Include="Interfaces\IStreamCollection.cs" />
@@ -84,7 +85,6 @@
     <Compile Include="Models\Results\StatisticsResult.cs" />
     <Compile Include="Models\RocketMessage.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Bot\ConsoleLogger.cs" />
     <Compile Include="Helpers\DriverHelper.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
