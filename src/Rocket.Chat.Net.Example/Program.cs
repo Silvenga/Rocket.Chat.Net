@@ -5,6 +5,7 @@
 
     using Rocket.Chat.Net.Bot;
     using Rocket.Chat.Net.Interfaces;
+    using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models.LoginOptions;
 
     public static class Program

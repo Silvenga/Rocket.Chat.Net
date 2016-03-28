@@ -1,4 +1,4 @@
-namespace Rocket.Chat.Net.Bot
+namespace Rocket.Chat.Net.Loggers
 {
     using Rocket.Chat.Net.Interfaces;
 

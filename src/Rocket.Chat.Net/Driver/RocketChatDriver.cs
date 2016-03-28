@@ -8,9 +8,9 @@
 
     using Newtonsoft.Json.Linq;
 
-    using Rocket.Chat.Net.Bot;
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
+    using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Models.Results;
