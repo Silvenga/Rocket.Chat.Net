@@ -114,6 +114,7 @@
         [Fact]
         public void Rocket_messages_should_be_forwarded()
         {
+            var rocketMessage = _autoFixture.Create<RocketMessage>();
             var payload = new
             {
                 id = _autoFixture.Create<string>(),
@@ -124,19 +125,20 @@
                     args = new object[]
                     {
                         _autoFixture.Create<string>(),
-                        _autoFixture.Create<RocketMessage>()
+                        rocketMessage
                     }
                 }
             };
 
-            RocketMessage rocketMessage = null;
-            _driver.MessageReceived += message => rocketMessage = message;
+            RocketMessage result = null;
+            _driver.MessageReceived += message => result = message;
 
             // Act
             _mockClient.DataReceivedRaw += Raise.Event<DataReceived>(payload.msg, JObject.FromObject(payload));
 
             // Assert
-            rocketMessage.Should().NotBeNull();
+            result.Should().NotBeNull();
+            result.Message.Should().Be(rocketMessage.Message);
         }
     }
 }
