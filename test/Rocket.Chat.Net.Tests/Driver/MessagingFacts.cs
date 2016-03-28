@@ -140,5 +140,36 @@
             result.Should().NotBeNull();
             result.Message.Should().Be(rocketMessage.Message);
         }
+
+        [Fact]
+        public void When_bot_is_mentioned_set_flag()
+        {
+            var rocketMessage = _autoFixture.Build<RocketMessage>()
+                .Create();
+            var payload = new
+            {
+                id = _autoFixture.Create<string>(),
+                msg = "added",
+                collection = "stream-messages",
+                fields = new
+                {
+                    args = new object[]
+                    {
+                        _autoFixture.Create<string>(),
+                        rocketMessage
+                    }
+                }
+            };
+
+            RocketMessage result = null;
+            _driver.MessageReceived += message => result = message;
+
+            // Act
+            _mockClient.DataReceivedRaw += Raise.Event<DataReceived>(payload.msg, JObject.FromObject(payload));
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Message.Should().Be(rocketMessage.Message);
+        }
     }
 }
