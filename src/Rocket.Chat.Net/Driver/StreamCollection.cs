@@ -9,6 +9,8 @@
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Serialization;
 
+    using Rocket.Chat.Net.Interfaces;
+
     /// <summary>
     /// Collection containing objects taken from a DDP stream.
     /// </summary>

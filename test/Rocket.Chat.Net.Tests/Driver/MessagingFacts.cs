@@ -1,0 +1,141 @@
+﻿namespace Rocket.Chat.Net.Tests.Driver
+{
+    using Newtonsoft.Json.Linq;
+
+    using NSubstitute;
+
+    using Ploeh.AutoFixture;
+
+    using Rocket.Chat.Net.Driver;
+    using Rocket.Chat.Net.Interfaces;
+    using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Tests.Helpers;
+
+    using Xunit;
+
+    public class MessagingFacts
+    {
+        private readonly Fixture _autoFixture = new Fixture();
+        private readonly IDdpClient _mockClient;
+        private readonly IStreamCollectionDatabase _mockCollectionDatabase;
+        private readonly IRocketChatDriver _driver;
+
+        public MessagingFacts()
+        {
+            _mockClient = Substitute.For<DummyDdpClient>();
+            _mockCollectionDatabase = Substitute.For<IStreamCollectionDatabase>();
+            var mockLog = Substitute.For<ILogger>();
+            _driver = new RocketChatDriver(mockLog, _mockClient, _mockCollectionDatabase);
+        }
+
+        [Fact]
+        public void Added_message_should_add_to_a_streaming_collection()
+        {
+            var callingClient = (DummyDdpClient) _mockClient;
+            var payload = new
+            {
+                collection = _autoFixture.Create<string>(),
+                id = _autoFixture.Create<string>(),
+                fields = new
+                {
+                    id = _autoFixture.Create<string>()
+                }
+            };
+
+            var mockCollection = Substitute.For<IStreamCollection>();
+            _mockCollectionDatabase.GetOrAddCollection(payload.collection).Returns(mockCollection);
+
+            // Act
+            callingClient.CallDataReceivedRaw("added", JObject.FromObject(payload));
+
+            // Assert
+            mockCollection.Received().Added(payload.id, Arg.Any<JObject>());
+        }
+
+        [Fact]
+        public void Changed_message_should_change_a_streaming_collection()
+        {
+            var callingClient = (DummyDdpClient) _mockClient;
+            var payload = new
+            {
+                collection = _autoFixture.Create<string>(),
+                id = _autoFixture.Create<string>(),
+                fields = new
+                {
+                    id = _autoFixture.Create<string>()
+                }
+            };
+
+            var mockCollection = Substitute.For<IStreamCollection>();
+            _mockCollectionDatabase.GetOrAddCollection(payload.collection).Returns(mockCollection);
+
+            // Act
+            callingClient.CallDataReceivedRaw("changed", JObject.FromObject(payload));
+
+            // Assert
+            mockCollection.Received().Changed(payload.id, Arg.Any<JObject>());
+        }
+
+        [Fact]
+        public void Removed_message_should_change_a_streaming_collection()
+        {
+            var callingClient = (DummyDdpClient) _mockClient;
+            var payload = new
+            {
+                collection = _autoFixture.Create<string>(),
+                id = _autoFixture.Create<string>()
+            };
+
+            var mockCollection = Substitute.For<IStreamCollection>();
+            _mockCollectionDatabase.GetOrAddCollection(payload.collection).Returns(mockCollection);
+
+            // Act
+            callingClient.CallDataReceivedRaw("removed", JObject.FromObject(payload));
+
+            // Assert
+            mockCollection.Received().Removed(payload.id);
+        }
+
+        [Fact]
+        public void Non_streaming_messages_should_not_change_collections()
+        {
+            var callingClient = (DummyDdpClient) _mockClient;
+            var payload = new
+            {
+                id = _autoFixture.Create<string>(),
+                msg = _autoFixture.Create<string>(),
+                random = _autoFixture.Create<int>()
+            };
+
+            // Act
+            callingClient.CallDataReceivedRaw(payload.msg, JObject.FromObject(payload));
+
+            // Assert
+            _mockCollectionDatabase.DidNotReceive().GetOrAddCollection(Arg.Any<string>());
+        }
+
+        [Fact]
+        public void Rocket_message()
+        {
+            var callingClient = (DummyDdpClient) _mockClient;
+            var payload = new
+            {
+                id = _autoFixture.Create<string>(),
+                msg = "added",
+                collection = "stream-messages",
+                fields = new
+                {
+                    args = new[]
+                    {
+                        _autoFixture.Create<RocketMessage>()
+                    }
+                }
+            };
+
+            // Act
+            callingClient.CallDataReceivedRaw(payload.msg, JObject.FromObject(payload));
+
+            // Assert
+        }
+    }
+}

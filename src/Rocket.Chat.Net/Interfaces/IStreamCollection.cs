@@ -1,4 +1,4 @@
-namespace Rocket.Chat.Net.Driver
+namespace Rocket.Chat.Net.Interfaces
 {
     using System.Collections.Generic;
 
