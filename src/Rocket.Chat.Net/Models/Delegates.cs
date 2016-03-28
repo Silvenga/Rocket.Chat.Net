@@ -1,6 +1,8 @@
 ﻿namespace Rocket.Chat.Net.Models
 {
-    public delegate void DataReceived(string type, dynamic data);
+    using Newtonsoft.Json.Linq;
+
+    public delegate void DataReceived(string type, JObject data);
 
     public delegate void MessageReceived(RocketMessage rocketMessage);
 

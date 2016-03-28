@@ -9,29 +9,29 @@
 
     public class StreamCollectionDatabase : IStreamCollectionDatabase
     {
-        private readonly ConcurrentDictionary<string, StreamCollection> _collections =
-            new ConcurrentDictionary<string, StreamCollection>();
+        private readonly ConcurrentDictionary<string, IStreamCollection> _collections =
+            new ConcurrentDictionary<string, IStreamCollection>();
 
-        public bool TryGetCollection(string collectionName, out StreamCollection collection)
+        public bool TryGetCollection(string collectionName, out IStreamCollection collection)
         {
             return _collections.TryGetValue(collectionName, out collection);
         }
 
-        public StreamCollection GetOrAddCollection(string collectionName)
+        public IStreamCollection GetOrAddCollection(string collectionName)
         {
             Func<string, StreamCollection> createCollection = name => new StreamCollection(name);
 
             return _collections.GetOrAdd(collectionName, createCollection);
         }
 
-        public async Task<StreamCollection> WaitForCollectionAsync(string collectionName, string id,
-                                                                   CancellationToken token)
+        public async Task<IStreamCollection> WaitForCollectionAsync(string collectionName, string id,
+                                                                    CancellationToken token)
         {
             return await Task.Run(() =>
             {
                 while (true)
                 {
-                    StreamCollection collection;
+                    IStreamCollection collection;
                     var success = TryGetCollection(collectionName, out collection);
 
                     var collectonPopulated = success && collection.ContainsId(id);

@@ -9,10 +9,12 @@
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Serialization;
 
+    using Rocket.Chat.Net.Interfaces;
+
     /// <summary>
     /// Collection containing objects taken from a DDP stream.
     /// </summary>
-    public class StreamCollection
+    public class StreamCollection : IStreamCollection
     {
         private readonly ConcurrentDictionary<string, JObject> _collection =
             new ConcurrentDictionary<string, JObject>();
@@ -40,6 +42,7 @@
 
         /// <summary>
         /// A collection item was changed.
+        /// Updates and merges existing item, when item doesn't exist create it
         /// </summary>
         /// <param name="id">UUID of the changed object</param>
         /// <param name="fields">Value of object updated, will be merged into existing object</param>

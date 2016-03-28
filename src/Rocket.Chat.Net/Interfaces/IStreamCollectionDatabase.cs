@@ -7,10 +7,10 @@ namespace Rocket.Chat.Net.Interfaces
 
     public interface IStreamCollectionDatabase
     {
-        bool TryGetCollection(string collectionName, out StreamCollection collection);
-        StreamCollection GetOrAddCollection(string collectionName);
+        bool TryGetCollection(string collectionName, out IStreamCollection collection);
+        IStreamCollection GetOrAddCollection(string collectionName);
 
-        Task<StreamCollection> WaitForCollectionAsync(string collectionName, string id,
+        Task<IStreamCollection> WaitForCollectionAsync(string collectionName, string id,
                                                       CancellationToken token);
     }
 }

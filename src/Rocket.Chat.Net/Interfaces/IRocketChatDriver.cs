@@ -162,7 +162,7 @@
         /// </summary>
         /// <param name="collectionName">Name of the collection to get (e.g. users).</param>
         /// <returns>Collection requested, null if it does not exist.</returns>
-        StreamCollection GetCollection(string collectionName);
+        IStreamCollection GetCollection(string collectionName);
 
         /// <summary>
         /// Subscribe to stream using no params

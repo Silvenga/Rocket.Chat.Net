@@ -48,6 +48,8 @@
             _logger = logger;
             _client = client;
             _collectionDatabase = collectionDatabaseDatabase;
+            _client.DataReceivedRaw += ClientOnDataReceivedRaw;
+            _client.DdpReconnect += OnDdpReconnect;
         }
 
         private void ClientOnDataReceivedRaw(string type, dynamic data)
@@ -56,35 +58,29 @@
             HandleRocketMessage(type, data);
         }
 
-        private void HandleStreamingCollections(string type, dynamic data)
+        private void HandleStreamingCollections(string type, JObject data)
         {
-            if (type == "added")
+            var collectionResult = data.ToObject<CollectionResult>();
+            if (collectionResult.Name == null)
             {
-                string collectionName = data.collection;
-                string id = data.id;
-                object field = data.fields;
-
-                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
-                collection.Added(id, JObject.FromObject(field));
+                return;
             }
 
-            if (type == "changed")
+            var collection = _collectionDatabase.GetOrAddCollection(collectionResult.Name);
+
+            switch (type)
             {
-                string collectionName = data.collection;
-                string id = data.id;
-                object field = data.fields;
-
-                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
-                collection.Changed(id, JObject.FromObject(field));
-            }
-
-            if (type == "removed")
-            {
-                string collectionName = data.collection;
-                string id = data.id;
-
-                var collection = _collectionDatabase.GetOrAddCollection(collectionName);
-                collection.Removed(id);
+                case "added":
+                    collection.Added(collectionResult.Id, JObject.FromObject(collectionResult.Fields));
+                    break;
+                case "changed":
+                    collection.Changed(collectionResult.Id, JObject.FromObject(collectionResult.Fields));
+                    break;
+                case "removed":
+                    collection.Removed(collectionResult.Id);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Incountered a unknown subscription update type {type}.");
             }
         }
 
@@ -136,7 +132,7 @@
         {
             await _client.SubscribeAndWaitAsync("fullUserData", TimeoutToken, username, 1);
 
-            StreamCollection data;
+            IStreamCollection data;
             var success = _collectionDatabase.TryGetCollection("users", out data);
             if (!success)
             {
@@ -406,9 +402,9 @@
             MessageReceived?.Invoke(rocketmessage);
         }
 
-        public StreamCollection GetCollection(string collectionName)
+        public IStreamCollection GetCollection(string collectionName)
         {
-            StreamCollection value;
+            IStreamCollection value;
             var results = _collectionDatabase.TryGetCollection(collectionName, out value);
 
             return results ? value : null;
@@ -427,8 +423,9 @@
         private CancellationToken CreateTimeoutToken()
         {
             _logger.Debug("Created cancellation token.");
+            const int timeoutSeconds = 30;
             var source = new CancellationTokenSource();
-            source.CancelAfter(TimeSpan.FromSeconds(30));
+            source.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
 
             return source.Token;
         }

@@ -13,6 +13,7 @@
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models.Results;
+    using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
 
@@ -20,17 +21,17 @@
     {
         private readonly Fixture _autoFixture = new Fixture();
         private readonly IDdpClient _mockClient;
-        private readonly IStreamCollectionDatabase _collectionDatabase;
+        private readonly IStreamCollectionDatabase _mockCollectionDatabase;
         private readonly IRocketChatDriver _driver;
 
         private static CancellationToken CancellationToken => Arg.Any<CancellationToken>();
 
         public RocketChatDriverFacts()
         {
-            _mockClient = Substitute.For<IDdpClient>();
-            _collectionDatabase = Substitute.For<IStreamCollectionDatabase>();
+            _mockClient = Substitute.For<DummyDdpClient>();
+            _mockCollectionDatabase = Substitute.For<IStreamCollectionDatabase>();
             var mockLog = Substitute.For<ILogger>();
-            _driver = new RocketChatDriver(mockLog, _mockClient, _collectionDatabase);
+            _driver = new RocketChatDriver(mockLog, _mockClient, _mockCollectionDatabase);
         }
 
         [Fact]
@@ -102,17 +103,27 @@
             _mockClient.CallAsync(Arg.Any<string>(), CancellationToken, Arg.Any<object[]>())
                        .ReturnsForAnyArgs(Task.FromResult(loginResponse));
 
-            var collection = new StreamCollection("users");
+            IStreamCollection collection = new StreamCollection("users");
             var user = JObject.FromObject(new {username = ""});
             collection.Added(loginResult.UserId, user);
-            _collectionDatabase.WaitForCollectionAsync("users", loginResult.UserId, CancellationToken)
-                               .Returns(Task.FromResult(collection));
+            _mockCollectionDatabase.WaitForCollectionAsync("users", loginResult.UserId, CancellationToken)
+                                   .Returns(Task.FromResult(collection));
 
             // Act
             await _driver.LoginWithEmailAsync(email, password);
 
             // Assert
             await _mockClient.ReceivedWithAnyArgs().CallAsync("login", CancellationToken, payload);
+        }
+
+        [Fact]
+        public void Disposing_driver_should_dispose_client()
+        {
+            // Act
+            _driver.Dispose();
+
+            // Assert
+            _mockClient.Received().Dispose();
         }
     }
 }
