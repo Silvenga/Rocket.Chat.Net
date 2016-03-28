@@ -1,5 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Tests.Driver
 {
+    using FluentAssertions;
+
     using Newtonsoft.Json.Linq;
 
     using NSubstitute;
@@ -9,7 +11,6 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
-    using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
 
@@ -22,7 +23,7 @@
 
         public MessagingFacts()
         {
-            _mockClient = Substitute.For<DummyDdpClient>();
+            _mockClient = Substitute.For<IDdpClient>();
             _mockCollectionDatabase = Substitute.For<IStreamCollectionDatabase>();
             var mockLog = Substitute.For<ILogger>();
             _driver = new RocketChatDriver(mockLog, _mockClient, _mockCollectionDatabase);
@@ -31,7 +32,6 @@
         [Fact]
         public void Added_message_should_add_to_a_streaming_collection()
         {
-            var callingClient = (DummyDdpClient) _mockClient;
             var payload = new
             {
                 collection = _autoFixture.Create<string>(),
@@ -46,7 +46,7 @@
             _mockCollectionDatabase.GetOrAddCollection(payload.collection).Returns(mockCollection);
 
             // Act
-            callingClient.CallDataReceivedRaw("added", JObject.FromObject(payload));
+            _mockClient.DataReceivedRaw += Raise.Event<DataReceived>("added", JObject.FromObject(payload));
 
             // Assert
             mockCollection.Received().Added(payload.id, Arg.Any<JObject>());
@@ -55,7 +55,6 @@
         [Fact]
         public void Changed_message_should_change_a_streaming_collection()
         {
-            var callingClient = (DummyDdpClient) _mockClient;
             var payload = new
             {
                 collection = _autoFixture.Create<string>(),
@@ -70,7 +69,7 @@
             _mockCollectionDatabase.GetOrAddCollection(payload.collection).Returns(mockCollection);
 
             // Act
-            callingClient.CallDataReceivedRaw("changed", JObject.FromObject(payload));
+            _mockClient.DataReceivedRaw += Raise.Event<DataReceived>("changed", JObject.FromObject(payload));
 
             // Assert
             mockCollection.Received().Changed(payload.id, Arg.Any<JObject>());
@@ -79,7 +78,6 @@
         [Fact]
         public void Removed_message_should_change_a_streaming_collection()
         {
-            var callingClient = (DummyDdpClient) _mockClient;
             var payload = new
             {
                 collection = _autoFixture.Create<string>(),
@@ -90,7 +88,7 @@
             _mockCollectionDatabase.GetOrAddCollection(payload.collection).Returns(mockCollection);
 
             // Act
-            callingClient.CallDataReceivedRaw("removed", JObject.FromObject(payload));
+            _mockClient.DataReceivedRaw += Raise.Event<DataReceived>("removed", JObject.FromObject(payload));
 
             // Assert
             mockCollection.Received().Removed(payload.id);
@@ -99,7 +97,6 @@
         [Fact]
         public void Non_streaming_messages_should_not_change_collections()
         {
-            var callingClient = (DummyDdpClient) _mockClient;
             var payload = new
             {
                 id = _autoFixture.Create<string>(),
@@ -108,16 +105,15 @@
             };
 
             // Act
-            callingClient.CallDataReceivedRaw(payload.msg, JObject.FromObject(payload));
+            _mockClient.DataReceivedRaw += Raise.Event<DataReceived>(payload.msg, JObject.FromObject(payload));
 
             // Assert
             _mockCollectionDatabase.DidNotReceive().GetOrAddCollection(Arg.Any<string>());
         }
 
         [Fact]
-        public void Rocket_message()
+        public void Rocket_messages_should_be_forwarded()
         {
-            var callingClient = (DummyDdpClient) _mockClient;
             var payload = new
             {
                 id = _autoFixture.Create<string>(),
@@ -125,17 +121,22 @@
                 collection = "stream-messages",
                 fields = new
                 {
-                    args = new[]
+                    args = new object[]
                     {
+                        _autoFixture.Create<string>(),
                         _autoFixture.Create<RocketMessage>()
                     }
                 }
             };
 
+            RocketMessage rocketMessage = null;
+            _driver.MessageReceived += message => rocketMessage = message;
+
             // Act
-            callingClient.CallDataReceivedRaw(payload.msg, JObject.FromObject(payload));
+            _mockClient.DataReceivedRaw += Raise.Event<DataReceived>(payload.msg, JObject.FromObject(payload));
 
             // Assert
+            rocketMessage.Should().NotBeNull();
         }
     }
 }

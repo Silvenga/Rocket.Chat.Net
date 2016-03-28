@@ -13,7 +13,7 @@
     using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.LoginOptions;
-    using Rocket.Chat.Net.Models.Results;
+    using Rocket.Chat.Net.Models.MethodResults;
 
     public class RocketChatDriver : IRocketChatDriver
     {
@@ -93,7 +93,7 @@
             }
 
             var messageRaw = data.fields.args[1];
-            RocketMessage message = DriverHelper.ParseMessage(messageRaw);
+            var message = ((JObject) messageRaw).ToObject<RocketMessage>();
             message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
             message.IsFromMyself = message.CreatedBy.Id == UserId;
 
@@ -153,7 +153,7 @@
             await _client.PingAsync(TimeoutToken);
         }
 
-        public async Task<RocketResult<LoginResult>> LoginAsync(ILoginOption loginOption)
+        public async Task<MethodResult<LoginResult>> LoginAsync(ILoginOption loginOption)
         {
             var ldapLogin = loginOption as LdapLoginOption;
             if (ldapLogin != null)
@@ -179,7 +179,7 @@
             throw new NotSupportedException($"The given login option `{typeof(ILoginOption)}` is not supported.");
         }
 
-        public async Task<RocketResult<LoginResult>> LoginWithEmailAsync(string email, string password)
+        public async Task<MethodResult<LoginResult>> LoginWithEmailAsync(string email, string password)
         {
             _logger.Info($"Logging in with user {email} using a email...");
             var passwordHash = DriverHelper.Sha256Hash(password);
@@ -199,7 +199,7 @@
             return await InternalLoginAsync(request);
         }
 
-        public async Task<RocketResult<LoginResult>> LoginWithUsernameAsync(string username, string password)
+        public async Task<MethodResult<LoginResult>> LoginWithUsernameAsync(string username, string password)
         {
             _logger.Info($"Logging in with user {username} using a username...");
             var passwordHash = DriverHelper.Sha256Hash(password);
@@ -219,7 +219,7 @@
             return await InternalLoginAsync(request);
         }
 
-        public async Task<RocketResult<LoginResult>> LoginWithLdapAsync(string username, string password)
+        public async Task<MethodResult<LoginResult>> LoginWithLdapAsync(string username, string password)
         {
             _logger.Info($"Logging in with user {username} using LDAP...");
             var request = new
@@ -233,7 +233,7 @@
             return await InternalLoginAsync(request);
         }
 
-        public async Task<RocketResult<LoginResult>> LoginResumeAsync(string sessionToken)
+        public async Task<MethodResult<LoginResult>> LoginResumeAsync(string sessionToken)
         {
             _logger.Info($"Resuming session {sessionToken}");
             var request = new
@@ -244,10 +244,10 @@
             return await InternalLoginAsync(request);
         }
 
-        private async Task<RocketResult<LoginResult>> InternalLoginAsync(object request)
+        private async Task<MethodResult<LoginResult>> InternalLoginAsync(object request)
         {
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = data.ToObject<RocketResult<LoginResult>>();
+            var result = data.ToObject<MethodResult<LoginResult>>();
             if (!result.HasError)
             {
                 await SetUserInfoAsync(result.Result.UserId);
@@ -289,11 +289,11 @@
             return result.result;
         }
 
-        public async Task<RocketResult<ChannelListResult>> ChannelListAsync()
+        public async Task<MethodResult<ChannelListResult>> ChannelListAsync()
         {
             _logger.Info("Looking up public channels.");
             var result = await _client.CallAsync("channelsList", TimeoutToken);
-            return result.ToObject<RocketResult<ChannelListResult>>();
+            return result.ToObject<MethodResult<ChannelListResult>>();
         }
 
         public async Task<dynamic> JoinRoomAsync(string roomId)
@@ -340,7 +340,7 @@
             {
                 return messages;
             }
-            messages.AddRange(rawList.Cast<JObject>().Select(DriverHelper.ParseMessage));
+            messages.AddRange(rawList.Cast<JObject>().Select(data => data.ToObject<RocketMessage>()));
 
             return messages;
         }
@@ -357,44 +357,44 @@
             {
                 return messages;
             }
-            messages.AddRange(rawList.Cast<JObject>().Select(DriverHelper.ParseMessage));
+            messages.AddRange(rawList.Cast<JObject>().Select(data => data.ToObject<RocketMessage>()));
 
             return messages;
         }
 
-        public async Task<RocketResult<StatisticsResult>> GetStatisticsAsync(bool refresh = false)
+        public async Task<MethodResult<StatisticsResult>> GetStatisticsAsync(bool refresh = false)
         {
             _logger.Info("Requesting statistics.");
             var results = await _client.CallAsync("getStatistics", TimeoutToken);
 
-            return results.ToObject<RocketResult<StatisticsResult>>();
+            return results.ToObject<MethodResult<StatisticsResult>>();
         }
 
-        public async Task<RocketResult<CreateRoomResult>> CreateRoomAsync(string roomName, IList<string> members = null)
+        public async Task<MethodResult<CreateRoomResult>> CreateRoomAsync(string roomName, IList<string> members = null)
         {
             _logger.Info($"Creating room {roomName}.");
             var results =
                 await _client.CallAsync("createChannel", TimeoutToken, roomName, members ?? new List<string>());
 
-            return results.ToObject<RocketResult<CreateRoomResult>>();
+            return results.ToObject<MethodResult<CreateRoomResult>>();
         }
 
-        public async Task<RocketResult<CreateRoomResult>> HideRoomAsync(string roomId)
+        public async Task<MethodResult<CreateRoomResult>> HideRoomAsync(string roomId)
         {
             _logger.Info($"Hiding room {roomId}.");
             var results =
                 await _client.CallAsync("hideRoom", TimeoutToken, roomId);
 
-            return results.ToObject<RocketResult<CreateRoomResult>>();
+            return results.ToObject<MethodResult<CreateRoomResult>>();
         }
 
-        public async Task<RocketResult<int>> EraseRoomAsync(string roomId)
+        public async Task<MethodResult<int>> EraseRoomAsync(string roomId)
         {
             _logger.Info($"Deleting room {roomId}.");
             var results =
                 await _client.CallAsync("eraseRoom", TimeoutToken, roomId);
 
-            return results.ToObject<RocketResult<int>>();
+            return results.ToObject<MethodResult<int>>();
         }
 
         private void OnMessageReceived(RocketMessage rocketmessage)

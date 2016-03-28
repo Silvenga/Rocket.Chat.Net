@@ -57,7 +57,7 @@
     <Compile Include="Bot\RocketChatBot.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="Loggers\DummyLogger.cs" />
-    <Compile Include="Models\Results\CollectionResult.cs" />
+    <Compile Include="Models\MethodResults\CollectionResult.cs" />
     <Compile Include="Driver\DdpClient.cs" />
     <Compile Include="Interfaces\IStreamCollection.cs" />
     <Compile Include="Interfaces\IDdpClient.cs" />
@@ -67,10 +67,10 @@
     <Compile Include="Helpers\MeteorDateSerializer.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\FullUser.cs" />
-    <Compile Include="Models\Results\ChannelListResult.cs" />
-    <Compile Include="Models\Results\CreateRoomResult.cs" />
-    <Compile Include="Models\Results\ErrorResult.cs" />
-    <Compile Include="Models\Results\LoginResult.cs" />
+    <Compile Include="Models\MethodResults\ChannelListResult.cs" />
+    <Compile Include="Models\MethodResults\CreateRoomResult.cs" />
+    <Compile Include="Models\MethodResults\ErrorResult.cs" />
+    <Compile Include="Models\MethodResults\LoginResult.cs" />
     <Compile Include="Helpers\BotHelper.cs" />
     <Compile Include="Models\LoginOptions\EmailLoginOption.cs" />
     <Compile Include="Interfaces\ILoginOption.cs" />
@@ -81,8 +81,9 @@
     <Compile Include="Models\LoginOptions\UsernameLoginOption.cs" />
     <Compile Include="Models\BasicResponse.cs" />
     <Compile Include="Models\Delegates.cs" />
-    <Compile Include="Models\Results\RocketResult.cs" />
-    <Compile Include="Models\Results\StatisticsResult.cs" />
+    <Compile Include="Models\MethodResults\MethodResult.cs" />
+    <Compile Include="Models\MethodResults\StatisticsResult.cs" />
+    <Compile Include="Models\SubscriptionResults\SubscriptionResult.cs" />
     <Compile Include="Models\RocketMessage.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Helpers\DriverHelper.cs" />

@@ -1,4 +1,4 @@
-namespace Rocket.Chat.Net.Models.Results
+namespace Rocket.Chat.Net.Models.MethodResults
 {
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;

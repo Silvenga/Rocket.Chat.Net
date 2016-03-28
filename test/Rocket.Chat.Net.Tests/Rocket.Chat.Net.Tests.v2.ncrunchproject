@@ -33,23 +33,5 @@
     <FixtureTestSelector>
       <FixtureName>Rocket.Chat.Net.Tests.Driver.SandboxFacts</FixtureName>
     </FixtureTestSelector>
-    <FixtureTestSelector>
-      <FixtureName>Rocket.Chat.Net.Tests.Integration.AdministrationFacts</FixtureName>
-    </FixtureTestSelector>
-    <FixtureTestSelector>
-      <FixtureName>Rocket.Chat.Net.Tests.Integration.ClientFacts</FixtureName>
-    </FixtureTestSelector>
-    <FixtureTestSelector>
-      <FixtureName>Rocket.Chat.Net.Tests.Integration.LoginFacts</FixtureName>
-    </FixtureTestSelector>
-    <FixtureTestSelector>
-      <FixtureName>Rocket.Chat.Net.Tests.Integration.MessagingFacts</FixtureName>
-    </FixtureTestSelector>
-    <FixtureTestSelector>
-      <FixtureName>Rocket.Chat.Net.Tests.Integration.RoomFacts</FixtureName>
-    </FixtureTestSelector>
-    <FixtureTestSelector>
-      <FixtureName>Rocket.Chat.Net.Tests.Integration.SandboxFacts</FixtureName>
-    </FixtureTestSelector>
   </IgnoredTests>
 </ProjectConfiguration>

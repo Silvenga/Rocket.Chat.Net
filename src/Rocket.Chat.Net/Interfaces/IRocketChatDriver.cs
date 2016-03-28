@@ -7,7 +7,7 @@
 
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Models;
-    using Rocket.Chat.Net.Models.Results;
+    using Rocket.Chat.Net.Models.MethodResults;
 
     [SuppressMessage("ReSharper", "UnusedMemberInSuper.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
@@ -35,7 +35,7 @@
         /// <param name="email">Email to use</param>
         /// <param name="password">Plaintext password to use (will be SHA-256 before sending)</param>
         /// <returns></returns>
-        Task<RocketResult<LoginResult>> LoginWithEmailAsync(string email, string password);
+        Task<MethodResult<LoginResult>> LoginWithEmailAsync(string email, string password);
 
         /// <summary>
         /// Login with LDAP
@@ -43,7 +43,7 @@
         /// <param name="username">Email/Username to use</param>
         /// <param name="password">Plaintext password to use</param>
         /// <returns></returns>
-        Task<RocketResult<LoginResult>> LoginWithLdapAsync(string username, string password);
+        Task<MethodResult<LoginResult>> LoginWithLdapAsync(string username, string password);
 
         /// <summary>
         /// Login with username
@@ -51,21 +51,21 @@
         /// <param name="username">Username to use</param>
         /// <param name="password">Plaintext password to use (will be SHA-256 before sending)</param>
         /// <returns></returns>
-        Task<RocketResult<LoginResult>> LoginWithUsernameAsync(string username, string password);
+        Task<MethodResult<LoginResult>> LoginWithUsernameAsync(string username, string password);
 
         /// <summary>
         /// Resume a login session
         /// </summary>
         /// <param name="sessionToken">Active token given from a previous login</param>
         /// <returns></returns>
-        Task<RocketResult<LoginResult>> LoginResumeAsync(string sessionToken);
+        Task<MethodResult<LoginResult>> LoginResumeAsync(string sessionToken);
 
         /// <summary>
         /// Login with a ILogin object
         /// </summary>
         /// <param name="loginOption">Login option to use</param>
         /// <returns></returns>
-        Task<RocketResult<LoginResult>> LoginAsync(ILoginOption loginOption);
+        Task<MethodResult<LoginResult>> LoginAsync(ILoginOption loginOption);
 
         /// <summary>
         /// Get roomId by either roomId or room name
@@ -127,7 +127,7 @@
         /// List authorized channels
         /// </summary>
         /// <returns></returns>
-        Task<RocketResult<ChannelListResult>> ChannelListAsync();
+        Task<MethodResult<ChannelListResult>> ChannelListAsync();
 
         /// <summary>
         /// Called when the Ddp Clients reconnects, can be used to log back in or resubscribe.
@@ -184,7 +184,7 @@
         /// </summary>
         /// <param name="refresh">Should permissions be flushed first</param>
         /// <returns></returns>
-        Task<RocketResult<StatisticsResult>> GetStatisticsAsync(bool refresh = false);
+        Task<MethodResult<StatisticsResult>> GetStatisticsAsync(bool refresh = false);
 
         /// <summary>
         /// Creates a new room.
@@ -192,20 +192,20 @@
         /// <param name="roomName">Name of the room to create</param>
         /// <param name="members">Optional. A list of users to add to the room on creation</param>
         /// <returns>The id of the room that was created when successful</returns>
-        Task<RocketResult<CreateRoomResult>> CreateRoomAsync(string roomName, IList<string> members = null);
+        Task<MethodResult<CreateRoomResult>> CreateRoomAsync(string roomName, IList<string> members = null);
 
         /// <summary>
         /// Hide a room.
         /// </summary>
         /// <param name="roomId">Room to hide by id</param>
         /// <returns></returns>
-        Task<RocketResult<CreateRoomResult>> HideRoomAsync(string roomId);
+        Task<MethodResult<CreateRoomResult>> HideRoomAsync(string roomId);
 
         /// <summary>
         /// Deletes a room. This requires permissions (admin for now?). 
         /// </summary>
         /// <param name="roomId">Room to delete by id</param>
         /// <returns>Number impacted?</returns>
-        Task<RocketResult<int>> EraseRoomAsync(string roomId);
+        Task<MethodResult<int>> EraseRoomAsync(string roomId);
     }
 }

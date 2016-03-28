@@ -12,8 +12,7 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
-    using Rocket.Chat.Net.Models.Results;
-    using Rocket.Chat.Net.Tests.Helpers;
+    using Rocket.Chat.Net.Models.MethodResults;
 
     using Xunit;
 
@@ -28,7 +27,7 @@
 
         public RocketChatDriverFacts()
         {
-            _mockClient = Substitute.For<DummyDdpClient>();
+            _mockClient = Substitute.For<IDdpClient>();
             _mockCollectionDatabase = Substitute.For<IStreamCollectionDatabase>();
             var mockLog = Substitute.For<ILogger>();
             _driver = new RocketChatDriver(mockLog, _mockClient, _mockCollectionDatabase);

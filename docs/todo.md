@@ -10,7 +10,9 @@
 - [ ] Get test converage
 - [ ] A way to unsub
 - [ ] Figure out why tests are stuck when running in parallel. - It runs correctly locally from the cli. I almost looks like the tests don't even start
-- [ ] Pull user info from env vars
+- [ ] Pull user info from env vars for tests
+- [ ] Handle clears on subs results
+- [ ] Create a converter for rocket messages
 
 # Driver Support
 

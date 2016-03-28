@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Models.Results
+﻿namespace Rocket.Chat.Net.Models.MethodResults
 {
     using System.Diagnostics.CodeAnalysis;
 
@@ -7,7 +7,7 @@
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class RocketResult<T>
+    public class MethodResult<T>
     {
         [JsonProperty(PropertyName = "msg")]
         public string ResponseType { get; set; }

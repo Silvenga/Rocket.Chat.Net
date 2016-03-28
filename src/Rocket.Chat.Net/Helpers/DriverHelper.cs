@@ -3,10 +3,6 @@
     using System.Security.Cryptography;
     using System.Text;
 
-    using Newtonsoft.Json.Linq;
-
-    using Rocket.Chat.Net.Models;
-
     public static class DriverHelper
     {
         public const string Sha256 = "sha-256";
@@ -31,17 +27,6 @@
             }
 
             return builder.ToString();
-        }
-
-        public static RocketMessage ParseMessage(JObject data)
-        {
-            var message = data.ToObject<RocketMessage>();
-            return message;
-        }
-
-        public static bool HasError(dynamic data)
-        {
-            return DriverHelper.HasProperty(data, "error");
         }
     }
 }
