@@ -143,7 +143,10 @@
                 .Items<FullUser>()
                 .FirstOrDefault(x => x.Value.Username == username);
             var user = userPair.Value;
-            user.Id = userPair.Key;
+            if (user != null)
+            {
+                user.Id = userPair.Key;
+            }
             return user;
         }
 
