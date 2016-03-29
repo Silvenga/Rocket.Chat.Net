@@ -1,8 +1,6 @@
 ﻿namespace Rocket.Chat.Net.Tests.Integration
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -11,6 +9,7 @@
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Driver;
+    using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Tests.Helpers;
 
@@ -19,104 +18,226 @@
 
     [Trait("Category", "Driver")]
     [Collection("Driver")]
-    public class MessagingFacts : DriverFactsBase
+    public class MessagingFacts : IDisposable
     {
-        // List of rooms to clean up - rain or shine.
-        private IList<string> RoomsCreatedByName { get; } = new List<string>();
-        private readonly AutoResetEvent _messageReceived = new AutoResetEvent(false);
+        private readonly TimeSpan _timeout = TimeSpan.FromSeconds(5);
+        private readonly MessagingFixture _fixture;
+        private static readonly Fixture AutoFixture = new Fixture();
 
-        public MessagingFacts(ITestOutputHelper helper) : base(helper)
+        public MessagingFacts(ITestOutputHelper helper)
         {
+            var roomName = AutoFixture.Create<string>();
+            _fixture = new MessagingFixture(helper, roomName);
         }
 
         [Fact]
         public async Task Can_send_messages()
         {
-            await DefaultAccountLogin();
-
             var text = AutoFixture.Create<string>();
-            var roomName = AutoFixture.Create<string>();
-            var roomId = await CreateRoom(roomName);
-            await RocketChatDriver.SubscribeToRoomAsync(roomId);
+            var messageReceived = new AutoResetEvent(false);
 
             RocketMessage message = null;
-            RocketChatDriver.MessageReceived += rocketMessage =>
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
             {
-                if (rocketMessage.RoomId == roomId)
+                if (rocketMessage.RoomId != _fixture.RoomId)
                 {
-                    message = rocketMessage;
-                    _messageReceived.Set();
+                    return;
                 }
+                message = rocketMessage;
+                messageReceived.Set();
             };
 
-            // Act
-            await RocketChatDriver.SendMessageAsync(text, roomId);
+            await _fixture.Master.InitAsync(Constants.Username, Constants.Password);
 
-            _messageReceived.WaitOne(TimeSpan.FromSeconds(5));
+            // Act
+            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            messageReceived.WaitOne(_timeout);
 
             // Assert
             message.Should().NotBeNull();
         }
 
         [Fact]
-        public async Task When_bot_is_mentioned_set_flag()
+        public async Task When_sending_messages_bot_flag_should_be_set()
         {
-            await DefaultAccountLogin();
-
-            var text = AutoFixture.Create<string>() + " @" + Constants.Username;
-            var roomName = AutoFixture.Create<string>();
-            var roomId = await CreateRoom(roomName);
-            await RocketChatDriver.SubscribeToRoomAsync(roomId);
+            var text = AutoFixture.Create<string>();
+            var messageReceived = new AutoResetEvent(false);
 
             RocketMessage message = null;
-            RocketChatDriver.MessageReceived += rocketMessage =>
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
             {
-                if (rocketMessage.RoomId == roomId)
+                if (rocketMessage.RoomId != _fixture.RoomId)
                 {
-                    message = rocketMessage;
-                    _messageReceived.Set();
+                    return;
                 }
+                message = rocketMessage;
+                messageReceived.Set();
             };
 
-            // Act
-            await RocketChatDriver.SendMessageAsync(text, roomId);
+            await _fixture.Master.InitAsync(Constants.Username, Constants.Password);
 
-            _messageReceived.WaitOne(TimeSpan.FromSeconds(5));
+            // Act
+            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            messageReceived.WaitOne(_timeout);
 
             // Assert
             message.Should().NotBeNull();
-            message.IsBotMentioned.Should().BeTrue();
+            message.IsBot.Should().BeTrue();
         }
 
-        private async Task<string> CreateRoom(string roomName)
+        [Fact]
+        public async Task When_bot_is_mentioned_set_mentioned_flag()
         {
-            RoomsCreatedByName.Add(roomName);
+            var text = AutoFixture.Create<string>() + " @" + Constants.Username;
 
-            var roomResult = await RocketChatDriver.CreateRoomAsync(roomName);
-
-            return roomResult.Result.RoomId;
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            if (!RoomsCreatedByName.Any())
+            var masterReceived = new AutoResetEvent(false);
+            RocketMessage masterMessage = null;
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
             {
-                return;
-            }
-            using (var driver = new RocketChatDriver(Constants.RocketServer, false))
-            {
-                driver.ConnectAsync().Wait();
-                driver.LoginWithEmailAsync(Constants.Email, Constants.Password).Wait();
-                var rooms = driver.ChannelListAsync().Result;
-                var toDelete = rooms.Result.Channels.Where(x => RoomsCreatedByName.Contains(x.Name));
-
-                foreach (var room in toDelete)
+                if (rocketMessage.RoomId != _fixture.RoomId)
                 {
-                    driver.EraseRoomAsync(room.Id).Wait();
+                    return;
                 }
-            }
+                masterMessage = rocketMessage;
+                masterReceived.Set();
+            };
+
+            var slaveReceived = new AutoResetEvent(false);
+            RocketMessage slaveMessage = null;
+            _fixture.Slave.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                slaveMessage = rocketMessage;
+                slaveReceived.Set();
+            };
+
+            await _fixture.Master.InitAsync(Constants.Username, Constants.Password);
+            await _fixture.Slave.InitAsync(Constants.TestUsername, Constants.Password);
+
+            // Act
+            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            masterReceived.WaitOne(_timeout);
+            slaveReceived.WaitOne(_timeout);
+
+            // Assert
+            masterMessage.Should().NotBeNull();
+            masterMessage.IsBotMentioned.Should().BeTrue();
+
+            slaveMessage.Should().NotBeNull();
+            slaveMessage.IsBotMentioned.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task When_bot_sends_message_on_receive_set_myself_flag()
+        {
+            var text = AutoFixture.Create<string>() + " @" + Constants.Username;
+
+            var masterReceived = new AutoResetEvent(false);
+            RocketMessage masterMessage = null;
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                masterMessage = rocketMessage;
+                masterReceived.Set();
+            };
+
+            var slaveReceived = new AutoResetEvent(false);
+            RocketMessage slaveMessage = null;
+            _fixture.Slave.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                slaveMessage = rocketMessage;
+                slaveReceived.Set();
+            };
+
+            await _fixture.Master.InitAsync(Constants.Username, Constants.Password);
+            await _fixture.Slave.InitAsync(Constants.TestUsername, Constants.Password);
+
+            // Act
+            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            masterReceived.WaitOne(_timeout);
+            slaveReceived.WaitOne(_timeout);
+
+            // Assert
+            masterMessage.Should().NotBeNull();
+            masterMessage.IsFromMyself.Should().BeTrue();
+
+            slaveMessage.Should().NotBeNull();
+            slaveMessage.IsFromMyself.Should().BeFalse();
+        }
+
+        public void Dispose()
+        {
+            _fixture.Dispose();
+        }
+    }
+
+    public class MessagingFixture : IDisposable
+    {
+        private readonly XUnitLogger _logger;
+        public RocketChatDriverFixture Fixture { get; }
+        public RocketChatDriverFixture Master { get; }
+        public RocketChatDriverFixture Slave { get; }
+
+        public string RoomId { get; }
+        public string RoomName { get; }
+
+        public MessagingFixture(ITestOutputHelper helper, string roomName)
+        {
+            RoomName = roomName;
+            _logger = new XUnitLogger(helper);
+            Master = new RocketChatDriverFixture(_logger);
+            Slave = new RocketChatDriverFixture(_logger);
+
+            Fixture = new RocketChatDriverFixture(_logger);
+            Fixture.InitAsync(Constants.Username, Constants.Password).Wait();
+            RoomId = Fixture.Driver.CreateRoomAsync(roomName)?.Result?.Result?.RoomId;
+        }
+
+        public void Dispose()
+        {
+            _logger.Dispose();
+
+            Fixture.Driver.EraseRoomAsync(RoomId).Wait();
+
+            Fixture.Dispose();
+            Master.Dispose();
+            Slave.Dispose();
+        }
+    }
+
+    public class RocketChatDriverFixture : IDisposable
+    {
+        public IRocketChatDriver Driver { get; }
+
+        public RocketChatDriverFixture(XUnitLogger helper)
+        {
+            Driver = new RocketChatDriver(Constants.RocketServer, false, helper);
+        }
+
+        public async Task InitAsync(string username, string password)
+        {
+            await Driver.ConnectAsync();
+            await Driver.LoginWithUsernameAsync(username, password);
+            await Driver.SubscribeToRoomAsync();
+        }
+
+        public void Dispose()
+        {
+            Driver.Dispose();
         }
     }
 }

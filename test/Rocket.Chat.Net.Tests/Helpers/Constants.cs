@@ -6,5 +6,8 @@
         public const string Username = "mark.lopez";
         public const string Email = "m@silvenga.com";
         public const string Password = "silverlight";
+
+        public const string TestUsername = "test.user";
+        public const string TestEmail = "test.user@silvenga.com";
     }
 }

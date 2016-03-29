@@ -28,7 +28,7 @@
                 "0.22.0"
             };
 
-            await DefaultAccountLogin();
+            await Defaultaccountloginasync();
 
             // Act
             var results = await RocketChatDriver.GetStatisticsAsync();

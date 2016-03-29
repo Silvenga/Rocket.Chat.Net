@@ -25,14 +25,14 @@
             RocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, XUnitLogger);
         }
 
-        protected async Task DefaultAccountLogin()
+        protected async Task Defaultaccountloginasync()
         {
             await RocketChatDriver.ConnectAsync();
             var result = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
             result.HasError.Should().BeFalse();
         }
 
-        protected async Task CleanupRooms()
+        protected async Task CleanupRoomsAsync()
         {
             var rooms = await RocketChatDriver.ChannelListAsync();
             rooms.HasError.Should().BeFalse();
