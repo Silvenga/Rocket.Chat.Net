@@ -184,7 +184,7 @@
 
         public async Task<MethodResult<LoginResult>> LoginWithEmailAsync(string email, string password)
         {
-            _logger.Info($"Logging in with user {email} using a email...");
+            _logger.Info($"Logging in with user {email} using an email...");
             var passwordHash = DriverHelper.Sha256Hash(password);
             var request = new
             {
@@ -425,7 +425,6 @@
 
         private CancellationToken CreateTimeoutToken()
         {
-            _logger.Debug("Created cancellation token.");
             const int timeoutSeconds = 30;
             var source = new CancellationTokenSource();
             source.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));

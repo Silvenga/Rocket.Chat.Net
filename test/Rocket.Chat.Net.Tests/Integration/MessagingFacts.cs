@@ -59,6 +59,37 @@
         }
 
         [Fact]
+        public async Task Messages_received_should_populate_created_by()
+        {
+            var text = AutoFixture.Create<string>();
+            var messageReceived = new AutoResetEvent(false);
+
+            RocketMessage message = null;
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                message = rocketMessage;
+                messageReceived.Set();
+            };
+            
+            await _fixture.Master.InitAsync(Constants.Username, Constants.Password);
+            var userId = ((RocketChatDriver) _fixture.Master.Driver).UserId;
+
+            // Act
+            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            messageReceived.WaitOne(_timeout);
+
+            // Assert
+            message.Should().NotBeNull();
+            message.CreatedBy.Id.Should().Be(userId);
+            message.CreatedBy.Username.Should().Be(Constants.Username);
+        }
+
+        [Fact]
         public async Task When_sending_messages_bot_flag_should_be_set()
         {
             var text = AutoFixture.Create<string>();
