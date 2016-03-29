@@ -44,6 +44,7 @@
         /// <summary>
         /// Whenever this message was sent by a bot.
         /// </summary>
+        [JsonProperty(PropertyName = "bot")]
         public bool IsBot { get; set; }
 
         /// <summary>
