@@ -65,6 +65,30 @@
             }
         }
 
+        public async Task LogoutOtherClients()
+        {
+            if (LoginToken == null)
+            {
+                throw new InvalidOperationException("Must have logged in first.");
+            }
+
+            _logger.Info($"Getting new token {LoginToken}.");
+            var newToken = await Driver.GetNewTokenAsync();
+            if (newToken.HasError)
+            {
+                throw new Exception($"Resume failed: {newToken.Error.Message}.");
+            }
+
+            _logger.Info($"Logging out all other users {LoginToken}.");
+            var result = await Driver.RemoveOtherTokensAsync();
+            if (result.HasError)
+            {
+                throw new Exception($"Resume failed: {result.Error.Message}.");
+            }
+
+            LoginToken = newToken.Result.Token;
+        }
+
         private void DriverOnMessageReceived(RocketMessage rocketMessage)
         {
             Task.Run(async () => // async this to prevent holding up the message loop

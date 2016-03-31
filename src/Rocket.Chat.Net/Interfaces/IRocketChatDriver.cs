@@ -207,5 +207,8 @@
         /// <param name="roomId">Room to delete by id</param>
         /// <returns>Number impacted?</returns>
         Task<MethodResult<int>> EraseRoomAsync(string roomId);
+
+        Task<MethodResult> RemoveOtherTokensAsync();
+        Task<MethodResult<LoginResult>> GetNewTokenAsync();
     }
 }

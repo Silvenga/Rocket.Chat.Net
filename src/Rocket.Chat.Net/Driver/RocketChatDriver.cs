@@ -247,6 +247,24 @@
             return await InternalLoginAsync(request);
         }
 
+        public async Task<MethodResult<LoginResult>> GetNewTokenAsync()
+        {
+            var result = await _client.CallAsync("getNewToken", TimeoutToken);
+            var loginResult = result.ToObject<MethodResult<LoginResult>>();
+            if (!loginResult.HasError)
+            {
+                await SetUserInfoAsync(loginResult.Result.UserId);
+            }
+
+            return loginResult;
+        }
+
+        public async Task<MethodResult> RemoveOtherTokensAsync()
+        {
+            var result = await _client.CallAsync("removeOtherTokens", TimeoutToken);
+            return result.ToObject<MethodResult>();
+        }
+
         private async Task<MethodResult<LoginResult>> InternalLoginAsync(object request)
         {
             var data = await _client.CallAsync("login", TimeoutToken, request);
