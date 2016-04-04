@@ -36,6 +36,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono-4.5|AnyCPU'">
+    <OutputPath>bin\Mono-4.5\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FluentAssertions, Version=4.2.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FluentAssertions.4.2.2\lib\net45\FluentAssertions.dll</HintPath>
@@ -103,7 +113,8 @@
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\DummyLoginOption.cs" />
     <Compile Include="Helpers\MeteorDateSerializerModel.cs" />
-    <Compile Include="Models\MeteorDateSerializerFacts.cs" />
+    <Compile Include="Models\MeteorDateConverterFacts.cs" />
+    <Compile Include="Models\RocketMessageConverterFacts.cs" />
     <Compile Include="Models\StreamCollectionFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XUnitLogger.cs" />

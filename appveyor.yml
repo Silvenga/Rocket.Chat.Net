@@ -1,0 +1,34 @@
+version: 0.0.{build}-pre
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+environment:
+  COVERALLS_REPO_TOKEN:  
+    secure: 4guKYW7T2AsE96Wgu0J9RFtVYKSYRxU3L/pzz8UxJpv6uXXSfizwTF4s7iKUDk32
+  RocketServer:
+    secure: INw7YeaVImJcVT//gjO8tw==
+before_build:
+- ps: nuget restore
+build:
+  project: Rocket.Chat.Net.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
+  include_nuget_references: true
+  parallel: true
+  verbosity: minimal
+test_script:
+#- ps: packages\xunit.runner.console.2.1.0\tools\xunit.console "test\Rocket.Chat.Net.Tests\bin\Debug\Rocket.Chat.Net.Tests.dll" -verbose -notrait category=Sandbox -parallel none
+- ps: |
+    $coverageXml = "opencoverCoverage.xml"
+    $xunit = (Resolve-Path "packages\xunit.runner.console.*\tools\xunit.console.exe").ToString()
+    $testDdl = "test\Rocket.Chat.Net.Tests\bin\Debug\Rocket.Chat.Net.Tests.dll"
+    $openCover = (Resolve-Path "packages\OpenCover.*\tools\OpenCover.Console.exe").ToString()
+    $coveralls = (Resolve-Path "packages/coveralls.net.*/tools/csmacnz.coveralls.exe").ToString()
+    
+    packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:$xunit -targetargs:"$testDdl -noshadow -verbose" -filter:"+[Rocket.Chat.Net*]*" -output:$coverageXml
+    & $coveralls --opencover -i $coverageXml --repoToken $env:COVERALLS_REPO_TOKEN --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_JOB_ID
+
+deploy: off

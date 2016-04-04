@@ -22,7 +22,7 @@
         [Fact]
         public async Task Load_message_history_loads_past_messages()
         {
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             var result = await RocketChatDriver.LoadMessagesAsync("GENERAL");
         }
@@ -30,7 +30,7 @@
         [Fact]
         public async Task Ping_should_send_keep_alive()
         {
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             // Act
             await RocketChatDriver.PingAsync();
@@ -41,14 +41,13 @@
         [Fact]
         public async Task FullUserData_returns_user_data()
         {
-            const string userTest = Constants.TestUsername;
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             // Act
-            var userData = await RocketChatDriver.GetFullUserDataAsync(userTest);
+            var userData = await RocketChatDriver.GetFullUserDataAsync(Constants.TestUsername);
 
             // Assert
-            userData.Username.Should().Be(userTest);
+            userData.Username.Should().Be(Constants.TestUsername);
             userData.Emails.Should().Contain(x => x.Address.Contains(Constants.TestEmail));
         }
 
@@ -56,7 +55,7 @@
         public async Task FullUserData_returns_null_when_doesnt_exist()
         {
             const string userTest = "test";
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             // Act
             var userData = await RocketChatDriver.GetFullUserDataAsync(userTest);

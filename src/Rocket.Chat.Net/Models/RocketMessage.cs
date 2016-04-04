@@ -56,7 +56,7 @@
         /// <summary>
         /// Timestamp when the message was sent.
         /// </summary>
-        [JsonProperty(PropertyName = "ts"), JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonProperty(PropertyName = "ts"), JsonConverter(typeof(MeteorDateConverter))]
         public DateTime? CreatedOn { get; set; }
 
         /// <summary>
@@ -68,7 +68,7 @@
         /// <summary>
         /// Timestamp when the message was sent.
         /// </summary>
-        [JsonProperty(PropertyName = "editedAt"), JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonProperty(PropertyName = "editedAt"), JsonConverter(typeof(MeteorDateConverter))]
         public DateTime? EditedOn { get; set; }
 
         /// <summary>

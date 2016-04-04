@@ -14,7 +14,7 @@
 
         public string UniqueId { get; set; }
 
-        [JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime CreatedAt { get; set; }
 
         public string Version { get; set; }
@@ -35,13 +35,13 @@
         public int AvgChannelUsers { get; set; }
         public int AvgPrivateGroupUsers { get; set; }
 
-        [JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime LastLogin { get; set; }
 
-        [JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime LastMessageSentAt { get; set; }
 
-        [JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime LastSeenSubscription { get; set; }
 
         public Os Os { get; set; }
@@ -58,7 +58,7 @@
         public int Version { get; set; }
         public bool Locked { get; set; }
 
-        [JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime LockedAt { get; set; }
 
         public string BuildAt { get; set; }

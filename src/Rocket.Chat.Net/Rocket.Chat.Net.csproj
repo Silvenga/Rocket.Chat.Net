@@ -31,6 +31,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono-4.5|AnyCPU'">
+    <OutputPath>bin\Mono-4.5\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
@@ -55,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bot\RocketChatBot.cs" />
+    <Compile Include="Helpers\RocketMessageConverter.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="Loggers\DummyLogger.cs" />
     <Compile Include="Models\MethodResults\CollectionResult.cs" />
@@ -64,7 +75,7 @@
     <Compile Include="Interfaces\IStreamCollectionDatabase.cs" />
     <Compile Include="Driver\StreamCollection.cs" />
     <Compile Include="Driver\StreamCollectionDatabase.cs" />
-    <Compile Include="Helpers\MeteorDateSerializer.cs" />
+    <Compile Include="Helpers\MeteorDateConverter.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\FullUser.cs" />
     <Compile Include="Models\MethodResults\ChannelListResult.cs" />
