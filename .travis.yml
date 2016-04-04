@@ -3,5 +3,5 @@ solution: Rocket.Chat.Net.sln
 #install:
 #  - nuget restore Rocket.Chat.Net.sln
 script:
-  - xbuild /tv:12.0 Rocket.Chat.Net.sln
+  - xbuild /tv:12.0 /p:Mono-4.5 Rocket.Chat.Net.sln
   - mono packages/xunit.runner.console.*/tools/xunit.console.exe ./test/Rocket.Chat.Net.Tests/bin/Debug/Rocket.Chat.Net.Tests.dll
