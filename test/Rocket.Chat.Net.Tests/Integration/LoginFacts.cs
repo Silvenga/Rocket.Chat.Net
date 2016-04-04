@@ -35,7 +35,7 @@
         public async Task Can_login_with_email()
         {
             // Act
-            var loginResult = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);
+            var loginResult = await RocketChatDriver.LoginWithEmailAsync(Constants.RocketEmail, Constants.RocketPassword);
 
             // Assert
             loginResult.Should().NotBeNull();
@@ -47,7 +47,7 @@
         public async Task Can_login_with_username()
         {
             // Act
-            var loginResult = await RocketChatDriver.LoginWithUsernameAsync(Constants.Username, Constants.Password);
+            var loginResult = await RocketChatDriver.LoginWithUsernameAsync(Constants.RocketUsername, Constants.RocketPassword);
 
             // Assert
             loginResult.Should().NotBeNull();
@@ -58,7 +58,7 @@
         [Fact]
         public async Task Can_login_with_token()
         {
-            var tokenResult = await RocketChatDriver.LoginWithUsernameAsync(Constants.Username, Constants.Password);
+            var tokenResult = await RocketChatDriver.LoginWithUsernameAsync(Constants.RocketUsername, Constants.RocketPassword);
 
             // Act
             var loginResult = await RocketChatDriver.LoginResumeAsync(tokenResult.Result.Token);
@@ -74,7 +74,7 @@
         {
             // Act
             var loginResult =
-                await RocketChatDriver.LoginWithUsernameAsync(Constants.Username, AutoFixture.Create<string>());
+                await RocketChatDriver.LoginWithUsernameAsync(Constants.RocketUsername, AutoFixture.Create<string>());
 
             // Assert
             loginResult.Should().NotBeNull();
