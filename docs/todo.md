@@ -39,6 +39,8 @@
 - [ ] File download in room
 - [ ] File search in room
 - [ ] File upload in room
+- [ ] Send Emoticons
+- [ ] Receieve Emoticons
 
 ## Client
 
@@ -49,6 +51,7 @@
 - [ ] Login with intergration
 - [ ] Sign-up
 - [ ] Change current user info
+- [ ] Log out all other sessions
 
 ## Users
 
