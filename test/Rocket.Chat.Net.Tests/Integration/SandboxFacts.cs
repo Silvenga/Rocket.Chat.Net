@@ -58,7 +58,7 @@
             // Assert
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _xUnitLogger.Dispose();
         }
