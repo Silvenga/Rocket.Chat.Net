@@ -11,7 +11,7 @@
     {
         public string Id { get; set; }
 
-        [JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime CreatedAt { get; set; }
 
         public string Username { get; set; }

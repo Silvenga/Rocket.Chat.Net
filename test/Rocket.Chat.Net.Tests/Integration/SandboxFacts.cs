@@ -11,19 +11,19 @@
 
     [Trait("Category", "Sandbox")]
     [Collection("Driver")]
-    public class SandboxFacts : IDisposable
+    public class SandboxFacts : DriverFactsBase
     {
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ITestOutputHelper _helper;
         private readonly XUnitLogger _xUnitLogger;
 
-        public SandboxFacts(ITestOutputHelper helper)
+        public SandboxFacts(ITestOutputHelper helper) : base(helper)
         {
             _helper = helper;
             _xUnitLogger = new XUnitLogger(_helper);
         }
-        
-        [Fact]
+
+        [Fact(Skip = "")]
         public async Task Can_login()
         {
             //const string password = "SilverLight";
@@ -46,6 +46,16 @@
             var messages = await driver.SearchMessagesAsync($"from:{driver.Username}", roomId);
 
             driver.Dispose();
+        }
+
+        [Fact(Skip = "")]
+        public async Task Clean_up_rooms()
+        {
+            // Act
+            await DefaultAccountLoginAsync();
+            await CleanupRoomsAsync();
+
+            // Assert
         }
 
         public void Dispose()

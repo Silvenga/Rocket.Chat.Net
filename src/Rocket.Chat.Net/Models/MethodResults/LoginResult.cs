@@ -13,7 +13,7 @@
 
         public string Token { get; set; }
 
-        [JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime TokenExpires { get; set; }
     }
 }

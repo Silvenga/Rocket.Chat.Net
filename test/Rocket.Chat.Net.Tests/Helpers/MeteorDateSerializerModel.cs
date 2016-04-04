@@ -8,7 +8,7 @@
 
     public class MeteorDateSerializerModel
     {
-        [JsonConverter(typeof(MeteorDateSerializer))]
+        [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime? DateTime { get; set; }
     }
 }

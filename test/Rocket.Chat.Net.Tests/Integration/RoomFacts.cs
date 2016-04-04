@@ -30,7 +30,7 @@
             const string roomName = "GENERAL";
             const string roomId = "GENERAL";
 
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             // Act
             var result = await RocketChatDriver.GetRoomIdAsync(roomName);
@@ -44,7 +44,7 @@
         {
             var roomName = AutoFixture.Create<string>();
 
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             // Act
             var result = await RocketChatDriver.GetRoomIdAsync(roomName);
@@ -59,7 +59,7 @@
             var roomName = AutoFixture.Create<string>();
             RoomsCreatedByName.Add(roomName);
 
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             // Act
             var result = await RocketChatDriver.CreateRoomAsync(roomName);
@@ -74,7 +74,7 @@
             var roomName = AutoFixture.Create<string>();
             RoomsCreatedByName.Add(roomName);
 
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             await RocketChatDriver.CreateRoomAsync(roomName);
 
@@ -92,7 +92,7 @@
             var roomName = AutoFixture.Create<string>();
             RoomsCreatedByName.Add(roomName);
 
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
             var room = await RocketChatDriver.CreateRoomAsync(roomName);
 
             // Act
@@ -111,7 +111,7 @@
         {
             var roomId = AutoFixture.Create<string>();
 
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             // Act
             var result = await RocketChatDriver.EraseRoomAsync(roomId);
@@ -125,7 +125,7 @@
         [Fact]
         public async Task List_channel_should_return_list_of_channels()
         {
-            await Defaultaccountloginasync();
+            await DefaultAccountLoginAsync();
 
             // Act
             var result = await RocketChatDriver.ChannelListAsync();

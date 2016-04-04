@@ -25,7 +25,7 @@
             RocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, XUnitLogger);
         }
 
-        protected async Task Defaultaccountloginasync()
+        protected async Task DefaultAccountLoginAsync()
         {
             await RocketChatDriver.ConnectAsync();
             var result = await RocketChatDriver.LoginWithEmailAsync(Constants.Email, Constants.Password);

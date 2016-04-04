@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bot\RocketChatBot.cs" />
+    <Compile Include="Helpers\RocketMessageConverter.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="Loggers\DummyLogger.cs" />
     <Compile Include="Models\MethodResults\CollectionResult.cs" />
@@ -64,7 +65,7 @@
     <Compile Include="Interfaces\IStreamCollectionDatabase.cs" />
     <Compile Include="Driver\StreamCollection.cs" />
     <Compile Include="Driver\StreamCollectionDatabase.cs" />
-    <Compile Include="Helpers\MeteorDateSerializer.cs" />
+    <Compile Include="Helpers\MeteorDateConverter.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\FullUser.cs" />
     <Compile Include="Models\MethodResults\ChannelListResult.cs" />

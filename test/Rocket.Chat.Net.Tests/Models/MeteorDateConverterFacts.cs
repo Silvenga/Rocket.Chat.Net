@@ -13,7 +13,7 @@
     using Xunit;
 
     [Trait("Category", "Models")]
-    public class MeteorDateSerializerFacts
+    public class MeteorDateConverterFacts
     {
         private readonly Fixture _autoFixture = new Fixture();
 

@@ -5,7 +5,7 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class MeteorDateSerializer : JsonConverter
+    public class MeteorDateConverter : JsonConverter
     {
         private const string Key = "$date";
 
