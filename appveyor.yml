@@ -28,7 +28,7 @@ test_script:
     $openCover = (Resolve-Path "packages\OpenCover.*\tools\OpenCover.Console.exe").ToString()
     $coveralls = (Resolve-Path "packages/coveralls.net.*/tools/csmacnz.coveralls.exe").ToString()
     
-    & $openCover -register:user -target:$xunit -targetargs:"$testDdl -noshadow -verbose -parallel none" -filter:"+[Rocket.Chat.Net*]*" -output:$coverageXml
+    & $openCover -register:user -target:$xunit -targetargs:"$testDdl -noshadow -verbose" -filter:"+[Rocket.Chat.Net*]*" -output:$coverageXml
     & $coveralls --opencover -i $coverageXml --repoToken $env:COVERALLS_REPO_TOKEN --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_JOB_ID
 
 deploy: off

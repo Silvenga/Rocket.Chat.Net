@@ -8,16 +8,16 @@
             Environment.GetEnvironmentVariable(nameof(RocketServer))
             ?? "dev0:3000";
 
-        public static readonly string Username =
-            Environment.GetEnvironmentVariable(nameof(Username))
+        public static readonly string RocketUsername =
+            Environment.GetEnvironmentVariable(nameof(RocketUsername))
             ?? "mark.lopez";
 
-        public static readonly string Email =
-            Environment.GetEnvironmentVariable(nameof(Email))
+        public static readonly string RocketEmail =
+            Environment.GetEnvironmentVariable(nameof(RocketEmail))
             ?? "m@silvenga.com";
 
-        public static readonly string Password =
-            Environment.GetEnvironmentVariable(nameof(Password))
+        public static readonly string RocketPassword =
+            Environment.GetEnvironmentVariable(nameof(RocketPassword))
             ?? "silverlight";
 
         public static readonly string TestUsername =
