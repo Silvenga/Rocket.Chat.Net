@@ -41,14 +41,13 @@
         [Fact]
         public async Task FullUserData_returns_user_data()
         {
-            const string userTest = Constants.TestUsername;
             await DefaultAccountLoginAsync();
 
             // Act
-            var userData = await RocketChatDriver.GetFullUserDataAsync(userTest);
+            var userData = await RocketChatDriver.GetFullUserDataAsync(Constants.TestUsername);
 
             // Assert
-            userData.Username.Should().Be(userTest);
+            userData.Username.Should().Be(Constants.TestUsername);
             userData.Emails.Should().Contain(x => x.Address.Contains(Constants.TestEmail));
         }
 

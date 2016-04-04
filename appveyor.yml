@@ -5,12 +5,11 @@ assembly_info:
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
-hosts:
-  dev0:
-    secure: KYu28FLSnWkReMPyzrXgJQ==
 environment:
   COVERALLS_REPO_TOKEN:  
     secure: 4guKYW7T2AsE96Wgu0J9RFtVYKSYRxU3L/pzz8UxJpv6uXXSfizwTF4s7iKUDk32
+  RocketServer:
+    secure: INw7YeaVImJcVT//gjO8tw==
 before_build:
 - ps: nuget restore
 build:
