@@ -21,7 +21,7 @@ build:
   verbosity: minimal
 test_script:
 #- ps: packages\xunit.runner.console.2.1.0\tools\xunit.console "test\Rocket.Chat.Net.Tests\bin\Debug\Rocket.Chat.Net.Tests.dll" -verbose -notrait category=Sandbox -parallel none
-- ps: >-
+- ps: |
     $coverageXml = "opencoverCoverage.xml"
     $xunit = (Resolve-Path "packages\xunit.runner.console.*\tools\xunit.console").ToString()
     $testDdl = "test\Rocket.Chat.Net.Tests\bin\Debug\Rocket.Chat.Net.Tests.dll"
