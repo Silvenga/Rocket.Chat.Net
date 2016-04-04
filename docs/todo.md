@@ -13,6 +13,7 @@
 - [ ] Pull user info from env vars for tests
 - [ ] Handle clears on subs results
 - [ ] Create a converter for rocket messages
+- [ ] Check mono support later when Mono isn't completely broken for 4.6.1 and C# 6.0 nuget. 
 
 # Driver Support
 
