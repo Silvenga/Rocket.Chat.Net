@@ -1,8 +1,4 @@
-﻿using Xunit;
-
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
-
-namespace Rocket.Chat.Net.Tests
+﻿namespace Rocket.Chat.Net.Tests
 {
     using System;
 
