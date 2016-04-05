@@ -242,6 +242,33 @@
             slaveMessage.IsFromMyself.Should().BeFalse();
         }
 
+        [Fact]
+        public async Task Load_message_history_loads_past_messages()
+        {
+            var text = AutoFixture.Create<string>();
+            var messageReceived = new AutoResetEvent(false);
+
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                messageReceived.Set();
+            };
+
+            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
+            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            messageReceived.WaitOne(_timeout);
+
+            // Act
+            var result = await _fixture.Master.Driver.LoadMessagesAsync(_fixture.RoomId);
+
+            // Assert
+            result.Should().Contain(x => x.Message == text);
+        }
+
         public void Dispose()
         {
             _fixture.Dispose();

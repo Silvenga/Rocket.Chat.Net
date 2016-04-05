@@ -13,18 +13,8 @@
     [Collection("Driver")]
     public class ClientFacts : DriverFactsBase
     {
-        // TODO Fix make these tests test
-
         public ClientFacts(ITestOutputHelper helper) : base(helper)
         {
-        }
-
-        [Fact]
-        public async Task Load_message_history_loads_past_messages()
-        {
-            await DefaultAccountLoginAsync();
-
-            var result = await RocketChatDriver.LoadMessagesAsync("GENERAL");
         }
 
         [Fact]
