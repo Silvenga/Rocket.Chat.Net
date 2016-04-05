@@ -6,14 +6,15 @@
 - [ ] Handle errors proactively (Some methods are covered, e.g. login)
 - [ ] An api similar to Margie Bot for Slack (e.g. inline lambda responders, standalone Responders, etc.)
 - [ ] Programmatic bot modifications (e.g. change avatar, etc.)
-- [ ] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)
+- [X] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)
 - [ ] Get test converage
 - [ ] A way to unsub
 - [ ] Figure out why tests are stuck when running in parallel. - It runs correctly locally from the cli. I almost looks like the tests don't even start
-- [ ] Pull user info from env vars for tests
+- [X] Pull user info from env vars for tests
 - [ ] Handle clears on subs results
-- [ ] Create a converter for rocket messages
+- [X] Create a converter for rocket messages
 - [ ] Check mono support later when Mono isn't completely broken for 4.6.1 and C# 6.0 nuget. 
+- [ ] Get a different RC server, DO is too slow (Maxing CPU). 
 
 # Driver Support
 
@@ -52,7 +53,7 @@
 - [ ] Login with intergration
 - [ ] Sign-up
 - [ ] Change current user info
-- [ ] Log out all other sessions
+- [X] Log out all other sessions
 
 ## Users
 
