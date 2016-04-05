@@ -1,6 +1,9 @@
 # Rocket.Chat.Net
 
-[![Build status](https://ci.appveyor.com/api/projects/status/0d4nc078d7dqgj89?svg=true)](https://ci.appveyor.com/project/Silvenga/rocket-chat-net) [![NuGet](https://img.shields.io/nuget/vpre/Rocket.Chat.Net.svg)](https://www.nuget.org/packages/Rocket.Chat.Net/)
+[![NuGet](https://img.shields.io/nuget/vpre/Rocket.Chat.Net.svg)](https://www.nuget.org/packages/Rocket.Chat.Net/)
+
+[![Build status](https://img.shields.io/appveyor/ci/Silvenga/rocket-chat-net.svg)](https://ci.appveyor.com/project/Silvenga/rocket-chat-net) 
+[![Coverage Status](https://img.shields.io/coveralls/Silvenga/Rocket.Chat.Net.svg)](https://coveralls.io/github/Silvenga/Rocket.Chat.Net?branch=master)
 
 A Rocket.Chat real-time, managed, .Net driver, and bot. 
 
