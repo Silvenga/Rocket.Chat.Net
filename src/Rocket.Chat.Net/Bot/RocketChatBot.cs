@@ -65,7 +65,7 @@
             }
         }
 
-        public async Task LogoutOtherClients()
+        public async Task LogoutOtherClientsAsync()
         {
             if (LoginToken == null)
             {

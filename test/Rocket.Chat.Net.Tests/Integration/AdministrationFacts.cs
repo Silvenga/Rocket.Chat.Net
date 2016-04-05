@@ -25,7 +25,8 @@
 
             var supportedVersions = new[]
             {
-                "0.22.0"
+                "0.22.0",
+                "0.25.0"
             };
 
             await DefaultAccountLoginAsync();

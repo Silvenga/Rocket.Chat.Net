@@ -292,7 +292,7 @@
             return result?["result"].ToObject<string>();
         }
 
-        public async Task DeleteMessageAsync(string messageId, string roomId)
+        public async Task<MethodResult> DeleteMessageAsync(string messageId, string roomId)
         {
             _logger.Info($"Deleting message {messageId}");
             var request = new
@@ -300,7 +300,8 @@
                 rid = roomId,
                 _id = messageId
             };
-            await _client.CallAsync("deleteMessage", TimeoutToken, request);
+            var result = await _client.CallAsync("deleteMessage", TimeoutToken, request);
+            return result.ToObject<MethodResult>();
         }
 
         public async Task<string> CreatePrivateMessageAsync(string username)
@@ -323,7 +324,7 @@
             return await _client.CallAsync("joinRoom", TimeoutToken, roomId);
         }
 
-        public async Task<dynamic> SendMessageAsync(string text, string roomId)
+        public async Task<MethodResult<RocketMessage>> SendMessageAsync(string text, string roomId)
         {
             _logger.Info($"Sending message to #{roomId}: {text}");
             var request = new
@@ -332,7 +333,8 @@
                 rid = roomId,
                 bot = true
             };
-            return await _client.CallAsync("sendMessage", TimeoutToken, request);
+            var result = await _client.CallAsync("sendMessage", TimeoutToken, request);
+            return result.ToObject<MethodResult<RocketMessage>>();
         }
 
         public async Task<dynamic> UpdateMessageAsync(string messageId, string roomId, string newMessage)

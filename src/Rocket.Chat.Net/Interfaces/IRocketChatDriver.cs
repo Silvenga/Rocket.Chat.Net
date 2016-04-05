@@ -87,7 +87,7 @@
         /// <param name="text">Text of the message</param>
         /// <param name="roomId">The room to send to</param>
         /// <returns></returns>
-        Task<dynamic> SendMessageAsync(string text, string roomId);
+        Task<MethodResult<RocketMessage>> SendMessageAsync(string text, string roomId);
 
         /// <summary>
         /// Edit a message by messageId
@@ -114,7 +114,8 @@
         /// </summary>
         /// <param name="messageId">The message to delete</param>
         /// <param name="roomId">The room where that message sits</param>
-        Task DeleteMessageAsync(string messageId, string roomId);
+        /// <returns></returns>
+        Task<MethodResult> DeleteMessageAsync(string messageId, string roomId);
 
         /// <summary>
         /// Create a private message room with target user

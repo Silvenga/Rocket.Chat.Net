@@ -20,7 +20,7 @@
     [Collection("Driver")]
     public class MessagingFacts : IDisposable
     {
-        private readonly TimeSpan _timeout = TimeSpan.FromSeconds(5);
+        private readonly TimeSpan _timeout = TimeSpan.FromSeconds(10);
         private readonly MessagingFixture _fixture;
         private static readonly Fixture AutoFixture = new Fixture();
 
@@ -50,12 +50,44 @@
             await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
 
             // Act
-            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+            var result = await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
 
             messageReceived.WaitOne(_timeout);
 
             // Assert
+            result.HasError.Should().BeFalse();
             message.Should().NotBeNull();
+            result.Result.ToString().Should().Be(message.ToString());
+        }
+
+        [Fact]
+        public async Task Can_delete_message()
+        {
+            var text = AutoFixture.Create<string>();
+            var messageReceived = new AutoResetEvent(false);
+
+            RocketMessage message = null;
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                message = rocketMessage;
+                messageReceived.Set();
+            };
+
+            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
+
+            // Act
+            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            messageReceived.WaitOne(_timeout);
+
+            var result = await _fixture.Master.Driver.DeleteMessageAsync(message.Id, _fixture.RoomId);
+
+            // Assert
+            result.HasError.Should().BeFalse();
         }
 
         [Fact]
@@ -74,7 +106,7 @@
                 message = rocketMessage;
                 messageReceived.Set();
             };
-            
+
             await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
             var userId = ((RocketChatDriver) _fixture.Master.Driver).UserId;
 
