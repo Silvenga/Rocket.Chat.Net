@@ -1,7 +1,10 @@
 ﻿namespace Rocket.Chat.Net.Tests.Driver
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using FluentAssertions;
 
     using Newtonsoft.Json.Linq;
 
@@ -13,6 +16,7 @@
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models.MethodResults;
+    using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
 
@@ -113,6 +117,18 @@
 
             // Assert
             await _mockClient.ReceivedWithAnyArgs().CallAsync("login", CancellationToken, payload);
+        }
+
+        [Fact]
+        public void When_login_option_is_unknown_throw()
+        {
+            var options = _autoFixture.Create<DummyLoginOption>();
+
+            // Act
+            Action action = () => _driver.LoginAsync(options).Wait();
+
+            // 
+            action.ShouldThrow<NotSupportedException>();
         }
 
         [Fact]

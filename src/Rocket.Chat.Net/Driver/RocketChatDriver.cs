@@ -179,7 +179,7 @@
                 return await LoginResumeAsync(resumeLogin.Token);
             }
 
-            throw new NotSupportedException($"The given login option `{typeof(ILoginOption)}` is not supported.");
+            throw new NotSupportedException($"The given login option `{loginOption.GetType()}` is not supported.");
         }
 
         public async Task<MethodResult<LoginResult>> LoginWithEmailAsync(string email, string password)

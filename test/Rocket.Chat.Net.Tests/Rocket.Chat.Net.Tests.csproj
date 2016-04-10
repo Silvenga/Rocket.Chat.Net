@@ -101,6 +101,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Bot\BotHelperFacts.cs" />
     <Compile Include="Bot\RocketChatBotFacts.cs" />
     <Compile Include="Driver\MessagingFacts.cs" />
     <Compile Include="Driver\RocketChatDriverFacts.cs" />

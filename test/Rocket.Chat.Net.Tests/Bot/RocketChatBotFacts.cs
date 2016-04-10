@@ -287,7 +287,7 @@
 
             // Act
             _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            Thread.Sleep(20);
+            Thread.Sleep(100);
 
             // Assert
             responseMock1.Received().Response(rocketMessage, bot);
