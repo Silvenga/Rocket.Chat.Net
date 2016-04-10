@@ -313,7 +313,7 @@
     {
         public IRocketChatDriver Driver { get; }
 
-        public RocketChatDriverFixture(XUnitLogger helper)
+        public RocketChatDriverFixture(ILogger helper)
         {
             Driver = new RocketChatDriver(Constants.RocketServer, false, helper);
         }

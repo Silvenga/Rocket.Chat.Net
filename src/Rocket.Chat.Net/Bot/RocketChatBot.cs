@@ -13,19 +13,22 @@
         private readonly ILogger _logger;
         private readonly List<IBotResponse> _botResponses = new List<IBotResponse>();
 
-        // ReSharper disable once MemberCanBePrivate.Global
         public IRocketChatDriver Driver { get; }
 
-        // ReSharper disable once MemberCanBePrivate.Global
         public string LoginToken { get; private set; }
 
-        public RocketChatBot(string url, bool useSsl, ILogger logger)
+        public RocketChatBot(IRocketChatDriver driver, ILogger logger)
         {
-            Driver = new RocketChatDriver(url, useSsl, logger);
+            Driver = driver;
             _logger = logger;
 
             Driver.MessageReceived += DriverOnMessageReceived;
             Driver.DdpReconnect += DriverOnDdpReconnect;
+        }
+
+        public RocketChatBot(string url, bool useSsl, ILogger logger)
+            : this(new RocketChatDriver(url, useSsl, logger), logger)
+        {
         }
 
         public async Task ConnectAsync()
@@ -63,6 +66,8 @@
             {
                 throw new Exception($"Resume failed: {result.Error.Message}.");
             }
+
+            LoginToken = result.Result.Token;
         }
 
         public async Task LogoutOtherClientsAsync()
@@ -87,6 +92,12 @@
             }
 
             LoginToken = newToken.Result.Token;
+        }
+
+        public void AddResponse(IBotResponse botResponse)
+        {
+            _logger.Info($"Added response {botResponse.GetType()}.");
+            _botResponses.Add(botResponse);
         }
 
         private void DriverOnMessageReceived(RocketMessage rocketMessage)
@@ -122,13 +133,10 @@
         private void DriverOnDdpReconnect()
         {
             _logger.Info("Reconnect requested...");
-            Task.Run(async () => await ResumeAsync());
-        }
-
-        public void AddResponse(IBotResponse botResponse)
-        {
-            _logger.Info($"Added response {botResponse.GetType()}.");
-            _botResponses.Add(botResponse);
+            if (LoginToken != null)
+            {
+                Task.Run(async () => await ResumeAsync());
+            }
         }
 
         public void Dispose()
