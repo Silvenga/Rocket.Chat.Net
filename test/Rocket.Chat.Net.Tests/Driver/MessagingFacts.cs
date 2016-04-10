@@ -16,7 +16,8 @@
 
     public class MessagingFacts
     {
-        private readonly Fixture _autoFixture = new Fixture();
+        private static readonly Fixture AutoFixture = new Fixture();
+
         private readonly IDdpClient _mockClient;
         private readonly IStreamCollectionDatabase _mockCollectionDatabase;
         private readonly IRocketChatDriver _driver;
@@ -34,11 +35,11 @@
         {
             var payload = new
             {
-                collection = _autoFixture.Create<string>(),
-                id = _autoFixture.Create<string>(),
+                collection = AutoFixture.Create<string>(),
+                id = AutoFixture.Create<string>(),
                 fields = new
                 {
-                    id = _autoFixture.Create<string>()
+                    id = AutoFixture.Create<string>()
                 }
             };
 
@@ -57,11 +58,11 @@
         {
             var payload = new
             {
-                collection = _autoFixture.Create<string>(),
-                id = _autoFixture.Create<string>(),
+                collection = AutoFixture.Create<string>(),
+                id = AutoFixture.Create<string>(),
                 fields = new
                 {
-                    id = _autoFixture.Create<string>()
+                    id = AutoFixture.Create<string>()
                 }
             };
 
@@ -80,8 +81,8 @@
         {
             var payload = new
             {
-                collection = _autoFixture.Create<string>(),
-                id = _autoFixture.Create<string>()
+                collection = AutoFixture.Create<string>(),
+                id = AutoFixture.Create<string>()
             };
 
             var mockCollection = Substitute.For<IStreamCollection>();
@@ -99,9 +100,9 @@
         {
             var payload = new
             {
-                id = _autoFixture.Create<string>(),
-                msg = _autoFixture.Create<string>(),
-                random = _autoFixture.Create<int>()
+                id = AutoFixture.Create<string>(),
+                msg = AutoFixture.Create<string>(),
+                random = AutoFixture.Create<int>()
             };
 
             // Act
@@ -114,17 +115,17 @@
         [Fact]
         public void Rocket_messages_should_be_forwarded()
         {
-            var rocketMessage = _autoFixture.Create<RocketMessage>();
+            var rocketMessage = AutoFixture.Create<RocketMessage>();
             var payload = new
             {
-                id = _autoFixture.Create<string>(),
+                id = AutoFixture.Create<string>(),
                 msg = "added",
                 collection = "stream-messages",
                 fields = new
                 {
                     args = new object[]
                     {
-                        _autoFixture.Create<string>(),
+                        AutoFixture.Create<string>(),
                         rocketMessage
                     }
                 }
@@ -144,18 +145,18 @@
         [Fact]
         public void When_bot_is_mentioned_set_flag()
         {
-            var rocketMessage = _autoFixture.Build<RocketMessage>()
-                .Create();
+            var rocketMessage = AutoFixture.Build<RocketMessage>()
+                                           .Create();
             var payload = new
             {
-                id = _autoFixture.Create<string>(),
+                id = AutoFixture.Create<string>(),
                 msg = "added",
                 collection = "stream-messages",
                 fields = new
                 {
                     args = new object[]
                     {
-                        _autoFixture.Create<string>(),
+                        AutoFixture.Create<string>(),
                         rocketMessage
                     }
                 }

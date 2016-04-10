@@ -22,7 +22,8 @@
 
     public class RocketChatDriverFacts
     {
-        private readonly Fixture _autoFixture = new Fixture();
+        private static readonly Fixture AutoFixture = new Fixture();
+
         private readonly IDdpClient _mockClient;
         private readonly IStreamCollectionDatabase _mockCollectionDatabase;
         private readonly IRocketChatDriver _driver;
@@ -60,7 +61,7 @@
         [Fact]
         public async Task When_subscribing_to_ome_channel_sub_with_client()
         {
-            var room = _autoFixture.Create<string>();
+            var room = AutoFixture.Create<string>();
 
             // Act
             await _driver.SubscribeToRoomAsync(room);
@@ -82,8 +83,8 @@
         [Fact]
         public async Task Login_with_email()
         {
-            var email = _autoFixture.Create<string>();
-            var password = _autoFixture.Create<string>();
+            var email = AutoFixture.Create<string>();
+            var password = AutoFixture.Create<string>();
             var payload = new
             {
                 user = new
@@ -97,7 +98,7 @@
                 }
             };
 
-            var loginResult = _autoFixture.Create<LoginResult>();
+            var loginResult = AutoFixture.Create<LoginResult>();
             var loginResponse = JObject.FromObject(new
             {
                 result = loginResult
@@ -122,7 +123,7 @@
         [Fact]
         public void When_login_option_is_unknown_throw()
         {
-            var options = _autoFixture.Create<DummyLoginOption>();
+            var options = AutoFixture.Create<DummyLoginOption>();
 
             // Act
             Action action = () => _driver.LoginAsync(options).Wait();

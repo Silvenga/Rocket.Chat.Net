@@ -201,10 +201,9 @@
         {
             var rocketMessage = AutoFixture.Create<RocketMessage>();
             var basicResponses = AutoFixture.CreateMany<BasicResponse>().ToList();
-
-            var waitHandle = new AutoResetEvent(false);
+            
             var responseMock = Substitute.For<IBotResponse>();
-            responseMock.Response(Arg.Do<RocketMessage>(message => waitHandle.Set()), Arg.Any<RocketChatBot>())
+            responseMock.Response(rocketMessage, Arg.Any<RocketChatBot>())
                         .Returns(basicResponses);
 
             var bot = new RocketChatBot(_driverMock, _loggerMock);
@@ -212,7 +211,7 @@
 
             // Act
             _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            waitHandle.WaitOne(TimeSpan.FromSeconds(5));
+            Thread.Sleep(100);
 
             // Assert
             _driverMock.Received(basicResponses.Count)
@@ -236,7 +235,7 @@
 
             // Act
             _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            Thread.Sleep(10);
+            Thread.Sleep(100);
 
             // Assert
             responseMock1.Received().Response(rocketMessage, bot);

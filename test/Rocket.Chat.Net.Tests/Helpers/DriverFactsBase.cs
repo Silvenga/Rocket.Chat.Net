@@ -15,7 +15,7 @@
 
     public class DriverFactsBase : IDisposable
     {
-        protected readonly Fixture AutoFixture = new Fixture();
+        protected static readonly Fixture AutoFixture = new Fixture();
         protected readonly IRocketChatDriver RocketChatDriver;
         protected readonly XUnitLogger XUnitLogger;
 
