@@ -81,6 +81,7 @@
     <Compile Include="Models\MethodResults\ChannelListResult.cs" />
     <Compile Include="Models\MethodResults\CreateRoomResult.cs" />
     <Compile Include="Models\MethodResults\ErrorResult.cs" />
+    <Compile Include="Models\MethodResults\LoadMessagesResult.cs" />
     <Compile Include="Models\MethodResults\LoginResult.cs" />
     <Compile Include="Helpers\BotHelper.cs" />
     <Compile Include="Models\LoginOptions\EmailLoginOption.cs" />

@@ -106,7 +106,7 @@
         /// <param name="limit">Max number of messages to load</param>
         /// <param name="ls">No idea, something with timespan, maybe less than?</param>
         /// <returns></returns>
-        Task<List<RocketMessage>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20,
+        Task<MethodResult<LoadMessagesResult>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20,
                                                     string ls = null);
 
         /// <summary>
@@ -122,7 +122,7 @@
         /// </summary>
         /// <param name="username">The user to create a private message room for</param>
         /// <returns>The private RoomId</returns>
-        Task<string> CreatePrivateMessageAsync(string username);
+        Task<MethodResult<string>> CreatePrivateMessageAsync(string username);
 
         /// <summary>
         /// List authorized channels
@@ -156,7 +156,7 @@
         /// <param name="roomId">RoomId to search for</param>
         /// <param name="limit">Limit the number of messages (default 100)</param>
         /// <returns></returns>
-        Task<List<RocketMessage>> SearchMessagesAsync(string query, string roomId, int limit = 100);
+        Task<MethodResult<LoadMessagesResult>> SearchMessagesAsync(string query, string roomId, int limit = 100);
 
         /// <summary>
         /// Get a streaming collection.

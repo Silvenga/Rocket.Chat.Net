@@ -52,7 +52,7 @@
             _client.DdpReconnect += OnDdpReconnect;
         }
 
-        private void ClientOnDataReceivedRaw(string type, dynamic data)
+        private void ClientOnDataReceivedRaw(string type, JObject data)
         {
             HandleStreamingCollections(type, data);
             HandleRocketMessage(type, data);
@@ -304,11 +304,11 @@
             return result.ToObject<MethodResult>();
         }
 
-        public async Task<string> CreatePrivateMessageAsync(string username)
+        public async Task<MethodResult<string>> CreatePrivateMessageAsync(string username)
         {
             _logger.Info($"Creating private message with {username}");
-            dynamic result = await _client.CallAsync("createDirectMessage", TimeoutToken, username);
-            return result.result;
+            var result = await _client.CallAsync("createDirectMessage", TimeoutToken, username);
+            return result.ToObject<MethodResult<string>>();
         }
 
         public async Task<MethodResult<ChannelListResult>> ChannelListAsync()
@@ -350,39 +350,25 @@
             return await _client.CallAsync("updateMessage", TimeoutToken, request);
         }
 
-        public async Task<List<RocketMessage>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20,
-                                                                 string ls = null)
+        public async Task<MethodResult<LoadMessagesResult>> LoadMessagesAsync(string roomId, DateTime? end = null,
+                                                                              int? limit = 20,
+                                                                              string ls = null)
         {
             _logger.Info($"Loading messages from #{roomId}");
 
-            dynamic rawMessage = await _client.CallAsync("loadHistory", TimeoutToken, roomId, end, limit, ls);
-            var rawList = rawMessage.result.messages as JArray;
-            var messages = new List<RocketMessage>();
-
-            if (rawList == null)
-            {
-                return messages;
-            }
-            messages.AddRange(rawList.Cast<JObject>().Select(data => data.ToObject<RocketMessage>()));
-
-            return messages;
+            var rawMessage = await _client.CallAsync("loadHistory", TimeoutToken, roomId, end, limit, ls);
+            var messageResult = rawMessage.ToObject<MethodResult<LoadMessagesResult>>();
+            return messageResult;
         }
 
-        public async Task<List<RocketMessage>> SearchMessagesAsync(string query, string roomId, int limit = 100)
+        public async Task<MethodResult<LoadMessagesResult>> SearchMessagesAsync(string query, string roomId,
+                                                                                int limit = 100)
         {
             _logger.Info($"Searching for messages in #{roomId} using `{query}`.");
 
-            dynamic rawMessage = await _client.CallAsync("messageSearch", TimeoutToken, query, roomId, limit);
-            var rawList = rawMessage.result.messages as JArray;
-            var messages = new List<RocketMessage>();
-
-            if (rawList == null)
-            {
-                return messages;
-            }
-            messages.AddRange(rawList.Cast<JObject>().Select(data => data.ToObject<RocketMessage>()));
-
-            return messages;
+            var rawMessage = await _client.CallAsync("messageSearch", TimeoutToken, query, roomId, limit);
+            var messageResult = rawMessage.ToObject<MethodResult<LoadMessagesResult>>();
+            return messageResult;
         }
 
         public async Task<MethodResult<StatisticsResult>> GetStatisticsAsync(bool refresh = false)
