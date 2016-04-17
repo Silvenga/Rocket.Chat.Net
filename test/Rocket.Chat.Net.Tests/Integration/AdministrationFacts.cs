@@ -26,15 +26,14 @@
             var supportedVersions = new[]
             {
                 "0.22.0",
-                "0.25.0"
+                "0.25.0",
+                "0.26.0"
             };
 
             await DefaultAccountLoginAsync();
 
             // Act
             var results = await RocketChatDriver.GetStatisticsAsync();
-
-            XUnitLogger.Info(results.ToString());
 
             // Assert
             supportedVersions.Should().Contain(results.Result.Version);
