@@ -8,24 +8,36 @@
             Environment.GetEnvironmentVariable(nameof(RocketServer))
             ?? "dev0:3000";
 
-        public static readonly string RocketUsername =
-            Environment.GetEnvironmentVariable(nameof(RocketUsername))
-            ?? "mark.lopez";
+        public static readonly string OneUsername =
+            Environment.GetEnvironmentVariable(nameof(OneUsername))
+            ?? "user.one";
 
-        public static readonly string RocketEmail =
-            Environment.GetEnvironmentVariable(nameof(RocketEmail))
-            ?? "m@silvenga.com";
+        public static readonly string OneEmail =
+            Environment.GetEnvironmentVariable(nameof(OneEmail))
+            ?? "one@silvenga.com";
 
-        public static readonly string RocketPassword =
-            Environment.GetEnvironmentVariable(nameof(RocketPassword))
+        public static readonly string OneName =
+            Environment.GetEnvironmentVariable(nameof(OneName))
+            ?? "User One";
+
+        public static readonly string OnePassword =
+            Environment.GetEnvironmentVariable(nameof(OnePassword))
             ?? "silverlight";
 
-        public static readonly string TestUsername =
-            Environment.GetEnvironmentVariable(nameof(TestUsername))
-            ?? "test.user";
+        public static readonly string TwoUsername =
+            Environment.GetEnvironmentVariable(nameof(TwoUsername))
+            ?? "user.two";
 
-        public static readonly string TestEmail =
-            Environment.GetEnvironmentVariable(nameof(TestEmail))
-            ?? "test.user@silvenga.com";
+        public static readonly string TwoEmail =
+            Environment.GetEnvironmentVariable(nameof(TwoEmail))
+            ?? "two@silvenga.com";
+
+        public static readonly string TwoName =
+            Environment.GetEnvironmentVariable(nameof(TwoName))
+            ?? "User Two";
+
+        public static readonly string TwoPassword =
+            Environment.GetEnvironmentVariable(nameof(TwoPassword))
+            ?? "silverlight";
     }
 }

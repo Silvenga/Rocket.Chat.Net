@@ -4,6 +4,8 @@
 
     using FluentAssertions;
 
+    using Ploeh.AutoFixture;
+
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
@@ -34,21 +36,21 @@
             await DefaultAccountLoginAsync();
 
             // Act
-            var userData = await RocketChatDriver.GetFullUserDataAsync(Constants.TestUsername);
+            var userData = await RocketChatDriver.GetFullUserDataAsync(Constants.TwoUsername);
 
             // Assert
-            userData.Username.Should().Be(Constants.TestUsername);
-            userData.Emails.Should().Contain(x => x.Address.Contains(Constants.TestEmail));
+            userData.Username.Should().Be(Constants.TwoUsername);
+            userData.Emails.Should().Contain(x => x.Address.Contains(Constants.TwoEmail));
         }
 
         [Fact]
         public async Task FullUserData_returns_null_when_doesnt_exist()
         {
-            const string userTest = "test";
+            var username = AutoFixture.Create<string>();
             await DefaultAccountLoginAsync();
 
             // Act
-            var userData = await RocketChatDriver.GetFullUserDataAsync(userTest);
+            var userData = await RocketChatDriver.GetFullUserDataAsync(username);
 
             // Assert
             userData.Should().BeNull();

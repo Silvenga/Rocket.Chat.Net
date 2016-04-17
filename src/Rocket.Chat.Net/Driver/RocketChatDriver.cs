@@ -6,6 +6,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Microsoft.SqlServer.Server;
+
     using Newtonsoft.Json.Linq;
 
     using Rocket.Chat.Net.Helpers;
@@ -283,6 +285,20 @@
             var user = collection.GetDynamicById(userId);
             string username = user.username;
             Username = username;
+        }
+
+        public async Task<dynamic> RegisterUserAsync(string name, string emailOrUsername, string password)
+        {
+            var obj = new Dictionary<string, string>
+            {
+                {"name", name},
+                {"emailOrUsername", emailOrUsername},
+                {"pass", password},
+                {"confirm-pass", password}
+            };
+
+            var result = await _client.CallAsync("registerUser", TimeoutToken, obj);
+            return result?["result"];
         }
 
         public async Task<string> GetRoomIdAsync(string roomIdOrName)

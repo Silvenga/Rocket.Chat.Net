@@ -10,13 +10,21 @@
 
 - `RocketServer`:
  - _default:_ `dev0:3000`
-- `RocketUsername`:
- -  _default:_ `mark.lopez`
-- `RocketEmail`:
- -  _default:_ `m@silvenga.com`
-- `RocketPassword`:
+
+- `OneUsername`:
+ -  _default:_ `user.one`
+- `OneEmail`:
+ -  _default:_ `one@silvenga.com`
+- `OneName`:
+ - _default_: `User One`
+- `OnePassword`:
  -  _default:_ `silverlight`
-- `TestUsername`:
- -  _default:_ `test.user`
-- `TestEmail`:
- -  _default:_ `test.user@silvenga.com`
+
+- `TwoUsername`:
+ -  _default:_ `user.two`
+- `TwoEmail`:
+ -  _default:_ `two@silvenga.com`
+- `TwoName`:
+ - _default_: `User Two`
+- `TwoPassword`:
+ -  _default:_ `silverlight`

@@ -28,7 +28,7 @@
         protected async Task DefaultAccountLoginAsync()
         {
             await RocketChatDriver.ConnectAsync();
-            var result = await RocketChatDriver.LoginWithEmailAsync(Constants.RocketEmail, Constants.RocketPassword);
+            var result = await RocketChatDriver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword);
             result.HasError.Should().BeFalse();
         }
 

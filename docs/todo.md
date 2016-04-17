@@ -14,7 +14,7 @@
 - [ ] Handle clears on subs results
 - [X] Create a converter for rocket messages
 - [ ] Check mono support later when Mono isn't completely broken for 4.6.1 and C# 6.0 nuget. 
-- [ ] Get a different RC server, DO is too slow (Maxing CPU). 
+- [X] Get a different RC server, DO is too slow (Maxing CPU). 
 
 # Driver Support
 

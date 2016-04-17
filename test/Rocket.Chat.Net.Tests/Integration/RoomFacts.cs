@@ -146,7 +146,7 @@
             using (var driver = new RocketChatDriver(Constants.RocketServer, false))
             {
                 driver.ConnectAsync().Wait();
-                driver.LoginWithEmailAsync(Constants.RocketEmail, Constants.RocketPassword).Wait();
+                driver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword).Wait();
                 var rooms = driver.ChannelListAsync().Result;
                 var toDelete = rooms.Result.Channels.Where(x => RoomsCreatedByName.Contains(x.Name));
 

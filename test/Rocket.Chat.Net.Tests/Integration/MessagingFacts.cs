@@ -47,7 +47,7 @@
                 messageReceived.Set();
             };
 
-            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
 
             // Act
             var result = await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
@@ -77,7 +77,7 @@
                 messageReceived.Set();
             };
 
-            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
 
             // Act
             await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
@@ -107,7 +107,7 @@
                 messageReceived.Set();
             };
 
-            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
             var userId = ((RocketChatDriver) _fixture.Master.Driver).UserId;
 
             // Act
@@ -118,7 +118,7 @@
             // Assert
             message.Should().NotBeNull();
             message.CreatedBy.Id.Should().Be(userId);
-            message.CreatedBy.Username.Should().Be(Constants.RocketUsername);
+            message.CreatedBy.Username.Should().Be(Constants.OneUsername);
         }
 
         [Fact]
@@ -138,7 +138,7 @@
                 messageReceived.Set();
             };
 
-            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
 
             // Act
             await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
@@ -153,7 +153,7 @@
         [Fact]
         public async Task When_bot_is_mentioned_set_mentioned_flag()
         {
-            var text = AutoFixture.Create<string>() + " @" + Constants.RocketUsername;
+            var text = AutoFixture.Create<string>() + " @" + Constants.OneUsername;
 
             var masterReceived = new AutoResetEvent(false);
             RocketMessage masterMessage = null;
@@ -179,8 +179,8 @@
                 slaveReceived.Set();
             };
 
-            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
-            await _fixture.Slave.InitAsync(Constants.TestUsername, Constants.RocketPassword);
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
+            await _fixture.Slave.InitAsync(Constants.TwoUsername, Constants.TwoPassword);
 
             // Act
             await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
@@ -199,7 +199,7 @@
         [Fact]
         public async Task When_bot_sends_message_on_receive_set_myself_flag()
         {
-            var text = AutoFixture.Create<string>() + " @" + Constants.RocketUsername;
+            var text = AutoFixture.Create<string>() + " @" + Constants.OneUsername;
 
             var masterReceived = new AutoResetEvent(false);
             RocketMessage masterMessage = null;
@@ -225,8 +225,8 @@
                 slaveReceived.Set();
             };
 
-            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
-            await _fixture.Slave.InitAsync(Constants.TestUsername, Constants.RocketPassword);
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
+            await _fixture.Slave.InitAsync(Constants.TwoUsername, Constants.TwoPassword);
 
             // Act
             await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
@@ -257,7 +257,7 @@
                 messageReceived.Set();
             };
 
-            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
             await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
 
             messageReceived.WaitOne(_timeout);
@@ -284,7 +284,7 @@
                 messageReceived.Set();
             };
 
-            await _fixture.Master.InitAsync(Constants.RocketUsername, Constants.RocketPassword);
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
             await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
 
             messageReceived.WaitOne(_timeout);
@@ -320,7 +320,7 @@
             Slave = new RocketChatDriverFixture(_logger);
 
             Fixture = new RocketChatDriverFixture(_logger);
-            Fixture.InitAsync(Constants.RocketUsername, Constants.RocketPassword).Wait();
+            Fixture.InitAsync(Constants.OneUsername, Constants.OnePassword).Wait();
             RoomId = Fixture.Driver.CreateRoomAsync(roomName)?.Result?.Result?.RoomId;
         }
 
