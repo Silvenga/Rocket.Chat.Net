@@ -20,20 +20,20 @@
         public string Version { get; set; }
         public object Tag { get; set; }
         public object Branch { get; set; }
-        public int TotalUsers { get; set; }
-        public int ActiveUsers { get; set; }
-        public int NonActiveUsers { get; set; }
-        public int OnlineUsers { get; set; }
-        public int AwayUsers { get; set; }
-        public int OfflineUsers { get; set; }
-        public int TotalRooms { get; set; }
-        public int TotalChannels { get; set; }
-        public int TotalPrivateGroups { get; set; }
-        public int TotalDirect { get; set; }
-        public int TotalMessages { get; set; }
-        public int MaxRoomUsers { get; set; }
-        public int AvgChannelUsers { get; set; }
-        public int AvgPrivateGroupUsers { get; set; }
+        public long TotalUsers { get; set; }
+        public long ActiveUsers { get; set; }
+        public long NonActiveUsers { get; set; }
+        public long OnlineUsers { get; set; }
+        public long AwayUsers { get; set; }
+        public long OfflineUsers { get; set; }
+        public long TotalRooms { get; set; }
+        public long TotalChannels { get; set; }
+        public long TotalPrivateGroups { get; set; }
+        public long TotalDirect { get; set; }
+        public long TotalMessages { get; set; }
+        public long MaxRoomUsers { get; set; }
+        public long AvgChannelUsers { get; set; }
+        public long AvgPrivateGroupUsers { get; set; }
 
         [JsonConverter(typeof(MeteorDateConverter))]
         public DateTime? LastLogin { get; set; }
@@ -47,7 +47,7 @@
         public Os Os { get; set; }
         public Process Process { get; set; }
         public Migration Migration { get; set; }
-        public int InstanceCount { get; set; }
+        public long InstanceCount { get; set; }
     }
 
     public class Migration
@@ -55,7 +55,7 @@
         [JsonProperty(PropertyName = "_id")]
         public string Id { get; set; }
 
-        public int Version { get; set; }
+        public long Version { get; set; }
         public bool Locked { get; set; }
 
         [JsonConverter(typeof(MeteorDateConverter))]
@@ -74,10 +74,10 @@
         public List<double> Loadavg { get; set; }
 
         [JsonProperty(PropertyName = "TotalMemory")]
-        public int TotalMemory { get; set; }
+        public long TotalMemory { get; set; }
 
         [JsonProperty(PropertyName = "Freemem")]
-        public int FreeMemory { get; set; }
+        public long FreeMemory { get; set; }
 
         public List<Cpu> Cpus { get; set; }
     }
@@ -91,17 +91,17 @@
 
     public class Times
     {
-        public int User { get; set; }
-        public int Nice { get; set; }
-        public int Sys { get; set; }
+        public long User { get; set; }
+        public long Nice { get; set; }
+        public long Sys { get; set; }
         public long Idle { get; set; }
-        public int Irq { get; set; }
+        public long Irq { get; set; }
     }
 
     public class Cpu
     {
         public string Model { get; set; }
-        public int Speed { get; set; }
+        public long Speed { get; set; }
         public Times Times { get; set; }
     }
 }
