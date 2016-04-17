@@ -16,6 +16,7 @@
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Models.MethodResults;
+    using Rocket.Chat.Net.Models.SubscriptionResults;
 
     public class RocketChatDriver : IRocketChatDriver
     {
@@ -86,16 +87,17 @@
             }
         }
 
-        private void HandleRocketMessage(string type, dynamic data)
+        private void HandleRocketMessage(string type, JObject data)
         {
-            var isMessage = type == "added" && data.collection == MessageTopic && data.fields.args != null;
+            var o = data.ToObject<SubscriptionResult<JObject>>();
+            var isMessage = type == "added" && o.Collection == MessageTopic && o.Fields["args"] != null;
             if (!isMessage)
             {
                 return;
             }
 
-            var messageRaw = data.fields.args[1];
-            var message = ((JObject) messageRaw).ToObject<RocketMessage>();
+            var messageRaw = o.Fields["args"][1];
+            var message = messageRaw.ToObject<RocketMessage>();
             message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
             message.IsFromMyself = message.CreatedBy.Id == UserId;
 
