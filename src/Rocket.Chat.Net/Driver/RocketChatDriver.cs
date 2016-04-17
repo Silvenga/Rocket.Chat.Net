@@ -282,9 +282,8 @@
         {
             UserId = userId;
             var collection = await _collectionDatabase.WaitForCollectionAsync("users", userId, TimeoutToken);
-            var user = collection.GetDynamicById(userId);
-            string username = user.username;
-            Username = username;
+            var user = collection.GetById<FullUser>(userId);
+            Username = user?.Username;
         }
 
         public async Task<dynamic> RegisterUserAsync(string name, string emailOrUsername, string password)

@@ -91,7 +91,7 @@
         {
             JObject result;
             var success = _collection.TryGetValue(id, out result);
-            return success ? result as T : null;
+            return success ? result.ToObject<T>() : null;
         }
 
         /// <summary>

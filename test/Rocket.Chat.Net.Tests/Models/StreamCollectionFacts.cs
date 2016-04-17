@@ -1,5 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Tests.Models
 {
+    using System;
+
     using FluentAssertions;
 
     using Newtonsoft.Json.Linq;
@@ -262,11 +264,38 @@
             var collection = new StreamCollection(_name);
 
             // Act
+            var result = collection.GetById<StreamCollectionFixture>(AutoFixture.Create<string>());
 
             // Assert
-            var result = collection.GetById<object>(AutoFixture.Create<string>());
-
             result.Should().BeNull();
+        }
+
+        [Fact]
+        public void When_object_does_exist_return_object()
+        {
+            var fixture = AutoFixture.Create<StreamCollectionFixture>();
+            var collection = new StreamCollection(_name);
+            collection.Added(fixture.Id, JObject.FromObject(fixture));
+
+            // Act
+            var result = collection.GetById<StreamCollectionFixture>(fixture.Id);
+
+            // Assert
+            result.Should().Be(fixture);
+        }
+
+        [Fact]
+        public void When_object_does_exist_but_generic_is_not_of_type_thow()
+        {
+            var fixture = AutoFixture.Create<StreamCollectionFixture>();
+            var collection = new StreamCollection(_name);
+            collection.Added(fixture.Id, JObject.FromObject(fixture));
+
+            // Act
+            Action action = () => collection.GetById<string>(fixture.Id);
+
+            // Assert
+            action.ShouldThrow<ArgumentException>();
         }
 
         [Fact]
@@ -292,6 +321,34 @@
             var result = collection.GetAnonymousTypeById(item.Id, item);
 
             result.Should().BeNull();
+        }
+    }
+
+    public class StreamCollectionFixture
+    {
+        public string Id { get; set; }
+
+        public string Username { get; set; }
+
+        private bool Equals(StreamCollectionFixture other)
+        {
+            return string.Equals(Id, other.Id) && string.Equals(Username, other.Username);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((StreamCollectionFixture) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Id?.GetHashCode() ?? 0) * 397) ^ (Username?.GetHashCode() ?? 0);
+            }
         }
     }
 }
