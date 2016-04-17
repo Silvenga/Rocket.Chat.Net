@@ -36,13 +36,13 @@
         public int AvgPrivateGroupUsers { get; set; }
 
         [JsonConverter(typeof(MeteorDateConverter))]
-        public DateTime LastLogin { get; set; }
+        public DateTime? LastLogin { get; set; }
 
         [JsonConverter(typeof(MeteorDateConverter))]
-        public DateTime LastMessageSentAt { get; set; }
+        public DateTime? LastMessageSentAt { get; set; }
 
         [JsonConverter(typeof(MeteorDateConverter))]
-        public DateTime LastSeenSubscription { get; set; }
+        public DateTime? LastSeenSubscription { get; set; }
 
         public Os Os { get; set; }
         public Process Process { get; set; }
