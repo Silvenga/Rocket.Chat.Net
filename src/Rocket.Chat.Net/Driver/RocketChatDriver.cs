@@ -6,8 +6,6 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Microsoft.SqlServer.Server;
-
     using Newtonsoft.Json.Linq;
 
     using Rocket.Chat.Net.Helpers;

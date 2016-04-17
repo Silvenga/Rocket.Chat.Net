@@ -65,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bot\RocketChatBot.cs" />
-    <Compile Include="Helpers\RocketMessageConverter.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="Loggers\DummyLogger.cs" />
     <Compile Include="Models\MethodResults\CollectionResult.cs" />

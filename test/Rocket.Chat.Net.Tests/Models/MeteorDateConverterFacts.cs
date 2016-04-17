@@ -8,6 +8,7 @@
 
     using Ploeh.AutoFixture;
 
+    using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
@@ -16,6 +17,21 @@
     public class MeteorDateConverterFacts
     {
         private readonly Fixture _autoFixture = new Fixture();
+
+        [Theory]
+        [InlineData(typeof(DateTime?), true)]
+        [InlineData(typeof(DateTime), true)]
+        [InlineData(typeof(string), false)]
+        public void Can_convert(Type type, bool canConvert)
+        {
+            var converter = new MeteorDateConverter();
+
+            // Act
+            var result = converter.CanConvert(type);
+
+            // Assert
+            result.Should().Be(canConvert);
+        }
 
         [Fact]
         public void Can_write()

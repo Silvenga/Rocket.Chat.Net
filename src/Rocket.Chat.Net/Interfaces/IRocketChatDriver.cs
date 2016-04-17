@@ -5,7 +5,6 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
-    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
 
