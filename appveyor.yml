@@ -9,7 +9,7 @@ environment:
   COVERALLS_REPO_TOKEN:  
     secure: 4guKYW7T2AsE96Wgu0J9RFtVYKSYRxU3L/pzz8UxJpv6uXXSfizwTF4s7iKUDk32
   RocketServer:
-    secure: MHMeKI2jwgkbT9DAMfPlM0dmnYhBMff5n1WfItnwvZA=
+    secure: Sbzwrt3Y8bKWeuykWXHeBIzqd16ajEcJBiDOdDyo2+E=
 before_build:
 - ps: nuget restore
 build:
