@@ -1,0 +1,29 @@
+{
+    "msg": "result",
+    "id": "44",
+    "result": {
+        "_id": "7iB45uieyYs6BaZLn",
+        "name": "FreeRangeParenting83005111.jpg",
+        "size": 31505,
+        "type": "image/jpeg",
+        "rid": "GENERAL",
+        "store": "rocketchat_uploads",
+        "complete": true,
+        "uploading": false,
+        "extension": "jpg",
+        "progress": 1,
+        "userId": "SbLtLqgupMJhRbZep",
+        "identify": {
+            "format": "JPEG",
+            "size": {
+                "width": 446,
+                "height": 315
+            }
+        },
+        "token": "48aA098b68",
+        "uploadedAt": {
+            "$date": 1460946688766
+        },
+        "url": "http://172.93.103.98:3000/ufs/rocketchat_uploads/7iB45uieyYs6BaZLn/FreeRangeParenting83005111.jpg"
+    }
+}

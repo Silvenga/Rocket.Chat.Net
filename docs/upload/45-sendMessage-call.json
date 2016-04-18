@@ -1,0 +1,23 @@
+{
+    "msg": "method",
+    "method": "sendFileMessage",
+    "params": [
+        "GENERAL",
+        null,
+        {
+            "_id": "7iB45uieyYs6BaZLn",
+            "type": "image/jpeg",
+            "size": 31505,
+            "name": "FreeRangeParenting83005111.jpg",
+            "identify": {
+                "format": "JPEG",
+                "size": {
+                    "width": 446,
+                    "height": 315
+                }
+            },
+            "url": "/ufs/rocketchat_uploads/7iB45uieyYs6BaZLn/FreeRangeParenting83005111.jpg"
+        }
+    ],
+    "id": "45"
+}

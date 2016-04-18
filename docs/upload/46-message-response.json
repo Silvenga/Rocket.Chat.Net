@@ -1,0 +1,42 @@
+{
+    "msg": "added",
+    "collection": "stream-messages",
+    "id": "cW6vHRDZLWP6TPWmy",
+    "fields": {
+        "args": [
+            "GENERAL",
+            {
+                "rid": "GENERAL",
+                "msg": "",
+                "file": {
+                    "_id": "7iB45uieyYs6BaZLn"
+                },
+                "groupable": false,
+                "attachments": [
+                    {
+                        "title": "File Uploaded: FreeRangeParenting83005111.jpg",
+                        "title_link": "/file-upload/7iB45uieyYs6BaZLn/FreeRangeParenting83005111.jpg",
+                        "title_link_download": true,
+                        "image_url": "/file-upload/7iB45uieyYs6BaZLn/FreeRangeParenting83005111.jpg",
+                        "image_type": "image/jpeg",
+                        "image_size": 31505,
+                        "image_dimensions": {
+                            "width": 446,
+                            "height": 315
+                        }
+                    }
+                ],
+                "ts": {
+                    "$date": 1460946688910
+                },
+                "u": {
+                    "_id": "SbLtLqgupMJhRbZep",
+                    "username": "user.one"
+                },
+                "_id": "A2ZRvsQexwsLFDv8t"
+            }
+        ],
+        "userId": null,
+        "subscriptionId": null
+    }
+}

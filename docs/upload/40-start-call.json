@@ -1,0 +1,20 @@
+{
+    "msg": "method",
+    "method": "/rocketchat_uploads/insert",
+    "params": [
+        {
+            "name": "FreeRangeParenting83005111.jpg",
+            "size": 29340,
+            "type": "image/jpeg",
+            "rid": "GENERAL",
+            "store": "rocketchat_uploads",
+            "complete": false,
+            "uploading": true,
+            "extension": "jpg",
+            "progress": 0,
+            "userId": "SbLtLqgupMJhRbZep"
+        }
+    ],
+    "id": "40",
+    "randomSeed": "52bbe21f943cf91bf4a0"
+}
