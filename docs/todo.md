@@ -37,12 +37,13 @@
 - [X] Delete message in room
 - [ ] Search for messages in room
 - [X] Receive messages in room
-- [X] Receive messages in all rooms 
+- [X] Receive messages in all rooms
+- [X] Load history
 - [ ] File download in room
 - [ ] File search in room
 - [ ] File upload in room
-- [ ] Send Emoticons
-- [ ] Receieve Emoticons
+- [X] Send reactions
+- [X] Receieve reactions
 
 ## Client
 
