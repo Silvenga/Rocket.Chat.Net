@@ -16,7 +16,7 @@
     [Trait("Category", "Models")]
     public class MeteorDateConverterFacts
     {
-        private readonly Fixture _autoFixture = new Fixture();
+        private static readonly Fixture AutoFixture = new Fixture();
 
         [Theory]
         [InlineData(typeof(DateTime?), true)]
@@ -36,7 +36,7 @@
         [Fact]
         public void Can_write()
         {
-            var fixture = _autoFixture.Create<MeteorDateSerializerModel>();
+            var fixture = AutoFixture.Create<MeteorDateSerializerModel>();
 
             // Act
             var json = JsonConvert.SerializeObject(fixture);
@@ -66,7 +66,7 @@
         [Fact]
         public void Can_read()
         {
-            var fixture = _autoFixture.Create<MeteorDateSerializerModel>();
+            var fixture = AutoFixture.Create<MeteorDateSerializerModel>();
             var epoch = ToEpoch(fixture.DateTime);
             var result = $"{{\"{nameof(fixture.DateTime)}\":{{\"$date\":{epoch}}}}}";
 

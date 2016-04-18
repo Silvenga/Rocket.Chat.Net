@@ -106,7 +106,7 @@
         /// <param name="ls">No idea, something with timespan, maybe less than?</param>
         /// <returns></returns>
         Task<MethodResult<LoadMessagesResult>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20,
-                                                    string ls = null);
+                                                                 string ls = null);
 
         /// <summary>
         /// Delete message
@@ -210,5 +210,13 @@
 
         Task<MethodResult> RemoveOtherTokensAsync();
         Task<MethodResult<LoginResult>> GetNewTokenAsync();
+
+        /// <summary>
+        /// Set a reaction (e.g. ":grinning:") on a message. Set an existing reaction to remove it.
+        /// </summary>
+        /// <param name="reaction"></param>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        Task<MethodResult> SetReaction(string reaction, string messageId);
     }
 }

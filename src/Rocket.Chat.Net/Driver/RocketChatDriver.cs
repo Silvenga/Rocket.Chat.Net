@@ -300,6 +300,12 @@
             return result?["result"];
         }
 
+        public async Task<MethodResult> SetReaction(string reaction, string messageId)
+        {
+            var result = await _client.CallAsync("setReaction", TimeoutToken, reaction, messageId);
+            return result.ToObject<MethodResult>();
+        }
+
         public async Task<string> GetRoomIdAsync(string roomIdOrName)
         {
             _logger.Info($"Looking up Room ID for: #{roomIdOrName}");

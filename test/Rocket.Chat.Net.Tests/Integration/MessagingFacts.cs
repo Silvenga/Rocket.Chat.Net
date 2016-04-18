@@ -91,6 +91,41 @@
         }
 
         [Fact]
+        public async Task Can_set_reaction()
+        {
+            const string reactionName = ":grinning:";
+            var text = AutoFixture.Create<string>();
+            var messageReceived = new AutoResetEvent(false);
+
+            RocketMessage message = null;
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                message = rocketMessage;
+                messageReceived.Set();
+            };
+
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
+            var messageResult = await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            messageReceived.WaitOne(_timeout);
+            messageReceived.Reset();
+
+            // Act
+            var result = await _fixture.Master.Driver.SetReaction(reactionName, messageResult.Result.Id);
+
+            messageReceived.WaitOne(_timeout);
+
+            // Assert
+            result.HasError.Should().BeFalse();
+            message.Reactions.Should().HaveCount(1);
+            message.Reactions[0].Name.Should().Be(reactionName);
+        }
+
+        [Fact]
         public async Task Messages_received_should_populate_created_by()
         {
             var text = AutoFixture.Create<string>();

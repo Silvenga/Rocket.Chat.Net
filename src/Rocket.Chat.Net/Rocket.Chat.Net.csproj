@@ -94,6 +94,8 @@
     <Compile Include="Models\Delegates.cs" />
     <Compile Include="Models\MethodResults\MethodResult.cs" />
     <Compile Include="Models\MethodResults\StatisticsResult.cs" />
+    <Compile Include="Helpers\RocketReactionConverter.cs" />
+    <Compile Include="Models\Reaction.cs" />
     <Compile Include="Models\SubscriptionResults\SubscriptionResult.cs" />
     <Compile Include="Models\RocketMessage.cs" />
     <Compile Include="Models\User.cs" />

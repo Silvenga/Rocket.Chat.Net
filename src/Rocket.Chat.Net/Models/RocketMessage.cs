@@ -101,6 +101,12 @@
         public List<User> Mentions { get; set; }
 
         /// <summary>
+        /// A list of reactions for this message.
+        /// </summary>
+        [JsonConverter(typeof(RocketReactionConverter))]
+        public List<Reaction> Reactions { get; set; }
+
+        /// <summary>
         /// List of user Id's that this message was starred by.
         /// WARNING: This may break in the future.
         /// </summary>
@@ -110,6 +116,45 @@
         public override string ToString()
         {
             return $"{CreatedBy?.Username ?? "UnknownUser"}: {Message}";
+        }
+
+        private bool Equals(RocketMessage other)
+        {
+            return string.Equals(Id, other.Id) && string.Equals(RoomId, other.RoomId) &&
+                   string.Equals(Message, other.Message) && IsBot == other.IsBot && Equals(CreatedBy, other.CreatedBy) &&
+                   CreatedOn.Equals(other.CreatedOn) && Equals(EditedBy, other.EditedBy) &&
+                   EditedOn.Equals(other.EditedOn) && IsBotMentioned == other.IsBotMentioned &&
+                   IsFromMyself == other.IsFromMyself && string.Equals(Type, other.Type) &&
+                   Mentions.Equals(other.Mentions) && Starred.Equals(other.Starred);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((RocketMessage) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Id?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ (RoomId?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (Message?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ IsBot.GetHashCode();
+                hashCode = (hashCode * 397) ^ (CreatedBy?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ CreatedOn.GetHashCode();
+                hashCode = (hashCode * 397) ^ (EditedBy?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ EditedOn.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsBotMentioned.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsFromMyself.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Type?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ Mentions.GetHashCode();
+                hashCode = (hashCode * 397) ^ Starred.GetHashCode();
+                return hashCode;
+            }
         }
     }
 }
