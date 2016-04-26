@@ -427,6 +427,14 @@
             return results.ToObject<MethodResult<int>>();
         }
 
+        public async Task<MethodResult<int>> UploadFile(string roomId)
+        {
+            var results =
+                await _client.CallAsync("/rocketchat_uploads/insert", TimeoutToken, roomId);
+
+            return results.ToObject<MethodResult<int>>();
+        }
+
         private void OnMessageReceived(RocketMessage rocketmessage)
         {
             MessageReceived?.Invoke(rocketmessage);
