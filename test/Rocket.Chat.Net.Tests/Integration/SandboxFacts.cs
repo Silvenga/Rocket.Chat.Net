@@ -39,11 +39,11 @@
 
             var roomId = await driver.GetRoomIdAsync("GENERAL");
 
-            await driver.JoinRoomAsync(roomId);
+            await driver.JoinRoomAsync(roomId.Result);
 
-            await driver.SubscribeToRoomAsync(roomId);
+            await driver.SubscribeToRoomAsync(roomId.Result);
 
-            var messages = await driver.SearchMessagesAsync($"from:{driver.Username}", roomId);
+            var messages = await driver.SearchMessagesAsync($"from:{driver.Username}", roomId.Result);
 
             driver.Dispose();
         }

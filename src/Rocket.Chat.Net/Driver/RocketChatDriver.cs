@@ -306,11 +306,12 @@
             return result.ToObject<MethodResult>();
         }
 
-        public async Task<string> GetRoomIdAsync(string roomIdOrName)
+        public async Task<MethodResult<string>> GetRoomIdAsync(string roomIdOrName)
         {
             _logger.Info($"Looking up Room ID for: #{roomIdOrName}");
             var result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName);
-            return result?["result"].ToObject<string>();
+
+            return result.ToObject<MethodResult<string>>();
         }
 
         public async Task<MethodResult> DeleteMessageAsync(string messageId, string roomId)

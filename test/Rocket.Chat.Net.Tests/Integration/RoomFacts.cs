@@ -36,12 +36,14 @@
             var result = await RocketChatDriver.GetRoomIdAsync(roomName);
 
             // Assert
-            result.Should().Be(roomId);
+            result.Result.Should().Be(roomId);
         }
 
         [Fact]
-        public async Task Lookup_of_non_existing_room_returns_itself()
+        public async Task Lookup_of_non_existing_room_returns_null()
         {
+            // Used to return room id, now throws a 500 as room is null
+
             var roomName = AutoFixture.Create<string>();
 
             await DefaultAccountLoginAsync();
@@ -50,7 +52,9 @@
             var result = await RocketChatDriver.GetRoomIdAsync(roomName);
 
             // Assert
-            result.Should().Be(roomName);
+            result.HasError.Should().BeTrue();
+            result.Result.Should().BeNull();
+            result.Error.Reason.Should().Be("Internal server error");
         }
 
         [Fact]
@@ -83,7 +87,7 @@
 
             // Assert
             result.HasError.Should().BeTrue();
-            result.Error.Error.Should().Be("duplicate-name");
+            result.Error.Error.Should().Be("error-duplicate-channel-name");
         }
 
         [Fact]

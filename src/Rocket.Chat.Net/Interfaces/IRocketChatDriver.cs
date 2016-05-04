@@ -71,7 +71,7 @@
         /// </summary>
         /// <param name="roomIdOrName">Room name or roomId</param>
         /// <returns></returns>
-        Task<string> GetRoomIdAsync(string roomIdOrName);
+        Task<MethodResult<string>> GetRoomIdAsync(string roomIdOrName);
 
         /// <summary>
         /// Joins a room, no effect if already joined
