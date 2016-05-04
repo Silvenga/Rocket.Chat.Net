@@ -1,3 +1,5 @@
+![Rocket.Chat.Net](/docs/images/icon.png)
+
 # Rocket.Chat.Net
 
 [![NuGet](https://img.shields.io/nuget/vpre/Rocket.Chat.Net.svg)](https://www.nuget.org/packages/Rocket.Chat.Net/)
