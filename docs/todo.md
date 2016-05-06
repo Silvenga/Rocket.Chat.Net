@@ -79,6 +79,7 @@
 - [ ] Update
 - [X] Delete
 - [X] Hide
+- [ ] List
 
 #### Private Groups
 
@@ -86,6 +87,7 @@
 - [ ] Update
 - [ ] Delete
 - [ ] Hide
+- [ ] List
 
 #### Private Messages
 
@@ -93,3 +95,4 @@
 - [ ] Update
 - [ ] Delete
 - [ ] Hide
+- [ ] List
