@@ -99,6 +99,10 @@
             message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
             message.IsFromMyself = message.CreatedBy.Id == UserId;
 
+            var rooms = GetRooms();
+
+            message.Room = rooms.FirstOrDefault(x => x.RoomId == message.RoomId);
+
             var edit = message.WasEdited ? "(EDIT)" : "";
             var mentioned = message.IsBotMentioned ? "(Mentioned)" : "";
             _logger.Info(

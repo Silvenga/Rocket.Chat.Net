@@ -36,6 +36,12 @@
         public string RoomId { get; set; }
 
         /// <summary>
+        /// Room the message was recieved in.
+        /// </summary>
+        [JsonIgnore, CanBeNull]
+        public Room Room { get; set; }
+
+        /// <summary>
         /// The text contained in this message.
         /// </summary>
         [JsonProperty(PropertyName = "msg")]
@@ -130,9 +136,12 @@
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != GetType())
+                return false;
             return Equals((RocketMessage) obj);
         }
 

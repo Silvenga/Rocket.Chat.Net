@@ -232,6 +232,52 @@
         }
 
         [Fact]
+        public async Task When_message_is_sent_set_room_property()
+        {
+            var text = AutoFixture.Create<string>();
+
+            var masterReceived = new AutoResetEvent(false);
+            RocketMessage masterMessage = null;
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                masterMessage = rocketMessage;
+                masterReceived.Set();
+            };
+
+            var slaveReceived = new AutoResetEvent(false);
+            RocketMessage slaveMessage = null;
+            _fixture.Slave.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                slaveMessage = rocketMessage;
+                slaveReceived.Set();
+            };
+
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
+            await _fixture.Slave.InitAsync(Constants.TwoUsername, Constants.TwoPassword);
+
+            // Act
+            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+
+            masterReceived.WaitOne(_timeout);
+            slaveReceived.WaitOne(_timeout);
+
+            // Assert
+            masterMessage.Should().NotBeNull();
+            masterMessage.Room.Should().NotBeNull();
+
+            slaveMessage.Should().NotBeNull();
+            slaveMessage.Room.Should().BeNull(); // User is not apart of this room, should be null
+        }
+
+        [Fact]
         public async Task When_bot_sends_message_on_receive_set_myself_flag()
         {
             var text = AutoFixture.Create<string>() + " @" + Constants.OneUsername;
@@ -385,6 +431,7 @@
             await Driver.ConnectAsync();
             await Driver.LoginWithUsernameAsync(username, password);
             await Driver.SubscribeToRoomAsync();
+            await Driver.SubscribeToRoomListAsync();
         }
 
         public void Dispose()
