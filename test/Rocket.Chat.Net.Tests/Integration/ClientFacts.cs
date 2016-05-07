@@ -12,7 +12,6 @@
     using Xunit.Abstractions;
 
     [Trait("Category", "Driver")]
-    [Collection("Driver")]
     public class ClientFacts : DriverFactsBase
     {
         public ClientFacts(ITestOutputHelper helper) : base(helper)

@@ -10,6 +10,7 @@
     using Xunit;
     using Xunit.Abstractions;
 
+    [Trait("Category", "Driver")]
     public class DdpFacts : IDisposable
     {
         private readonly XUnitLogger _helper;

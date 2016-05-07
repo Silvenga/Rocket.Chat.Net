@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Tests
+﻿namespace Rocket.Chat.Net.Tests.Helpers
 {
     using System;
 

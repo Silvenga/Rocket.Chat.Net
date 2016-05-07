@@ -15,6 +15,7 @@
     using Xunit;
     using Xunit.Abstractions;
 
+    [Trait("Category", "Driver")]
     public class RoomFacts : DriverFactsBase
     {
         public RoomFacts(ITestOutputHelper helper) : base(helper)

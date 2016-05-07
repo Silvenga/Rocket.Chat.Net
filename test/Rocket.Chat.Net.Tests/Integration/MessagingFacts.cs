@@ -17,7 +17,6 @@
     using Xunit.Abstractions;
 
     [Trait("Category", "Driver")]
-    [Collection("Driver")]
     public class MessagingFacts : IDisposable
     {
         private readonly TimeSpan _timeout = TimeSpan.FromSeconds(10);

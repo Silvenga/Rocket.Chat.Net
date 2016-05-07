@@ -9,6 +9,7 @@
     using Xunit;
     using Xunit.Abstractions;
 
+    [Trait("Category", "Driver")]
     public class AdministrationFacts : DriverFactsBase
     {
         public AdministrationFacts(ITestOutputHelper helper) : base(helper)
