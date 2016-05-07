@@ -208,7 +208,16 @@
         /// <returns>Number impacted?</returns>
         Task<MethodResult<int>> EraseRoomAsync(string roomId);
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <returns></returns>
         Task<MethodResult> RemoveOtherTokensAsync();
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <returns></returns>
         Task<MethodResult<LoginResult>> GetNewTokenAsync();
 
         /// <summary>
@@ -217,6 +226,28 @@
         /// <param name="reaction"></param>
         /// <param name="messageId"></param>
         /// <returns></returns>
-        Task<MethodResult> SetReaction(string reaction, string messageId);
+        Task<MethodResult> SetReactionAsync(string reaction, string messageId);
+
+        /// <summary>
+        /// Subscribe to room listings.
+        /// </summary>
+        /// <returns></returns>
+        Task SubscribeToRoomListAsync();
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="emailOrUsername"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        Task<object> RegisterUserAsync(string name, string emailOrUsername, string password);
+
+        /// <summary>
+        /// Get a list of currently known rooms from the room list subscription.
+        /// SubscribeToRoomListAsync() should be called once before using this method.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Room> GetRooms();
     }
 }

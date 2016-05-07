@@ -9,6 +9,7 @@
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Driver;
+    using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
@@ -124,6 +125,20 @@
             result.HasError.Should().BeTrue();
             // Currently any issues returns 500, this will hopefully change later
             result.Error.Error.Should().Be("500");
+        }
+
+        [Fact]
+        public async Task Room_subscription_should_contain_general_room()
+        {
+            await DefaultAccountLoginAsync();
+
+            // Act
+            await RocketChatDriver.SubscribeToRoomListAsync();
+
+            // Assert
+            var collection = RocketChatDriver.GetRooms().ToList();
+            collection.Should().ContainSingle(x => x.RoomId == "GENERAL")
+                      .Which.Type.Should().Be(RoomType.Channel);
         }
 
         [Fact]

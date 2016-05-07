@@ -113,6 +113,11 @@
             await _client.ConnectAsync(TimeoutToken);
         }
 
+        public async Task SubscribeToRoomListAsync()
+        {
+            await _client.SubscribeAndWaitAsync("subscription", TimeoutToken);
+        }
+
         public async Task SubscribeToRoomAsync(string roomId = null)
         {
             _logger.Info($"Subscribing to Room: #{roomId ?? "ALLROOMS"}");
@@ -300,7 +305,7 @@
             return result?["result"];
         }
 
-        public async Task<MethodResult> SetReaction(string reaction, string messageId)
+        public async Task<MethodResult> SetReactionAsync(string reaction, string messageId)
         {
             var result = await _client.CallAsync("setReaction", TimeoutToken, reaction, messageId);
             return result.ToObject<MethodResult>();
@@ -447,6 +452,24 @@
             var results = _collectionDatabase.TryGetCollection(collectionName, out value);
 
             return results ? value : null;
+        }
+
+        public IEnumerable<Room> GetRooms()
+        {
+            IStreamCollection value;
+            var results = _collectionDatabase.TryGetCollection("rocketchat_subscription", out value);
+
+            if (!results)
+            {
+                yield break;
+            }
+
+            var rooms = value.Items<Room>();
+
+            foreach (var room in rooms.Select(x => x.Value))
+            {
+                yield return room;
+            }
         }
 
         public void Dispose()

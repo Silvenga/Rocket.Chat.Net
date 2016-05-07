@@ -123,7 +123,7 @@
                 case "ready":
                     var subs = data["subs"];
                     var ids = subs?.ToObject<List<string>>();
-                    var id = ids?.FirstOrDefault();
+                    var id = ids?.FirstOrDefault(); // TODO Handle collection?
                     if (id != null)
                     {
                         _messages.TryAdd(id, data);
@@ -142,7 +142,7 @@
             };
 
             await SendObjectAsync(request, token);
-            await WaitForIdAsync(id, token);
+            await WaitForIdOrReadyAsync(id, token);
         }
 
         private async Task PongAsync(JObject data)
@@ -189,7 +189,7 @@
             };
 
             await SendObjectAsync(request, token);
-            await WaitForIdAsync(id, token);
+            await WaitForIdOrReadyAsync(id, token);
             return id;
         }
 
@@ -205,7 +205,7 @@
             };
 
             await SendObjectAsync(request, token);
-            var result = await WaitForIdAsync(id, token);
+            var result = await WaitForIdOrReadyAsync(id, token);
 
             return result;
         }
@@ -232,7 +232,7 @@
             }, token);
         }
 
-        private async Task<JObject> WaitForIdAsync(string id, CancellationToken token)
+        private async Task<JObject> WaitForIdOrReadyAsync(string id, CancellationToken token)
         {
             var task = Task.Run(() =>
             {

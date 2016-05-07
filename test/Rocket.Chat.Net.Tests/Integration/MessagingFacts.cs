@@ -115,7 +115,7 @@
             messageReceived.Reset();
 
             // Act
-            var result = await _fixture.Master.Driver.SetReaction(reactionName, messageResult.Result.Id);
+            var result = await _fixture.Master.Driver.SetReactionAsync(reactionName, messageResult.Result.Id);
 
             messageReceived.WaitOne(_timeout);
 

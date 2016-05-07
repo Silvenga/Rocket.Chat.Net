@@ -6,10 +6,10 @@
 
     public class ChannelListResult
     {
-        public List<Room> Channels { get; set; }
+        public List<Channel> Channels { get; set; }
     }
 
-    public class Room
+    public class Channel
     {
         [JsonProperty(PropertyName = "_id")]
         public string Id { get; set; }
