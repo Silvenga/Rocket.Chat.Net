@@ -211,7 +211,7 @@
 
             // Act
             _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            Thread.Sleep(100);
+            Thread.Sleep(200);
 
             // Assert
             _driverMock.Received(basicResponses.Count)
@@ -235,7 +235,7 @@
 
             // Act
             _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            Thread.Sleep(100);
+            Thread.Sleep(200);
 
             // Assert
             responseMock1.Received().Response(rocketMessage, bot);
@@ -261,7 +261,7 @@
 
             // Act
             _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            Thread.Sleep(10);
+            Thread.Sleep(200);
 
             // Assert
             responseMock1.Received().Response(rocketMessage, bot);
@@ -286,7 +286,7 @@
 
             // Act
             _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            Thread.Sleep(100);
+            Thread.Sleep(200);
 
             // Assert
             responseMock1.Received().Response(rocketMessage, bot);
@@ -313,7 +313,7 @@
 
             // Act
             _driverMock.DdpReconnect += Raise.Event<DdpReconnect>();
-            Thread.Sleep(10);
+            Thread.Sleep(200);
 
             // Assert
             await _driverMock.Received().LoginResumeAsync(Arg.Any<string>());
