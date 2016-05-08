@@ -5,6 +5,8 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
+    using Newtonsoft.Json.Linq;
+
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
 
@@ -78,7 +80,7 @@
         /// </summary>
         /// <param name="roomId">The room to join</param>
         /// <returns></returns>
-        Task<dynamic> JoinRoomAsync(string roomId);
+        Task<MethodResult> JoinRoomAsync(string roomId);
 
         /// <summary>
         /// Send a message to a room
@@ -95,7 +97,7 @@
         /// <param name="roomId">Room that the message exists in</param>
         /// <param name="newMessage">Update the message to this</param>
         /// <returns></returns>
-        Task<object> UpdateMessageAsync(string messageId, string roomId, string newMessage);
+        Task<MethodResult> UpdateMessageAsync(string messageId, string roomId, string newMessage);
 
         /// <summary>
         /// Load the message history of a room ordered by timestamp newest first
@@ -241,7 +243,7 @@
         /// <param name="emailOrUsername"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        Task<object> RegisterUserAsync(string name, string emailOrUsername, string password);
+        Task<JObject> RegisterUserAsync(string name, string emailOrUsername, string password);
 
         /// <summary>
         /// Get a list of currently known rooms from the room list subscription.
@@ -253,16 +255,16 @@
         /// <summary>
         /// Pin message by message id. 
         /// </summary>
-        /// <param name="messageId"></param>
-        /// <param name="username"></param>
+        /// <param name="messageId">Id of the message</param>
+        /// <param name="username">The username to display in the pin message</param>
         /// <returns></returns>
         Task<MethodResult<RocketMessage>> PinMessageAsync(string messageId, string username);
 
         /// <summary>
         /// Unpin message by message id. 
         /// </summary>
-        /// <param name="messageId"></param>
-        /// <param name="username"></param>
+        /// <param name="messageId">Id of the message</param>
+        /// <param name="username">The username to display in the pin message</param>
         /// <returns></returns>
         Task<MethodResult> UnpinMessageAsync(string messageId, string username);
     }

@@ -92,7 +92,7 @@
         }
 
         [Fact]
-        public void When_objects_exists_return_dynamic()
+        public void When_objects_exists_return_jobject()
         {
             var item = new
             {
@@ -111,20 +111,20 @@
             collection.Added(item.Id, JObject.FromObject(item));
 
             // Assert
-            var result = collection.GetDynamicById(item.Id);
+            var result = collection.GetJObjectById(item.Id);
 
-            ((string) result.Id).Should().Be(item.Id);
+            ((string) result["Id"]).Should().Be(item.Id);
         }
 
         [Fact]
-        public void When_objects_not_exists_return_dynamic()
+        public void When_objects_not_exists_return_jobject()
         {
             var collection = new StreamCollection(_name);
 
             // Act
 
             // Assert
-            var result = collection.GetDynamicById(AutoFixture.Create<string>());
+            var result = collection.GetJObjectById(AutoFixture.Create<string>());
 
             ((object) result).Should().BeNull();
         }

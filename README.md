@@ -51,6 +51,6 @@ bot.AddResponse(giphyResponse);
 
 [docs/environment.md](docs/environment.md)
 
-## TODO
+## Feature Support/TODO
 
 [docs/todo.md](docs/todo.md)

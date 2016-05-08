@@ -95,20 +95,19 @@
         }
 
         /// <summary>
-        /// Get object from collection as a dynamic type 
+        /// Get object from collection
         /// </summary>
         /// <param name="id">UUID of the object</param>
-        /// <returns>The object requested, null if object doesn't exist</returns>
-        public dynamic GetDynamicById(string id)
+        /// <returns>The object requested, null if object doesn't exist, null if object could not be created</returns>
+        public JObject GetJObjectById(string id)
         {
             JObject result;
             var success = _collection.TryGetValue(id, out result);
-
-            return !success ? null : result;
+            return success ? result : null;
         }
 
         /// <summary>
-        /// Get object from collection as a dynamic type
+        /// Get object from collection as a JObject type
         /// </summary>
         /// <typeparam name="T">Anonymous type to create</typeparam>
         /// <param name="id">UUID of the object</param>

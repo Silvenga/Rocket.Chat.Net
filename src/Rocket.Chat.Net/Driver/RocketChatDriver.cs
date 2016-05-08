@@ -295,7 +295,7 @@
             Username = user?.Username;
         }
 
-        public async Task<dynamic> RegisterUserAsync(string name, string emailOrUsername, string password)
+        public async Task<JObject> RegisterUserAsync(string name, string emailOrUsername, string password)
         {
             var obj = new Dictionary<string, string>
             {
@@ -306,7 +306,7 @@
             };
 
             var result = await _client.CallAsync("registerUser", TimeoutToken, obj);
-            return result?["result"];
+            return result?["result"].ToObject<JObject>();
         }
 
         public async Task<MethodResult> SetReactionAsync(string reaction, string messageId)
@@ -349,10 +349,11 @@
             return result.ToObject<MethodResult<ChannelListResult>>();
         }
 
-        public async Task<dynamic> JoinRoomAsync(string roomId)
+        public async Task<MethodResult> JoinRoomAsync(string roomId)
         {
             _logger.Info($"Joining Room: #{roomId}");
-            return await _client.CallAsync("joinRoom", TimeoutToken, roomId);
+            var result = await _client.CallAsync("joinRoom", TimeoutToken, roomId);
+            return result.ToObject<MethodResult>();
         }
 
         public async Task<MethodResult<RocketMessage>> SendMessageAsync(string text, string roomId)
@@ -368,7 +369,7 @@
             return result.ToObject<MethodResult<RocketMessage>>();
         }
 
-        public async Task<dynamic> UpdateMessageAsync(string messageId, string roomId, string newMessage)
+        public async Task<MethodResult> UpdateMessageAsync(string messageId, string roomId, string newMessage)
         {
             _logger.Info($"Updating message {messageId}");
             var request = new
@@ -378,7 +379,8 @@
                 bot = true,
                 _id = messageId
             };
-            return await _client.CallAsync("updateMessage", TimeoutToken, request);
+            var result = await _client.CallAsync("updateMessage", TimeoutToken, request);
+            return result.ToObject<MethodResult>();
         }
 
         public async Task<MethodResult<LoadMessagesResult>> LoadMessagesAsync(string roomId, DateTime? end = null,

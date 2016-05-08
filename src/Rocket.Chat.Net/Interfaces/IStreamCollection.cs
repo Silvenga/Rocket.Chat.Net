@@ -48,14 +48,7 @@ namespace Rocket.Chat.Net.Interfaces
         T GetById<T>(string id) where T : class;
 
         /// <summary>
-        /// Get object from collection as a dynamic type 
-        /// </summary>
-        /// <param name="id">UUID of the object</param>
-        /// <returns>The object requested, null if object doesn't exist</returns>
-        dynamic GetDynamicById(string id);
-
-        /// <summary>
-        /// Get object from collection as a dynamic type
+        /// Get object from collection as the given type
         /// </summary>
         /// <typeparam name="T">Anonymous type to create</typeparam>
         /// <param name="id">UUID of the object</param>
@@ -70,5 +63,12 @@ namespace Rocket.Chat.Net.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         IEnumerable<KeyValuePair<string, T>> Items<T>() where T : class;
+
+        /// <summary>
+        /// Get object from collection
+        /// </summary>
+        /// <param name="id">UUID of the object</param>
+        /// <returns>The object requested, null if object doesn't exist, null if object could not be created</returns>
+        JObject GetJObjectById(string id);
     }
 }

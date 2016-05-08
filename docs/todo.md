@@ -2,14 +2,14 @@
 
 # Wishes
 
-- [ ] Get rid of dynamics to support platforms that don't have JIT and for  (Moving over to JObjects)
-- [ ] Handle errors proactively (Some methods are covered, e.g. login)
+- [X] Get rid of dynamics to support platforms that don't have JIT and for  (Moving over to JObjects)
+- [X] Handle errors proactively (Some methods are covered, e.g. login)
 - [ ] An api similar to Margie Bot for Slack (e.g. inline lambda responders, standalone Responders, etc.)
 - [ ] Programmatic bot modifications (e.g. change avatar, etc.)
 - [X] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)
-- [ ] Get test converage
+- [X] Get test converage
 - [ ] A way to unsub
-- [ ] Figure out why tests are stuck when running in parallel. - It runs correctly locally from the cli. I almost looks like the tests don't even start
+- [X] Figure out why tests are stuck when running in parallel. - It runs correctly locally from the cli. I almost looks like the tests don't even start
 - [X] Pull user info from env vars for tests
 - [ ] Handle clears on subs results
 - [X] Create a converter for rocket messages
@@ -35,15 +35,14 @@
 - [X] Send basic message to room
 - [ ] Update basic message in room
 - [X] Delete message in room
-- [ ] Search for messages in room
+- [X] Search for messages in room
 - [X] Receive messages in room
 - [X] Receive messages in all rooms
 - [X] Load history
-- [ ] File download in room
-- [ ] File search in room
-- [ ] File upload in room
 - [X] Send reactions
 - [X] Receieve reactions
+- [X] Pinning
+- [X] Unpinning
 
 ## Client
 
@@ -79,7 +78,7 @@
 - [ ] Update
 - [X] Delete
 - [X] Hide
-- [ ] List
+- [X] List
 
 #### Private Groups
 
@@ -87,7 +86,7 @@
 - [ ] Update
 - [ ] Delete
 - [ ] Hide
-- [ ] List
+- [X] List
 
 #### Private Messages
 
@@ -95,4 +94,10 @@
 - [ ] Update
 - [ ] Delete
 - [ ] Hide
-- [ ] List
+- [X] List
+
+## File Management
+
+- [ ] File download in room
+- [ ] File search in room
+- [ ] File upload in room
