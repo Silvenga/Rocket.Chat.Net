@@ -60,6 +60,26 @@
         }
 
         [Fact]
+        public async Task Can_pin_message()
+        {
+            // TODO - add better coverage
+
+            var text = AutoFixture.Create<string>();
+
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
+
+            // Act
+            var sentMessageResult = await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+            var pinMessageResult = await _fixture.Master.Driver.PinMessageAsync(sentMessageResult.Result.Id, "user");
+            var unpinMessageResult = await _fixture.Master.Driver.UnpinMessageAsync(sentMessageResult.Result.Id, "user");
+
+            // Assert
+            sentMessageResult.HasError.Should().BeFalse();
+            pinMessageResult.HasError.Should().BeFalse();
+            unpinMessageResult.HasError.Should().BeFalse();
+        }
+
+        [Fact]
         public async Task Can_delete_message()
         {
             var text = AutoFixture.Create<string>();
@@ -262,6 +282,10 @@
             await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
             await _fixture.Slave.InitAsync(Constants.TwoUsername, Constants.TwoPassword);
 
+
+            await _fixture.Master.Driver.SubscribeToRoomListAsync();
+            await _fixture.Slave.Driver.SubscribeToRoomListAsync();
+
             // Act
             await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
 
@@ -430,7 +454,7 @@
             await Driver.ConnectAsync();
             await Driver.LoginWithUsernameAsync(username, password);
             await Driver.SubscribeToRoomAsync();
-            await Driver.SubscribeToRoomListAsync();
+       
         }
 
         public void Dispose()

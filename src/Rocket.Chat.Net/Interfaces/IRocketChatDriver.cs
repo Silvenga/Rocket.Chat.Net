@@ -249,5 +249,21 @@
         /// </summary>
         /// <returns></returns>
         IEnumerable<Room> GetRooms();
+
+        /// <summary>
+        /// Pin message by message id. 
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        Task<MethodResult<RocketMessage>> PinMessageAsync(string messageId, string username);
+
+        /// <summary>
+        /// Unpin message by message id. 
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        Task<MethodResult> UnpinMessageAsync(string messageId, string username);
     }
 }

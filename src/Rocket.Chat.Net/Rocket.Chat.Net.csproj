@@ -68,6 +68,7 @@
     <Compile Include="Bot\RocketChatBot.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="Loggers\DummyLogger.cs" />
+    <Compile Include="Models\Attachment.cs" />
     <Compile Include="Models\MethodResults\CollectionResult.cs" />
     <Compile Include="Driver\DdpClient.cs" />
     <Compile Include="Interfaces\IStreamCollection.cs" />

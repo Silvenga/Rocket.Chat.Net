@@ -21,6 +21,7 @@
         {
             Mentions = new List<User>();
             Starred = new List<User>();
+            Attachments = new List<Attachment>();
         }
 
         /// <summary>
@@ -88,6 +89,30 @@
         public bool IsFromMyself { get; set; }
 
         /// <summary>
+        /// Whenever this message should be groupable
+        /// </summary>
+        [JsonProperty(PropertyName = "groupable")]
+        public bool IsGroupable { get; set; }
+
+        /// <summary>
+        /// Whenever this message is pinned.
+        /// </summary>
+        [JsonProperty(PropertyName = "pinned")]
+        public bool IsPinned { get; set; }
+
+        /// <summary>
+        /// Timestamp when the message was pinned.
+        /// </summary>
+        [JsonProperty(PropertyName = "pinnedAt"), JsonConverter(typeof(MeteorDateConverter))]
+        public DateTime? PinnedAt { get; set; }
+
+        /// <summary>
+        /// User whom pinned the message.
+        /// </summary>
+        [JsonProperty(PropertyName = "pinnedBy")]
+        public User PinnedBy { get; set; }
+
+        /// <summary>
         /// Whenever this message was edited by anyone.
         /// </summary>
         public bool WasEdited => EditedOn != null;
@@ -96,6 +121,8 @@
         /// The type of message.
         /// uj: User joined room
         /// ua: user invited to room
+        /// message_pinned: Message pinned
+        /// Types: https://github.com/RocketChat/Rocket.Chat/blob/4d898024e23864fe96eaf776085c21fcd8991718/packages/rocketchat-lib/lib/MessageTypes.coffee
         /// </summary>
         [JsonProperty(PropertyName = "t")]
         public string Type { get; set; }
@@ -118,6 +145,12 @@
         /// </summary>
         [JsonProperty(PropertyName = "starred"), NotNull]
         public List<User> Starred { get; set; }
+
+        /// <summary>
+        /// List of attachments for this message.
+        /// </summary>
+        [JsonProperty(PropertyName = "attachments"), NotNull]
+        public List<Attachment> Attachments { get; set; }
 
         public override string ToString()
         {
