@@ -33,6 +33,7 @@
                 //"0.28.0",
                 // Broken at 0.29.0
                 "0.29.0",
+                "0.30.0",
             };
 
             await DefaultAccountLoginAsync();
