@@ -7,7 +7,7 @@ $testDdl1 = "test\Rocket.Chat.Net.Tests\bin\Debug\Rocket.Chat.Net.Tests.dll"
 $testDdl2 = "test\Rocket.Chat.Net.Bot.Tests\bin\Debug\Rocket.Chat.Net.Bot.Tests.dll"
 
 $targetargs = "`"$testDdl1`" `"$testDdl2`" -noshadow -notrait category=Sandbox "
-$filter = "-filter:`"+[Rocket.Chat.Net]Rocket.Chat.Net.* +[Rocket.Chat.Bot]Rocket.Chat.Net.Bot.* `""
+$filter = "+[Rocket.Chat.Net]Rocket.Chat.Net.* +[Rocket.Chat.Bot]Rocket.Chat.Net.Bot.*"
 
 & $openCover -register:user -target:$xunit -targetargs:"$targetargs" -filter:"$filter" -mergebyhash -output:$coverageXml
 
