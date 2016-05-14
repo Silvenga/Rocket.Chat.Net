@@ -1,10 +1,10 @@
-﻿namespace Rocket.Chat.Net.Tests.Bot
+﻿namespace Rocket.Chat.Net.Bot.Tests
 {
     using FluentAssertions;
 
     using Ploeh.AutoFixture;
 
-    using Rocket.Chat.Net.Helpers;
+    using Rocket.Chat.Net.Bot.Helpers;
     using Rocket.Chat.Net.Models;
 
     using Xunit;
@@ -20,7 +20,7 @@
             var reply = AutoFixture.Create<string>();
 
             // Act
-            var result = rocketMessage.CreateBasicReply(reply);
+            var result = BotHelper.CreateBasicReply(rocketMessage, reply);
 
             // Assert
             result.Message.Should().Be(reply);

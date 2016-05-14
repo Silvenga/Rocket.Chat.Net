@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Bot;
+    using Rocket.Chat.Net.Bot.Interfaces;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models.LoginOptions;

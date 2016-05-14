@@ -21,7 +21,7 @@
     public class DdpClient : IDdpClient
     {
         private readonly ILogger _logger;
-        private readonly WebSocket _socket;
+        private readonly IWebSocketWrapper _socket;
         private readonly ConcurrentDictionary<string, JObject> _messages = new ConcurrentDictionary<string, JObject>();
 
         public string Url { get; }
@@ -36,7 +36,15 @@
             _logger = logger;
             Url = (useSsl ? "wss://" : "ws://") + baseUrl + "/websocket";
 
-            _socket = new WebSocket(Url);
+            _socket = new WebSocketWrapper(new WebSocket(Url));
+            AttachEvents();
+        }
+
+        public DdpClient(IWebSocketWrapper socket, ILogger logger)
+        {
+            _logger = logger;
+
+            _socket = socket;
             AttachEvents();
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Tests.Bot
+﻿namespace Rocket.Chat.Net.Bot.Tests
 {
     using System;
     using System.Linq;
@@ -12,7 +12,8 @@
 
     using Ploeh.AutoFixture;
 
-    using Rocket.Chat.Net.Bot;
+    using Rocket.Chat.Net.Bot.Interfaces;
+    using Rocket.Chat.Net.Bot.Models;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
@@ -44,8 +45,10 @@
             {
             }
 
+            new RocketChatBot(_driverMock, _loggerMock).Dispose();
+
             // Assert
-            _driverMock.Received().Dispose();
+            _driverMock.Received(2).Dispose();
         }
 
         [Fact]
@@ -183,7 +186,8 @@
 
             var waitHandle = new AutoResetEvent(false);
             var responseMock = Substitute.For<IBotResponse>();
-            responseMock.Response(Arg.Do<RocketMessage>(message => waitHandle.Set()), Arg.Any<RocketChatBot>());
+            responseMock.CanRespond(Arg.Any<ResponseContext>()).Returns(true);
+            responseMock.GetResponse(Arg.Do<ResponseContext>(message => waitHandle.Set()), Arg.Any<RocketChatBot>());
 
             var bot = new RocketChatBot(_driverMock, _loggerMock);
             bot.AddResponse(responseMock);
@@ -193,18 +197,18 @@
             waitHandle.WaitOne(TimeSpan.FromSeconds(5));
 
             // Assert
-            responseMock.Received().Response(rocketMessage, bot);
+            responseMock.Received().GetResponse(Arg.Any<ResponseContext>(), bot);
         }
 
         [Fact]
         public void When_response_returns_message_send_message()
         {
             var rocketMessage = AutoFixture.Create<RocketMessage>();
-            var basicResponses = AutoFixture.CreateMany<BasicResponse>().ToList();
-            
+            var basicResponses = AutoFixture.Build<BasicResponse>().CreateMany().ToList();
+
             var responseMock = Substitute.For<IBotResponse>();
-            responseMock.Response(rocketMessage, Arg.Any<RocketChatBot>())
-                        .Returns(basicResponses);
+            responseMock.CanRespond(Arg.Any<ResponseContext>()).Returns(true);
+            responseMock.GetResponse(Arg.Any<ResponseContext>(), Arg.Any<RocketChatBot>()).Returns(basicResponses);
 
             var bot = new RocketChatBot(_driverMock, _loggerMock);
             bot.AddResponse(responseMock);
@@ -219,64 +223,16 @@
         }
 
         [Fact]
-        public void When_response_does_not_response_try_next()
-        {
-            var responseMock1 = Substitute.For<IBotResponse>();
-            responseMock1.Response(Arg.Any<RocketMessage>(), Arg.Any<RocketChatBot>());
-
-            var responseMock2 = Substitute.For<IBotResponse>();
-            responseMock2.Response(Arg.Any<RocketMessage>(), Arg.Any<RocketChatBot>());
-
-            var bot = new RocketChatBot(_driverMock, _loggerMock);
-            bot.AddResponse(responseMock1);
-            bot.AddResponse(responseMock2);
-
-            var rocketMessage = AutoFixture.Create<RocketMessage>();
-
-            // Act
-            _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            Thread.Sleep(200);
-
-            // Assert
-            responseMock1.Received().Response(rocketMessage, bot);
-            responseMock2.Received().Response(rocketMessage, bot);
-        }
-
-        [Fact]
-        public void When_response_does_response_break()
-        {
-            var basicResponses = AutoFixture.CreateMany<BasicResponse>();
-            var responseMock1 = Substitute.For<IBotResponse>();
-            responseMock1.Response(Arg.Any<RocketMessage>(), Arg.Any<RocketChatBot>())
-                         .Returns(basicResponses);
-
-            var responseMock2 = Substitute.For<IBotResponse>();
-            responseMock2.Response(Arg.Any<RocketMessage>(), Arg.Any<RocketChatBot>());
-
-            var bot = new RocketChatBot(_driverMock, _loggerMock);
-            bot.AddResponse(responseMock1);
-            bot.AddResponse(responseMock2);
-
-            var rocketMessage = AutoFixture.Create<RocketMessage>();
-
-            // Act
-            _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
-            Thread.Sleep(200);
-
-            // Assert
-            responseMock1.Received().Response(rocketMessage, bot);
-            responseMock2.DidNotReceive().Response(rocketMessage, bot);
-        }
-
-        [Fact]
         public void When_response_throws_handle_and_try_next()
         {
             var responseMock1 = Substitute.For<IBotResponse>();
-            responseMock1.Response(Arg.Any<RocketMessage>(), Arg.Any<RocketChatBot>())
+            responseMock1.CanRespond(Arg.Any<ResponseContext>()).Returns(true);
+            responseMock1.GetResponse(Arg.Any<ResponseContext>(), Arg.Any<RocketChatBot>())
                          .Throws(new Exception());
 
             var responseMock2 = Substitute.For<IBotResponse>();
-            responseMock2.Response(Arg.Any<RocketMessage>(), Arg.Any<RocketChatBot>());
+            responseMock2.CanRespond(Arg.Any<ResponseContext>()).Returns(true);
+            responseMock2.GetResponse(Arg.Any<ResponseContext>(), Arg.Any<RocketChatBot>());
 
             var bot = new RocketChatBot(_driverMock, _loggerMock);
             bot.AddResponse(responseMock1);
@@ -289,8 +245,8 @@
             Thread.Sleep(200);
 
             // Assert
-            responseMock1.Received().Response(rocketMessage, bot);
-            responseMock2.Received().Response(rocketMessage, bot);
+            responseMock1.Received().GetResponse(Arg.Any<ResponseContext>(), Arg.Any<RocketChatBot>());
+            responseMock2.Received().GetResponse(Arg.Any<ResponseContext>(), Arg.Any<RocketChatBot>());
         }
 
         [Fact]

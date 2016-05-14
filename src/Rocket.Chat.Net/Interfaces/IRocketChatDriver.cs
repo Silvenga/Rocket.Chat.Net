@@ -16,6 +16,9 @@
     {
         event MessageReceived MessageReceived;
 
+        string UserId { get; }
+        string Username { get; }
+
         /// <summary>
         /// Connect via the DDP protocol using WebSockets
         /// </summary>

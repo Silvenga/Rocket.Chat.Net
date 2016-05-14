@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Rocket.Chat.Net.Bot.Interfaces;
+    using Rocket.Chat.Net.Bot.Models;
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
@@ -102,15 +104,23 @@
 
         private void DriverOnMessageReceived(RocketMessage rocketMessage)
         {
+            var context = new ResponseContext
+            {
+                Message = rocketMessage,
+                BotHasResponded = false,
+                BotUserId = Driver.UserId,
+                BotUserName = Driver.Username
+            };
+
             Task.Run(async () => // async this to prevent holding up the message loop
             {
-                foreach (var botResponse in _botResponses)
+                foreach (var botResponse in GetValidResponses(context, _botResponses))
                 {
                     try
                     {
                         _logger.Debug($"Trying response {botResponse.GetType()}.");
                         var hasResponse = false;
-                        foreach (var response in botResponse.Response(rocketMessage, this))
+                        foreach (var response in botResponse.GetResponse(context, this))
                         {
                             hasResponse = true;
                             await Driver.SendMessageAsync(response.Message, response.RoomId);
@@ -119,7 +129,6 @@
                         if (hasResponse)
                         {
                             _logger.Debug("Response succeeded.");
-                            break;
                         }
                     }
                     catch (Exception e)
@@ -128,6 +137,19 @@
                     }
                 }
             });
+        }
+
+        private IEnumerable<IBotResponse> GetValidResponses(ResponseContext context, IEnumerable<IBotResponse> possibleResponses)
+        {
+            foreach (var response in possibleResponses)
+            {
+                var canRespond = response.CanRespond(context);
+                if (canRespond)
+                {
+                    context.BotHasResponded = true;
+                }
+                yield return response;
+            }
         }
 
         private void DriverOnDdpReconnect()

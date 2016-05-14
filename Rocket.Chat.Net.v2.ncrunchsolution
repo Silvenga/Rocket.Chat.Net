@@ -11,7 +11,14 @@
   <NCrunchCacheStoragePath></NCrunchCacheStoragePath>
   <EngineModes>Run all tests automatically:BFRydWU=:BFRydWU=:BFRydWU=:False;Run all tests manually:BUZhbHNl:BFRydWU=:BFRydWU=:False;Run impacted tests automatically, others manually:CklzSW1wYWN0ZWQ=:BFRydWU=:BFRydWU=:False;Run pinned tests automatically, others manually:CElzUGlubmVk:BFRydWU=:BFRydWU=:True;Rocket.Chat.Net.Tests:E0RvZXNOb3RIYXZlQ2F0ZWdvcnkGRHJpdmVy:BFRydWU=:BFRydWU=:False</EngineModes>
   <MetricsExclusionList>
+Helpers\JetBrainsAnnotations.cs:src\Rocket.Chat.Net\Rocket.Chat.Net.csproj
+src\Rocket.Chat.Net.Bot\Rocket.Chat.Net.Bot.csproj\Interfaces
+src\Rocket.Chat.Net.Bot\Rocket.Chat.Net.Bot.csproj\Models
+src\Rocket.Chat.Net.Bot\Rocket.Chat.Net.Bot.csproj\Properties
 src\Rocket.Chat.Net.Example\Rocket.Chat.Net.Example.csproj
+src\Rocket.Chat.Net\Rocket.Chat.Net.csproj\Interfaces
+src\Rocket.Chat.Net\Rocket.Chat.Net.csproj\Properties
+test\Rocket.Chat.Net.Bot.Tests\Rocket.Chat.Net.Bot.Tests.csproj
 test\Rocket.Chat.Net.Tests\Rocket.Chat.Net.Tests.csproj
 </MetricsExclusionList>
 </SolutionConfiguration>

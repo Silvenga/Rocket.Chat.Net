@@ -5,9 +5,9 @@
     using RestSharp;
 
     using Rocket.Chat.Net.Bot;
-    using Rocket.Chat.Net.Helpers;
-    using Rocket.Chat.Net.Interfaces;
-    using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Bot.Helpers;
+    using Rocket.Chat.Net.Bot.Interfaces;
+    using Rocket.Chat.Net.Bot.Models;
 
     internal class GiphyResponse : IBotResponse
     {
@@ -16,14 +16,19 @@
         private const string Rating = "pg-13";
         private readonly RestClient _client = new RestClient("http://api.giphy.com/");
 
-        public IEnumerable<BasicResponse> Response(RocketMessage message, RocketChatBot caller)
+        public bool CanRespond(ResponseContext context)
         {
-            if (message.Message.StartsWith(GiphyCommand) && !message.Message.Equals(GiphyCommand))
-            {
-                var search = message.Message.Replace(GiphyCommand, "").Trim();
-                var url = GetGiphy(search);
-                yield return message.CreateBasicReply(url);
-            }
+            var message = context.Message;
+            return message.Message.StartsWith(GiphyCommand) && !message.Message.Equals(GiphyCommand);
+        }
+
+        public IEnumerable<BasicResponse> GetResponse(ResponseContext context, RocketChatBot caller)
+        {
+            var message = context.Message;
+
+            var search = message.Message.Replace(GiphyCommand, "").Trim();
+            var url = GetGiphy(search);
+            yield return message.CreateBasicReply(url);
         }
 
         private string GetGiphy(string search)

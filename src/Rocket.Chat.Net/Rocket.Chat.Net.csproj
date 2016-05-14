@@ -62,7 +62,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bot\RocketChatBot.cs" />
+    <Compile Include="Interfaces\IWebSocketWrapper.cs" />
+    <Compile Include="Driver\WebSocketWrapper.cs" />
     <Compile Include="Helpers\JetBrainsAnnotations.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="Loggers\DummyLogger.cs" />
@@ -82,15 +83,12 @@
     <Compile Include="Models\MethodResults\ErrorResult.cs" />
     <Compile Include="Models\MethodResults\LoadMessagesResult.cs" />
     <Compile Include="Models\MethodResults\LoginResult.cs" />
-    <Compile Include="Helpers\BotHelper.cs" />
     <Compile Include="Models\LoginOptions\EmailLoginOption.cs" />
     <Compile Include="Interfaces\ILoginOption.cs" />
     <Compile Include="Interfaces\IRocketChatDriver.cs" />
-    <Compile Include="Interfaces\IBotResponse.cs" />
     <Compile Include="Models\LoginOptions\LdapLoginOption.cs" />
     <Compile Include="Models\LoginOptions\ResumeLoginOption.cs" />
     <Compile Include="Models\LoginOptions\UsernameLoginOption.cs" />
-    <Compile Include="Models\BasicResponse.cs" />
     <Compile Include="Models\Delegates.cs" />
     <Compile Include="Models\MethodResults\MethodResult.cs" />
     <Compile Include="Models\MethodResults\StatisticsResult.cs" />

@@ -1,5 +1,6 @@
-﻿namespace Rocket.Chat.Net.Helpers
+﻿namespace Rocket.Chat.Net.Bot.Helpers
 {
+    using Rocket.Chat.Net.Bot.Models;
     using Rocket.Chat.Net.Models;
 
     public static class BotHelper

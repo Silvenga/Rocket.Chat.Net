@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Models
+﻿namespace Rocket.Chat.Net.Bot.Models
 {
     using System.Diagnostics.CodeAnalysis;
 
