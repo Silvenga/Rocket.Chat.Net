@@ -9,7 +9,7 @@
     <licenseUrl>https://github.com/Silvenga/Rocket.Chat.Net/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/Silvenga/Rocket.Chat.Net</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A Rocket.Chat realtime, managed .Net driver.</description>
+    <description>A Rocket.Chat realtime, managed .Net bot.</description>
     <copyright>Copyright 2016</copyright>
     <tags>Rocket.Chat</tags>
   </metadata>
