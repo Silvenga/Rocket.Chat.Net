@@ -81,7 +81,7 @@
                     collection.Removed(collectionResult.Id);
                     break;
                 default:
-                    throw new InvalidOperationException($"Incountered a unknown subscription update type {type}.");
+                    throw new InvalidOperationException($"Encountered a unknown subscription update type {type}.");
             }
         }
 

@@ -201,6 +201,18 @@
             return id;
         }
 
+        public async Task UnsubscribeAsync(string id, CancellationToken token)
+        {
+            var request = new
+            {
+                msg = "unsub",
+                id
+            };
+
+            await SendObjectAsync(request, token);
+            await WaitForIdOrReadyAsync(id, token);
+        }
+
         public async Task<JObject> CallAsync(string method, CancellationToken token, params object[] args)
         {
             var id = CreateId();

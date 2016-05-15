@@ -8,7 +8,7 @@
 - [ ] Programmatic bot modifications (e.g. change avatar, etc.)
 - [X] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)
 - [X] Get test converage
-- [ ] A way to unsub
+- [X] A way to unsub
 - [X] Figure out why tests are stuck when running in parallel. - It runs correctly locally from the cli. I almost looks like the tests don't even start
 - [X] Pull user info from env vars for tests
 - [ ] Handle clears on subs results
@@ -22,7 +22,7 @@
 
 - [X] Ping/Pong
 - [X] Subscribe and get responses
-- [ ] Unsubscribe
+- [X] Unsubscribe
 - [X] Call server method and get response
 - [X] Streaming collections
 - [X] Reconnecting

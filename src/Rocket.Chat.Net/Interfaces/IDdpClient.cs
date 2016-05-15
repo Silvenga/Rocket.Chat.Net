@@ -22,5 +22,6 @@ namespace Rocket.Chat.Net.Interfaces
         Task<string> SubscribeAsync(string name, CancellationToken token, params object[] args);
         Task<string> SubscribeAndWaitAsync(string name, CancellationToken token, params object[] args);
         Task<JObject> CallAsync(string method, CancellationToken token, params object[] args);
+        Task UnsubscribeAsync(string id, CancellationToken token);
     }
 }

@@ -1,6 +1,8 @@
 ﻿namespace Rocket.Chat.Net.Tests.Driver
 {
     using System;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     using FluentAssertions;
 
@@ -28,6 +30,8 @@
         private readonly XUnitLogger _helper;
         private readonly IWebSocketWrapper _socket = Substitute.For<IWebSocketWrapper>();
 
+        private CancellationToken TimeoutToken => CreateTimeoutToken();
+
         public DdpFacts(ITestOutputHelper helper)
         {
             _helper = new XUnitLogger(helper);
@@ -51,6 +55,29 @@
 
             // Assert
             client.SessionId.Should().Be(sessionId);
+        }
+
+        [Fact]
+        public void Can_unsubscribe()
+        {
+            var client = new DdpClient(_socket, _helper);
+
+            var subId = AutoFixture.Create<string>();
+            var message = new
+            {
+                id = subId,
+                msg = "nosub"
+            };
+            var jsonMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(message));
+
+            // Act
+            var task = client.UnsubscribeAsync(subId, TimeoutToken);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(jsonMessage);
+
+            Action action = async () => await task;
+
+            // Assert
+            action.ShouldNotThrow<OperationCanceledException>();
         }
 
         [Fact]
@@ -97,6 +124,15 @@
 
             // Assert
             logger.Received().Info($"ERROR: {message}");
+        }
+
+        private CancellationToken CreateTimeoutToken()
+        {
+            const int timeoutSeconds = 30;
+            var source = new CancellationTokenSource();
+            source.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
+
+            return source.Token;
         }
 
         public void Dispose()
