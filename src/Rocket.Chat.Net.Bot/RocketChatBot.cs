@@ -147,8 +147,8 @@
                 if (canRespond)
                 {
                     context.BotHasResponded = true;
+                    yield return response;
                 }
-                yield return response;
             }
         }
 

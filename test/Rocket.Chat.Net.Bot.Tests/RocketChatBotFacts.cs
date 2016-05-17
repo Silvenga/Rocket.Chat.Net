@@ -201,6 +201,25 @@
         }
 
         [Fact]
+        public void When_response_returns_false_dont_run()
+        {
+            var rocketMessage = AutoFixture.Create<RocketMessage>();
+
+            var responseMock = Substitute.For<IBotResponse>();
+            responseMock.CanRespond(Arg.Any<ResponseContext>()).Returns(false);
+
+            var bot = new RocketChatBot(_driverMock, _loggerMock);
+            bot.AddResponse(responseMock);
+
+            // Act
+            _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
+            Thread.Sleep(1 * 1000);
+
+            // Assert
+            responseMock.DidNotReceive().GetResponse(Arg.Any<ResponseContext>(), Arg.Any<RocketChatBot>());
+        }
+
+        [Fact]
         public void When_response_returns_message_send_message()
         {
             var rocketMessage = AutoFixture.Create<RocketMessage>();
