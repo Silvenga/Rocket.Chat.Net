@@ -103,6 +103,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Driver\DdpFacts.cs" />
+    <Compile Include="Driver\FileHelperFacts.cs" />
     <Compile Include="Driver\MessagingFacts.cs" />
     <Compile Include="Driver\RocketChatDriverFacts.cs" />
     <Compile Include="Helpers\RocketReactionConverterModel.cs" />
@@ -132,9 +133,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Assets\random-image.png.base64">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Assets\random-image.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

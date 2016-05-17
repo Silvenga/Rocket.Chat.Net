@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -437,6 +438,26 @@
                 await _client.CallAsync("eraseRoom", TimeoutToken, roomId);
 
             return results.ToObject<MethodResult<int>>();
+        }
+
+        public async Task<MethodResult> ResetAvatarAsync()
+        {
+            var results = await _client.CallAsync("resetAvatar", TimeoutToken);
+            return results.ToObject<MethodResult>();
+        }
+
+        public async Task<MethodResult> SetAvatarFromUrlAsync(string url)
+        {
+            var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, url, "", "url");
+            return results.ToObject<MethodResult>();
+        }
+
+        public async Task<MethodResult> SetAvatarFromImageStreamAsync(Stream sourceStream, string mimeType)
+        {
+            var base64 = FileHelper.ConvertToBase64(sourceStream);
+            var end = $"data:{mimeType};base64,{base64}";
+            var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, end, mimeType, "upload");
+            return results.ToObject<MethodResult>();
         }
 
         public async Task<MethodResult<RocketMessage>> PinMessageAsync(string messageId, string username)
