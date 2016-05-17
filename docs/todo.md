@@ -4,11 +4,11 @@
 
 - [X] Get rid of dynamics to support platforms that don't have JIT and for  (Moving over to JObjects)
 - [X] Handle errors proactively (Some methods are covered, e.g. login)
-- [ ] An api similar to Margie Bot for Slack (e.g. inline lambda responders, standalone Responders, etc.)
+- [ ] An API similar to Margie Bot for Slack (e.g. inline lambda responders, standalone Responders, etc.)
 - [ ] Programmatic bot modifications (e.g. change avatar, etc.)
 - [X] Continuous integration testing on a real Rocket.Chat server (need a way to verify interactions)
-- [X] Get test converage
-- [X] A way to unsub
+- [X] Get test coverage
+- [X] A way to unsubscribe
 - [X] Figure out why tests are stuck when running in parallel. - It runs correctly locally from the cli. I almost looks like the tests don't even start
 - [X] Pull user info from env vars for tests
 - [ ] Handle clears on subs results
@@ -54,6 +54,8 @@
 - [ ] Sign-up
 - [ ] Change current user info
 - [X] Log out all other sessions
+- [X] Reconnects
+- [X] Ping
 
 ## Users
 
@@ -62,6 +64,10 @@
 - [ ] Create user
 - [ ] Delete user
 - [ ] Search by username
+- [ ] Log out other sessions
+- [X] Set avatar to URL
+- [X] Set avatar to uploaded image
+- [X] Reset avatar
 
 ## Status
 

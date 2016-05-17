@@ -1,10 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Models.LoginOptions
 {
-    using System.Diagnostics.CodeAnalysis;
-
     using Rocket.Chat.Net.Interfaces;
-
-    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+    
     public class EmailLoginOption : ILoginOption
     {
         /// <summary>
