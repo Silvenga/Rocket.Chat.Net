@@ -63,9 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\FileHelper.cs" />
-    <Compile Include="Interfaces\Driver\IRocketClient.cs" />
+    <Compile Include="Interfaces\Driver\IRocketClientManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketUserManagement.cs" />
-    <Compile Include="Interfaces\Driver\IRocketMessaging.cs" />
+    <Compile Include="Interfaces\Driver\IRocketMessagingManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketRoomManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketAdministrativeManagement.cs" />
     <Compile Include="Interfaces\IWebSocketWrapper.cs" />

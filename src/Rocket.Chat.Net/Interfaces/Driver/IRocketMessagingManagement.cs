@@ -6,7 +6,7 @@
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
 
-    public interface IRocketMessaging
+    public interface IRocketMessagingManagement
     {
         event MessageReceived MessageReceived;
 

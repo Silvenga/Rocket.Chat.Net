@@ -35,6 +35,21 @@
             _helper.WriteLine(message);
         }
 
+        public void Warn(string message)
+        {
+            _helper.WriteLine(message);
+        }
+
+        public void Error(string message)
+        {
+            _helper.WriteLine(message);
+        }
+
+        public void Fatal(string message)
+        {
+            _helper.WriteLine(message);
+        }
+
         public void Dispose()
         {
             IsDisposed = true;

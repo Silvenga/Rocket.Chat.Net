@@ -15,5 +15,20 @@ namespace Rocket.Chat.Net.Loggers
         {
             Console.WriteLine($"INFO: {message}");
         }
+
+        public void Warn(string message)
+        {
+            Console.WriteLine($"WARN: {message}");
+        }
+
+        public void Error(string message)
+        {
+            Console.WriteLine($"ERROR: {message}");
+        }
+
+        public void Fatal(string message)
+        {
+            Console.WriteLine($"FATAL: {message}");
+        }
     }
 }

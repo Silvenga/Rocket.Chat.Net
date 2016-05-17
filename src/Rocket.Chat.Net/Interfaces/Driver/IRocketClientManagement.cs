@@ -5,7 +5,7 @@
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
 
-    public interface IRocketClient
+    public interface IRocketClientManagement
     {
         /// <summary>
         /// Connect via the DDP protocol using WebSockets
