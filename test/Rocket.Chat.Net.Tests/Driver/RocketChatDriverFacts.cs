@@ -15,6 +15,7 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
+    using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
     using Rocket.Chat.Net.Tests.Helpers;
 
@@ -130,6 +131,19 @@
 
             // 
             action.ShouldThrow<NotSupportedException>();
+        }
+
+        [Fact]
+        public void Reconnect_should_bubble_up()
+        {
+            var called = false;
+            _driver.DdpReconnect += () => called = true;
+
+            // Act
+            _mockClient.DdpReconnect += Raise.Event<DdpReconnect>();
+
+            // Assert
+            called.Should().BeTrue();
         }
 
         [Fact]

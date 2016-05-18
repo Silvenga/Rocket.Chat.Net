@@ -265,7 +265,7 @@
             var loginResult = result.ToObject<MethodResult<LoginResult>>();
             if (!loginResult.HasError)
             {
-                await SetUserInfoAsync(loginResult.Result.UserId);
+                await SetDriverUserInfoAsync(loginResult.Result.UserId);
             }
 
             return loginResult;
@@ -283,12 +283,12 @@
             var result = data.ToObject<MethodResult<LoginResult>>();
             if (!result.HasError)
             {
-                await SetUserInfoAsync(result.Result.UserId);
+                await SetDriverUserInfoAsync(result.Result.UserId);
             }
             return result;
         }
 
-        private async Task SetUserInfoAsync(string userId)
+        private async Task SetDriverUserInfoAsync(string userId)
         {
             UserId = userId;
             var collection = await _collectionDatabase.WaitForCollectionAsync("users", userId, TimeoutToken);
@@ -498,7 +498,7 @@
             return results.ToObject<MethodResult>();
         }
 
-        public async Task<MethodResult<int>> UploadFile(string roomId)
+        public async Task<MethodResult<int>> UploadFileAsync(string roomId)
         {
             var results =
                 await _client.CallAsync("/rocketchat_uploads/insert", TimeoutToken, roomId);

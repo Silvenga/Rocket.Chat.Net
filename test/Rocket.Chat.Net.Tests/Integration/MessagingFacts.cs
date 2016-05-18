@@ -60,6 +60,39 @@
         }
 
         [Fact]
+        public async Task Can_update_messages()
+        {
+            var originalText = AutoFixture.Create<string>();
+            var text = AutoFixture.Create<string>();
+            var messageReceived = new AutoResetEvent(false);
+
+            RocketMessage resultMessage = null;
+
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.Message == text)
+                {
+                    messageReceived.Set();
+                    resultMessage = rocketMessage;
+                }
+            };
+
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
+            var message = await _fixture.Master.Driver.SendMessageAsync(originalText, _fixture.RoomId);
+
+            // Act
+            var result = await _fixture.Master.Driver.UpdateMessageAsync(message.Result.Id, message.Result.RoomId,
+                text);
+
+            messageReceived.WaitOne(_timeout);
+
+            // Assert
+            result.HasError.Should().BeFalse();
+            resultMessage.Message.Should().Be(text);
+            resultMessage.WasEdited.Should().BeTrue();
+        }
+
+        [Fact]
         public async Task Can_pin_message()
         {
             // TODO - add better coverage
@@ -282,7 +315,6 @@
             await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
             await _fixture.Slave.InitAsync(Constants.TwoUsername, Constants.TwoPassword);
 
-
             await _fixture.Master.Driver.SubscribeToRoomListAsync();
             await _fixture.Slave.Driver.SubscribeToRoomListAsync();
 
@@ -454,7 +486,6 @@
             await Driver.ConnectAsync();
             await Driver.LoginWithUsernameAsync(username, password);
             await Driver.SubscribeToRoomAsync();
-       
         }
 
         public void Dispose()

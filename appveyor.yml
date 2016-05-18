@@ -20,6 +20,5 @@ build:
   parallel: true
   verbosity: minimal
 test_script:
-#- ps: packages\xunit.runner.console.2.1.0\tools\xunit.console "test\Rocket.Chat.Net.Tests\bin\Debug\Rocket.Chat.Net.Tests.dll" -verbose -notrait category=Sandbox -parallel none
 - ps: .\test.ps1
 deploy: off
