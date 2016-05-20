@@ -34,7 +34,7 @@
 ## Messaging
 
 - [X] Send basic message to room
-- [ ] Update basic message in room
+- [X] Update basic message in room
 - [X] Delete message in room
 - [X] Search for messages in room
 - [X] Receive messages in room
