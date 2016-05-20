@@ -5,6 +5,7 @@
     using Newtonsoft.Json;
 
     using Rocket.Chat.Net.Helpers;
+    using Rocket.Chat.Net.JsonConverters;
     using Rocket.Chat.Net.Models;
 
     public class RocketReactionConverterModel

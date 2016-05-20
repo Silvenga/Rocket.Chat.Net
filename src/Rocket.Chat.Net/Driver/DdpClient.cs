@@ -10,7 +10,6 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
 
@@ -96,7 +95,7 @@
             var data = JObject.Parse(json);
             _logger.Debug($"RECIEVED: {JsonConvert.SerializeObject(data, Formatting.Indented)}");
 
-            var isRocketMessage = DriverHelper.HasProperty(data, "msg");
+            var isRocketMessage = data?["msg"] != null;
             if (isRocketMessage)
             {
                 var type = data["msg"].ToObject<string>();
@@ -107,7 +106,7 @@
 
         private void InternalHandle(string type, JObject data)
         {
-            if (DriverHelper.HasProperty(data, "id"))
+            if (data["id"] != null)
             {
                 var id = data["id"].ToObject<string>();
                 _messages.TryAdd(id, data);

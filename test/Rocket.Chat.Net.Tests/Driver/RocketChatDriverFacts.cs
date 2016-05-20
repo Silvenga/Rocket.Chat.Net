@@ -94,8 +94,8 @@
                 },
                 password = new
                 {
-                    digest = DriverHelper.Sha256Hash(password),
-                    algorithm = DriverHelper.Sha256
+                    digest = EncodingHelper.Sha256Hash(password),
+                    algorithm = EncodingHelper.Sha256
                 }
             };
 

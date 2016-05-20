@@ -9,6 +9,7 @@
     using Newtonsoft.Json;
 
     using Rocket.Chat.Net.Helpers;
+    using Rocket.Chat.Net.JsonConverters;
 
     /// <summary>
     /// Rocket message that was received.

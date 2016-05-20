@@ -62,7 +62,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Interfaces\Driver\IRocketClientManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketUserManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketMessagingManagement.cs" />
@@ -81,7 +80,7 @@
     <Compile Include="Interfaces\IStreamCollectionDatabase.cs" />
     <Compile Include="Driver\StreamCollection.cs" />
     <Compile Include="Driver\StreamCollectionDatabase.cs" />
-    <Compile Include="Helpers\MeteorDateConverter.cs" />
+    <Compile Include="JsonConverters\MeteorDateConverter.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\FullUser.cs" />
     <Compile Include="Models\MethodResults\ChannelListResult.cs" />
@@ -98,14 +97,14 @@
     <Compile Include="Models\Delegates.cs" />
     <Compile Include="Models\MethodResults\MethodResult.cs" />
     <Compile Include="Models\MethodResults\StatisticsResult.cs" />
-    <Compile Include="Helpers\RocketReactionConverter.cs" />
+    <Compile Include="JsonConverters\RocketReactionConverter.cs" />
     <Compile Include="Models\Reaction.cs" />
     <Compile Include="Models\RocketUrl.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\SubscriptionResults\SubscriptionResult.cs" />
     <Compile Include="Models\RocketMessage.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Helpers\DriverHelper.cs" />
+    <Compile Include="Helpers\EncodingHelper.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Driver\RocketChatDriver.cs" />

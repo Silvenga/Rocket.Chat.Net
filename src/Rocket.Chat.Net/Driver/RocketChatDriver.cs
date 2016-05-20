@@ -197,7 +197,7 @@
         public async Task<MethodResult<LoginResult>> LoginWithEmailAsync(string email, string password)
         {
             _logger.Info($"Logging in with user {email} using an email...");
-            var passwordHash = DriverHelper.Sha256Hash(password);
+            var passwordHash = EncodingHelper.Sha256Hash(password);
             var request = new
             {
                 user = new
@@ -207,7 +207,7 @@
                 password = new
                 {
                     digest = passwordHash,
-                    algorithm = DriverHelper.Sha256
+                    algorithm = EncodingHelper.Sha256
                 }
             };
 
@@ -217,7 +217,7 @@
         public async Task<MethodResult<LoginResult>> LoginWithUsernameAsync(string username, string password)
         {
             _logger.Info($"Logging in with user {username} using a username...");
-            var passwordHash = DriverHelper.Sha256Hash(password);
+            var passwordHash = EncodingHelper.Sha256Hash(password);
             var request = new
             {
                 user = new
@@ -227,7 +227,7 @@
                 password = new
                 {
                     digest = passwordHash,
-                    algorithm = DriverHelper.Sha256
+                    algorithm = EncodingHelper.Sha256
                 }
             };
 
@@ -371,7 +371,7 @@
         }
 
         public async Task<MethodResult<RocketMessage>> SendAttachmentAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
-                                                                                      string icon = null)
+                                                                           string icon = null)
         {
             _logger.Info($"Sending message to #{roomId}: {text}");
             var request = new
@@ -478,7 +478,7 @@
 
         public async Task<MethodResult> SetAvatarFromImageStreamAsync(Stream sourceStream, string mimeType)
         {
-            var base64 = FileHelper.ConvertToBase64(sourceStream);
+            var base64 = EncodingHelper.ConvertToBase64(sourceStream);
             var end = $"data:{mimeType};base64,{base64}";
             var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, end, mimeType, "upload");
             return results.ToObject<MethodResult>();

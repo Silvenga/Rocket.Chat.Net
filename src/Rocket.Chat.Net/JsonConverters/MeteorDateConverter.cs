@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Helpers
+﻿namespace Rocket.Chat.Net.JsonConverters
 {
     using System;
 

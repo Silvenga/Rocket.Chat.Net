@@ -103,7 +103,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Driver\DdpFacts.cs" />
-    <Compile Include="Driver\FileHelperFacts.cs" />
+    <Compile Include="Driver\EncodingHelperFacts.cs" />
     <Compile Include="Driver\MessagingFacts.cs" />
     <Compile Include="Driver\RocketChatDriverFacts.cs" />
     <Compile Include="Helpers\RocketReactionConverterModel.cs" />
