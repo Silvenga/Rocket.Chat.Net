@@ -1,6 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Tests.Integration
 {
     using System;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -57,6 +58,47 @@
             result.HasError.Should().BeFalse();
             message.Should().NotBeNull();
             result.Result.ToString().Should().Be(message.ToString());
+        }
+
+        [Fact]
+        public async Task Can_send_attachment()
+        {
+            var text = AutoFixture.Create<string>();
+            var user = AutoFixture.Create<string>();
+            var date = AutoFixture.Create<DateTime>().ToUniversalTime();
+            var icon = AutoFixture.Create<string>();
+
+            var messageReceived = new AutoResetEvent(false);
+
+            RocketMessage message = null;
+            _fixture.Master.Driver.MessageReceived += rocketMessage =>
+            {
+                if (rocketMessage.RoomId != _fixture.RoomId)
+                {
+                    return;
+                }
+                message = rocketMessage;
+                messageReceived.Set();
+            };
+
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
+
+            // Act
+            var result = await _fixture.Master.Driver.SendAttachmentAsync(text, user, _fixture.RoomId, date, icon);
+
+            messageReceived.WaitOne(_timeout);
+
+            // Assert
+            result.HasError.Should().BeFalse();
+            message.Should().NotBeNull();
+            message.Message.Should().BeEmpty();
+            message.Attachments.Should().HaveCount(1);
+
+            var attachment = message.Attachments.First();
+            attachment.Text.Should().Be(text);
+            attachment.AuthorName.Should().Be(user);
+            attachment.Timestamp.Value.ToLongDateString().Should().Be(date.ToLongDateString());
+            attachment.AuthorIcon.Should().Be(icon);
         }
 
         [Fact]

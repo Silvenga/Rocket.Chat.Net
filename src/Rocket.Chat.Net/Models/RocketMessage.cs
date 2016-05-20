@@ -152,6 +152,11 @@
         [JsonProperty(PropertyName = "attachments"), NotNull]
         public List<Attachment> Attachments { get; set; }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public List<RocketUrl> Urls { get; set; }
+
         public override string ToString()
         {
             return $"{CreatedBy?.Username ?? "UnknownUser"}: {Message}";

@@ -100,6 +100,7 @@
     <Compile Include="Models\MethodResults\StatisticsResult.cs" />
     <Compile Include="Helpers\RocketReactionConverter.cs" />
     <Compile Include="Models\Reaction.cs" />
+    <Compile Include="Models\RocketUrl.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\SubscriptionResults\SubscriptionResult.cs" />
     <Compile Include="Models\RocketMessage.cs" />

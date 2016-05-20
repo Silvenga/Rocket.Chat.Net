@@ -370,6 +370,30 @@
             return result.ToObject<MethodResult<RocketMessage>>();
         }
 
+        public async Task<MethodResult<RocketMessage>> SendAttachmentAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
+                                                                                      string icon = null)
+        {
+            _logger.Info($"Sending message to #{roomId}: {text}");
+            var request = new
+            {
+                msg = "",
+                rid = roomId,
+                bot = true,
+                attachments = new[]
+                {
+                    new Attachment
+                    {
+                        AuthorName = authorName,
+                        Text = text,
+                        AuthorIcon = icon,
+                        Timestamp = timestamp
+                    }
+                }
+            };
+            var result = await _client.CallAsync("sendMessage", TimeoutToken, request);
+            return result.ToObject<MethodResult<RocketMessage>>();
+        }
+
         public async Task<MethodResult> UpdateMessageAsync(string messageId, string roomId, string newMessage)
         {
             _logger.Info($"Updating message {messageId}");

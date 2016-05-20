@@ -36,7 +36,7 @@
         /// <param name="ls">No idea, something with timespan, maybe less than?</param>
         /// <returns></returns>
         Task<MethodResult<LoadMessagesResult>> LoadMessagesAsync(string roomId, DateTime? end = null, int? limit = 20,
-                                                                          string ls = null);
+                                                                 string ls = null);
 
         /// <summary>
         /// Delete message
@@ -85,5 +85,19 @@
         /// <param name="username">The username to display in the pin message</param>
         /// <returns></returns>
         Task<MethodResult> UnpinMessageAsync(string messageId, string username);
+
+        /// <summary>
+        /// Send a message with an attachment. 
+        /// NOTE: Don't know the longevity of this as the UI cannot create this manually
+        /// TODO
+        /// </summary>
+        /// <param name="text">Text the include</param>
+        /// <param name="authorName">Name to put into the author's slot</param>
+        /// <param name="roomId">Room to send this message too</param>
+        /// <param name="timestamp"></param>
+        /// <param name="icon">Reletive path to the user's icon</param>
+        /// <returns></returns>
+        Task<MethodResult<RocketMessage>> SendAttachmentAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
+                                                              string icon = null);
     }
 }

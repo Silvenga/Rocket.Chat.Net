@@ -1,6 +1,5 @@
 ﻿namespace Rocket.Chat.Net.Tests.Integration
 {
-    using System;
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Driver;
@@ -22,7 +21,7 @@
             _xUnitLogger = new XUnitLogger(_helper);
         }
 
-        [Fact(Skip = "")]
+        [Fact(Skip = "skip")]
         public async Task Can_login()
         {
             //const string password = "SilverLight";
@@ -47,7 +46,28 @@
             driver.Dispose();
         }
 
-        [Fact(Skip = "")]
+        [Fact(Skip = "skip")]
+        public async Task Send_attachments()
+        {
+            //const string password = "SilverLight";
+
+            //var driver = new RocketChatDriver("demo.rocket.chat", true, _xUnitLogger);
+            var userName = Constants.OneEmail;
+            var password = Constants.OnePassword;
+
+            var driver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
+
+            await driver.ConnectAsync();
+            await driver.LoginWithEmailAsync(userName, password);
+
+            var roomId = await driver.GetRoomIdAsync("GENERAL");
+
+            var a = await driver.SendAttachmentAsync("test mesage", "name", roomId.Result);
+
+            driver.Dispose();
+        }
+
+        [Fact(Skip = "skip")]
         public async Task Clean_up_rooms()
         {
             // Act
