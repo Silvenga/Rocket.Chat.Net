@@ -4,7 +4,6 @@ namespace Rocket.Chat.Net.Models
 
     using Newtonsoft.Json;
 
-    using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.JsonConverters;
 
     public class Attachment

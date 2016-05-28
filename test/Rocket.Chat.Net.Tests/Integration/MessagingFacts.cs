@@ -84,7 +84,7 @@
             await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
 
             // Act
-            var result = await _fixture.Master.Driver.SendAttachmentAsync(text, user, _fixture.RoomId, date, icon);
+            var result = await _fixture.Master.Driver.SendCustomMessageAsync(text, user, _fixture.RoomId, date, icon);
 
             messageReceived.WaitOne(_timeout);
 

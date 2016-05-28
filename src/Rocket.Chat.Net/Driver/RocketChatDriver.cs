@@ -370,7 +370,7 @@
             return result.ToObject<MethodResult<RocketMessage>>();
         }
 
-        public async Task<MethodResult<RocketMessage>> SendAttachmentAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
+        public async Task<MethodResult<RocketMessage>> SendCustomMessageAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
                                                                            string icon = null)
         {
             _logger.Info($"Sending message to #{roomId}: {text}");

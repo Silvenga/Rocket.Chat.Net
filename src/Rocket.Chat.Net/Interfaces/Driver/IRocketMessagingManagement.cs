@@ -97,7 +97,7 @@
         /// <param name="timestamp"></param>
         /// <param name="icon">Reletive path to the user's icon</param>
         /// <returns></returns>
-        Task<MethodResult<RocketMessage>> SendAttachmentAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
+        Task<MethodResult<RocketMessage>> SendCustomMessageAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
                                                               string icon = null);
     }
 }

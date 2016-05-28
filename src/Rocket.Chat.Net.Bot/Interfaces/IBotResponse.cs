@@ -4,7 +4,6 @@
 
     using Rocket.Chat.Net.Bot;
     using Rocket.Chat.Net.Bot.Models;
-    using Rocket.Chat.Net.Models;
 
     public interface IBotResponse
     {

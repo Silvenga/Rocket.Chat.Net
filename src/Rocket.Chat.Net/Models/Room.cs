@@ -6,7 +6,6 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.JsonConverters;
 
     public class Room
