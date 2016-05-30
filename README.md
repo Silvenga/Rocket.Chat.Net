@@ -12,7 +12,8 @@
 [Bot-Nuget-Img]: https://img.shields.io/nuget/vpre/Rocket.Chat.Net.Bot.svg?style=flat-square&maxAge=3600
 [Bot-Nuget-Link]: https://www.nuget.org/packages/Rocket.Chat.Net.Bot/
 
-[![Build status](https://img.shields.io/appveyor/ci/Silvenga/rocket-chat-net.svg?style=flat-square&maxAge=300)](https://ci.appveyor.com/project/Silvenga/rocket-chat-net) 
+[![Build status](https://img.shields.io/appveyor/ci/Silvenga/rocket-chat-net.svg?style=flat-square&maxAge=300&label=appveyor)](https://ci.appveyor.com/project/Silvenga/rocket-chat-net) 
+[![Build status](https://img.shields.io/travis/Silvenga/Rocket.Chat.Net.svg?style=flat-square&maxAge=300&label=travis)](https://travis-ci.org/Silvenga/Rocket.Chat.Net) 
 [![Coverage Status](https://img.shields.io/coveralls/Silvenga/Rocket.Chat.Net.svg?style=flat-square&maxAge=300)](https://coveralls.io/github/Silvenga/Rocket.Chat.Net?branch=master)
 [![License](https://img.shields.io/github/license/Silvenga/Rocket.Chat.Net.svg?style=flat-square&maxAge=604800)](https://github.com/Silvenga/Rocket.Chat.Net/blob/master/LICENSE)
 
