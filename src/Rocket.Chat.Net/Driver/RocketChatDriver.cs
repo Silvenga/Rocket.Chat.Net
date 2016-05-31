@@ -371,7 +371,7 @@
         }
 
         public async Task<MethodResult<RocketMessage>> SendCustomMessageAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
-                                                                           string icon = null)
+                                                                              string icon = null)
         {
             _logger.Info($"Sending message to #{roomId}: {text}");
             var request = new
@@ -484,40 +484,18 @@
             return results.ToObject<MethodResult>();
         }
 
-        public async Task<MethodResult<RocketMessage>> PinMessageAsync(string messageId, string username)
+        public async Task<MethodResult<RocketMessage>> PinMessageAsync(RocketMessage message)
         {
-            // https://github.com/RocketChat/Rocket.Chat/blob/master/packages/rocketchat-message-pin/client/pinMessage.coffee
-            var request = new
-            {
-                _id = messageId,
-                msg = "", // required as a mentions filter needs a message
-                u = new
-                {
-                    username // Required to fill in who pinned message shown to UI
-                }
-            };
-
             var results =
-                await _client.CallAsync("pinMessage", TimeoutToken, request);
+                await _client.CallAsync("pinMessage", TimeoutToken, message);
 
             return results.ToObject<MethodResult<RocketMessage>>();
         }
 
-        public async Task<MethodResult> UnpinMessageAsync(string messageId, string username)
+        public async Task<MethodResult> UnpinMessageAsync(RocketMessage message)
         {
-            // https://github.com/RocketChat/Rocket.Chat/blob/master/packages/rocketchat-message-pin/client/pinMessage.coffee
-            var request = new
-            {
-                _id = messageId,
-                msg = "",
-                u = new
-                {
-                    username
-                }
-            };
-
             var results =
-                await _client.CallAsync("unpinMessage", TimeoutToken, request);
+                await _client.CallAsync("unpinMessage", TimeoutToken, message);
 
             return results.ToObject<MethodResult>();
         }

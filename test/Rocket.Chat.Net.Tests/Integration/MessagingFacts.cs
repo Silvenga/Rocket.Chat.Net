@@ -145,8 +145,8 @@
 
             // Act
             var sentMessageResult = await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
-            var pinMessageResult = await _fixture.Master.Driver.PinMessageAsync(sentMessageResult.Result.Id, "user");
-            var unpinMessageResult = await _fixture.Master.Driver.UnpinMessageAsync(sentMessageResult.Result.Id, "user");
+            var pinMessageResult = await _fixture.Master.Driver.PinMessageAsync(sentMessageResult.Result);
+            var unpinMessageResult = await _fixture.Master.Driver.UnpinMessageAsync(sentMessageResult.Result);
 
             // Assert
             sentMessageResult.HasError.Should().BeFalse();

@@ -73,18 +73,16 @@
         /// <summary>
         /// Pin message by message id. 
         /// </summary>
-        /// <param name="messageId">Id of the message</param>
-        /// <param name="username">The username to display in the pin message</param>
+        /// <param name="message"></param>
         /// <returns></returns>
-        Task<MethodResult<RocketMessage>> PinMessageAsync(string messageId, string username);
+        Task<MethodResult<RocketMessage>> PinMessageAsync(RocketMessage message);
 
         /// <summary>
         /// Unpin message by message id. 
         /// </summary>
-        /// <param name="messageId">Id of the message</param>
-        /// <param name="username">The username to display in the pin message</param>
+        /// <param name="message"></param>
         /// <returns></returns>
-        Task<MethodResult> UnpinMessageAsync(string messageId, string username);
+        Task<MethodResult> UnpinMessageAsync(RocketMessage message);
 
         /// <summary>
         /// Send a message with an attachment. 

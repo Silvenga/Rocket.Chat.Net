@@ -56,7 +56,7 @@
             // Assert
             result.HasError.Should().BeTrue();
             result.Result.Should().BeNull();
-            result.Error.Reason.Should().Be("Internal server error");
+            result.Error.Reason.Should().Be("Not allowed");
         }
 
         [Fact]

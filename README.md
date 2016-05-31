@@ -60,6 +60,10 @@ bot.AddResponse(giphyResponse);
 
 [docs/environment.md](docs/environment.md)
 
+## Version compatibility changelogs
+
+[version-compatibility.md](docs/version-compatibility.md)
+
 ## Feature Support/TODO
 
 [docs/todo.md](docs/todo.md)
