@@ -118,6 +118,14 @@
             await _client.ConnectAsync(TimeoutToken);
         }
 
+        public async Task<MethodResult<CreateRoomResult>> CreateGroupAsync(string groupName, IList<string> members = null)
+        {
+            var results =
+                await _client.CallAsync("createPrivateGroup", TimeoutToken, groupName, members ?? new List<string>());
+
+            return results.ToObject<MethodResult<CreateRoomResult>>();
+        }
+
         public async Task SubscribeToRoomListAsync()
         {
             await _client.SubscribeAndWaitAsync("subscription", TimeoutToken);
@@ -437,7 +445,7 @@
             return results.ToObject<MethodResult<StatisticsResult>>();
         }
 
-        public async Task<MethodResult<CreateRoomResult>> CreateRoomAsync(string roomName, IList<string> members = null)
+        public async Task<MethodResult<CreateRoomResult>> CreateChannelAsync(string roomName, IList<string> members = null)
         {
             _logger.Info($"Creating room {roomName}.");
             var results =

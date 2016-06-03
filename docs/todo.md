@@ -89,10 +89,10 @@
 
 #### Private Groups
 
-- [ ] Create
+- [X] Create
 - [ ] Update
-- [ ] Delete
-- [ ] Hide
+- [X] Delete
+- [X] Hide
 - [X] List
 
 #### Private Messages

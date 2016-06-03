@@ -499,7 +499,7 @@
 
             Fixture = new RocketChatDriverFixture(_logger);
             Fixture.InitAsync(Constants.OneUsername, Constants.OnePassword).Wait();
-            RoomId = Fixture.Driver.CreateRoomAsync(roomName)?.Result?.Result?.RoomId;
+            RoomId = Fixture.Driver.CreateChannelAsync(roomName)?.Result?.Result?.RoomId;
         }
 
         public void Dispose()

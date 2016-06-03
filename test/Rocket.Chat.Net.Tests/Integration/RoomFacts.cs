@@ -68,7 +68,22 @@
             await DefaultAccountLoginAsync();
 
             // Act
-            var result = await RocketChatDriver.CreateRoomAsync(roomName);
+            var result = await RocketChatDriver.CreateChannelAsync(roomName);
+
+            // Assert
+            result.HasError.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Create_group_that_does_not_exist_should_create_group()
+        {
+            var roomName = AutoFixture.Create<string>();
+            RoomsCreatedByName.Add(roomName);
+
+            await DefaultAccountLoginAsync();
+
+            // Act
+            var result = await RocketChatDriver.CreateGroupAsync(roomName);
 
             // Assert
             result.HasError.Should().BeFalse();
@@ -82,10 +97,10 @@
 
             await DefaultAccountLoginAsync();
 
-            await RocketChatDriver.CreateRoomAsync(roomName);
+            await RocketChatDriver.CreateChannelAsync(roomName);
 
             // Act
-            var result = await RocketChatDriver.CreateRoomAsync(roomName);
+            var result = await RocketChatDriver.CreateChannelAsync(roomName);
 
             // Assert
             result.HasError.Should().BeTrue();
@@ -99,7 +114,7 @@
             RoomsCreatedByName.Add(roomName);
 
             await DefaultAccountLoginAsync();
-            var room = await RocketChatDriver.CreateRoomAsync(roomName);
+            var room = await RocketChatDriver.CreateChannelAsync(roomName);
 
             // Act
             var result = await RocketChatDriver.EraseRoomAsync(room.Result.RoomId);

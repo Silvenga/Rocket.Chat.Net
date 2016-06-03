@@ -42,7 +42,7 @@
         /// <param name="roomName">Name of the room to create</param>
         /// <param name="members">Optional. A list of users to add to the room on creation</param>
         /// <returns>The id of the room that was created when successful</returns>
-        Task<MethodResult<CreateRoomResult>> CreateRoomAsync(string roomName, IList<string> members = null);
+        Task<MethodResult<CreateRoomResult>> CreateChannelAsync(string roomName, IList<string> members = null);
 
         /// <summary>
         /// Hide a room.
@@ -57,6 +57,14 @@
         /// <param name="roomId">Room to delete by id</param>
         /// <returns>Number impacted?</returns>
         Task<MethodResult<int>> EraseRoomAsync(string roomId);
+
+        /// <summary>
+        /// Creates a new private group.
+        /// </summary>
+        /// <param name="groupName">Name of the group to create</param>
+        /// <param name="members">Optional. A list of users to add to the room on creation</param>
+        /// <returns>The id of the room that was created when successful</returns>
+        Task<MethodResult<CreateRoomResult>> CreateGroupAsync(string groupName, IList<string> members = null);
 
         /// <summary>
         /// Subscribe to room listings.
