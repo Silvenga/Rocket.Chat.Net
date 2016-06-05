@@ -1,0 +1,24 @@
+version: 0.1.0.{build}
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+environment:
+  COVERALLS_REPO_TOKEN:  
+    secure: 4guKYW7T2AsE96Wgu0J9RFtVYKSYRxU3L/pzz8UxJpv6uXXSfizwTF4s7iKUDk32
+  RocketServer:
+    secure: m63NKaOYAewP8LyDKqbj/poe3GsUJcJL0IIbi58l3Is=
+before_build:
+- ps: nuget restore
+build:
+  project: Rocket.Chat.Net.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
+  include_nuget_references: true
+  parallel: true
+  verbosity: minimal
+test_script:
+- ps: .\test.ps1
+deploy: off
