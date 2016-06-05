@@ -4,13 +4,17 @@
 
 |                     | Pre-release                                 | Stable Release |
 | ------------------- | ------------------------------------------- | ---            |
-| Rocket.Chat.Net     | [![NuGet][Base-Nuget-Img]][Base-Nuget-Link] | N\A            |
-| Rocket.Chat.Net.Bot | [![NuGet][Bot-Nuget-Img]][Bot-Nuget-Link]   | N\A            |
+| Rocket.Chat.Net     | [![NuGet][Base-Nuget-Pre-Img]][Base-Nuget-Link] | [![NuGet][Base-Nuget-Pre-Img]][Base-Nuget-Link] |
+| Rocket.Chat.Net.Bot | [![NuGet][Bot-Nuget-Pre-Img]][Bot-Nuget-Link]   | [![NuGet][Bot-Nuget-Pre-Img]][Bot-Nuget-Link] |
 
-[Base-Nuget-Img]: https://img.shields.io/nuget/vpre/Rocket.Chat.Net.svg?style=flat-square&maxAge=3600
+[Base-Nuget-Pre-Img]: https://img.shields.io/nuget/vpre/Rocket.Chat.Net.svg?style=flat-square&maxAge=3600
+[Bot-Nuget-Pre-Img]: https://img.shields.io/nuget/vpre/Rocket.Chat.Net.Bot.svg?style=flat-square&maxAge=3600
+[Base-Nuget-Img]: https://img.shields.io/nuget/v/Rocket.Chat.Net.svg?style=flat-square&maxAge=3600
+[Bot-Nuget-Img]: https://img.shields.io/nuget/v/Rocket.Chat.Net.Bot.svg?style=flat-square&maxAge=3600
+
 [Base-Nuget-Link]: https://www.nuget.org/packages/Rocket.Chat.Net/
-[Bot-Nuget-Img]: https://img.shields.io/nuget/vpre/Rocket.Chat.Net.Bot.svg?style=flat-square&maxAge=3600
 [Bot-Nuget-Link]: https://www.nuget.org/packages/Rocket.Chat.Net.Bot/
+
 
 [![Build status](https://img.shields.io/appveyor/ci/Silvenga/rocket-chat-net.svg?style=flat-square&maxAge=300&label=appveyor)](https://ci.appveyor.com/project/Silvenga/rocket-chat-net) 
 [![Build status](https://img.shields.io/travis/Silvenga/Rocket.Chat.Net.svg?style=flat-square&maxAge=300&label=travis)](https://travis-ci.org/Silvenga/Rocket.Chat.Net) 
