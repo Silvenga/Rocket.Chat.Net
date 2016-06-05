@@ -1,4 +1,5 @@
 version: 0.0.{build}-pre
+skip_tags: true
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
