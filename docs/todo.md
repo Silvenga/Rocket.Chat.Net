@@ -16,6 +16,7 @@
 - [X] Check mono support later when Mono isn't completely broken for 4.6.1 and C# 6.0 nuget. 
 - [X] Get a different RC server, DO is too slow (Maxing CPU). 
 - [ ] API docs.
+- [ ] PCI/.NetStandard support
 
 # Driver Support
 
