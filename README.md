@@ -4,8 +4,8 @@
 
 |                     | Pre-release                                 | Stable Release |
 | ------------------- | ------------------------------------------- | ---            |
-| Rocket.Chat.Net     | [![NuGet][Base-Nuget-Pre-Img]][Base-Nuget-Link] | [![NuGet][Base-Nuget-Pre-Img]][Base-Nuget-Link] |
-| Rocket.Chat.Net.Bot | [![NuGet][Bot-Nuget-Pre-Img]][Bot-Nuget-Link]   | [![NuGet][Bot-Nuget-Pre-Img]][Bot-Nuget-Link] |
+| Rocket.Chat.Net     | [![NuGet][Base-Nuget-Pre-Img]][Base-Nuget-Link] | [![NuGet][Base-Nuget-Img]][Base-Nuget-Link] |
+| Rocket.Chat.Net.Bot | [![NuGet][Bot-Nuget-Pre-Img]][Bot-Nuget-Link]   | [![NuGet][Bot-Nuget-Img]][Bot-Nuget-Link] |
 
 [Base-Nuget-Pre-Img]: https://img.shields.io/nuget/vpre/Rocket.Chat.Net.svg?style=flat-square&maxAge=3600
 [Bot-Nuget-Pre-Img]: https://img.shields.io/nuget/vpre/Rocket.Chat.Net.Bot.svg?style=flat-square&maxAge=3600
