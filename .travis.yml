@@ -1,6 +1,6 @@
 language: csharp
 solution: Rocket.Chat.Net.Travis.sln
 script:
-  - xbuild /tv:12.0 /p:DebugSymbols=false Rocket.Chat.Net.sln
+  - xbuild /tv:12.0 /p:DebugSymbols=false Rocket.Chat.Net.Travis.sln
   - mono packages/xunit.runner.console.*/tools/xunit.console.exe ./test/Rocket.Chat.Net.Tests/bin/*/Rocket.Chat.Net.Tests.dll ./test/Rocket.Chat.Net.Bot.Tests/bin/*/Rocket.Chat.Net.Bot.Tests.dll
   
