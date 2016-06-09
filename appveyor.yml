@@ -12,7 +12,7 @@ environment:
   RocketServer:
     secure: m63NKaOYAewP8LyDKqbj/poe3GsUJcJL0IIbi58l3Is=
 before_build:
-- ps: nuget restore
+- ps: nuget restore Rocket.Chat.Net.sln
 build:
   project: Rocket.Chat.Net.sln
   publish_nuget: true
