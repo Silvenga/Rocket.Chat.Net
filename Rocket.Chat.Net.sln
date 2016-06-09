@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Chat.Net.Bot", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Chat.Net.Bot.Tests", "test\Rocket.Chat.Net.Bot.Tests\Rocket.Chat.Net.Bot.Tests.csproj", "{A271F00E-6B4A-4149-9770-57A50E81A3ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Chat.Net.Portability", "src\Rocket.Chat.Net.Portability\Rocket.Chat.Net.Portability.csproj", "{662CE701-056D-420A-B03B-4F2613EEA044}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Chat.Net.Portability", "src\Portability\Rocket.Chat.Net.Portability\Rocket.Chat.Net.Portability.csproj", "{662CE701-056D-420A-B03B-4F2613EEA044}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

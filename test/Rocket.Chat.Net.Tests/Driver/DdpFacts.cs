@@ -14,6 +14,7 @@
 
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
+    using Rocket.Chat.Net.Portability.Websockets;
     using Rocket.Chat.Net.Tests.Helpers;
 
     using SuperSocket.ClientEngine;
@@ -48,10 +49,10 @@
                 session = sessionId,
                 msg = "connected"
             };
-            var jsonMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(message));
+            var jsonMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(message));
 
             // Act
-            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(jsonMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), jsonMessage);
 
             // Assert
             client.SessionId.Should().Be(sessionId);
@@ -68,11 +69,11 @@
                 id = subId,
                 msg = "nosub"
             };
-            var jsonMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(message));
+            var jsonMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(message));
 
             // Act
             var task = client.UnsubscribeAsync(subId, TimeoutToken);
-            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(jsonMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), jsonMessage);
 
             Action action = async () => await task;
 
@@ -87,22 +88,22 @@
             var client = new DdpClient(_socket, _helper);
             client.DdpReconnect += () => reconnected = true;
 
-            var firstMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(new
+            var firstMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(new
             {
                 session = AutoFixture.Create<string>(),
                 msg = "connected"
             }));
 
-            var secondMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(new
+            var secondMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(new
             {
                 session = AutoFixture.Create<string>(),
                 msg = "connected"
             }));
 
             // Act
-            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(firstMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), firstMessage);
             _socket.Closed += Raise.Event<EventHandler>();
-            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(secondMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), secondMessage);
 
             // Assert
             _socket.Received().Open();
@@ -120,7 +121,7 @@
             var exception = new Exception(message);
 
             // Act
-            _socket.Error += Raise.Event<EventHandler<ErrorEventArgs>>(new ErrorEventArgs(exception));
+            _socket.Error += Raise.Event<EventHandler<PortableErrorEventArgs>>(new object(), new PortableErrorEventArgs(exception));
 
             // Assert
             logger.Received().Info($"ERROR: {message}");

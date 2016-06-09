@@ -1,8 +1,10 @@
 ﻿namespace Rocket.Chat.Net.Helpers
 {
+    using System;
     using System.IO;
-    using System.Security.Cryptography;
     using System.Text;
+
+    using PCLCrypto;
 
     public static class EncodingHelper
     {
@@ -13,13 +15,12 @@
             var builder = new StringBuilder();
             var encoding = Encoding.UTF8;
 
-            using (var hash = SHA256.Create())
+            var hasher = WinRTCrypto.HashAlgorithmProvider.OpenAlgorithm(HashAlgorithm.Sha256);
+
+            var result = hasher.HashData(encoding.GetBytes(value));
+            foreach (var b in result)
             {
-                var result = hash.ComputeHash(encoding.GetBytes(value));
-                foreach (var b in result)
-                {
-                    builder.Append(b.ToString("x2"));
-                }
+                builder.Append(b.ToString("x2"));
             }
 
             return builder.ToString();
@@ -28,17 +29,10 @@
         public static string ConvertToBase64(Stream stream)
         {
             // TODO Check performace
-
-            using (var workspace = new MemoryStream())
-            using (var transform = new ToBase64Transform())
-            using (var destination = new CryptoStream(workspace, transform, CryptoStreamMode.Write))
-            using (var reader = new StreamReader(workspace))
+            using (var bufferStream = new MemoryStream())
             {
-                stream.CopyTo(destination);
-                destination.FlushFinalBlock();
-
-                workspace.Position = 0;
-                return reader.ReadToEnd();
+                stream.CopyTo(bufferStream);
+                return Convert.ToBase64String(bufferStream.ToArray());
             }
         }
     }

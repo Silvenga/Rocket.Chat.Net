@@ -11,7 +11,7 @@
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(DateTime?).IsAssignableFrom(objectType);
+            return true;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

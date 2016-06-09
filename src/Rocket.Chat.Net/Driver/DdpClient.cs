@@ -12,10 +12,7 @@
 
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
-
-    using SuperSocket.ClientEngine;
-
-    using WebSocket4Net;
+    using Rocket.Chat.Net.Portability.Websockets;
 
     public class DdpClient : IDdpClient
     {
@@ -35,7 +32,7 @@
             _logger = logger;
             Url = (useSsl ? "wss://" : "ws://") + baseUrl + "/websocket";
 
-            _socket = new WebSocketWrapper(new WebSocket(Url));
+            _socket = new WebSocketWrapper(new PortableWebSocket(Url));
             AttachEvents();
         }
 
@@ -64,7 +61,7 @@
             }
         }
 
-        private void SocketOnError(object sender, ErrorEventArgs errorEventArgs)
+        private void SocketOnError(object sender, PortableErrorEventArgs errorEventArgs)
         {
             _logger.Info("ERROR: " + errorEventArgs?.Exception?.Message);
         }
@@ -89,7 +86,7 @@
             SendObjectAsync(request, CancellationToken.None).Wait();
         }
 
-        private void SocketOnMessage(object sender, MessageReceivedEventArgs messageEventArgs)
+        private void SocketOnMessage(object sender, PortableMessageReceivedEventArgs messageEventArgs)
         {
             var json = messageEventArgs.Message;
             var data = JObject.Parse(json);
@@ -253,13 +250,13 @@
 
         private async Task<JObject> WaitForIdOrReadyAsync(string id, CancellationToken token)
         {
-            var task = Task.Run(() =>
+            var task = Task.Run(async () =>
             {
                 JObject data;
                 while (!_messages.TryRemove(id, out data))
                 {
                     token.ThrowIfCancellationRequested();
-                    Thread.Sleep(10);
+                    await Task.Delay(10, token);
                 }
                 return data;
             }, token);
@@ -269,12 +266,12 @@
 
         private async Task WaitForConnectAsync(CancellationToken token)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 while (SessionId == null)
                 {
                     token.ThrowIfCancellationRequested();
-                    Thread.Sleep(10);
+                    await Task.Delay(10, token);
                 }
             }, token);
         }

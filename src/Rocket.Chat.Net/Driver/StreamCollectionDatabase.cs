@@ -27,7 +27,7 @@
         public async Task<IStreamCollection> WaitForCollectionAsync(string collectionName, string id,
                                                                     CancellationToken token)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 while (true)
                 {
@@ -41,7 +41,7 @@
                     }
 
                     token.ThrowIfCancellationRequested();
-                    Thread.Sleep(10);
+                    await Task.Delay(10, token);
                 }
             }, token);
         }
