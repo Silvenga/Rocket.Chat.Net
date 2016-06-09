@@ -31,11 +31,8 @@ const string password = "silverlight";
 const string rocketServerUrl = "dev0:3000"; // just the host and port
 const bool useSsl = false; // Basically use ws or wss.
 
-// Basic logger
-ILogger logger = new ConsoleLogger();
-
 // Create the bot - an abstraction of the driver
-RocketChatBot bot = new RocketChatBot(rocketServerUrl, useSsl, logger);
+RocketChatBot bot = new RocketChatBot(rocketServerUrl, useSsl);
 
 // Connect to Rocket.Chat
 await bot.ConnectAsync();

@@ -19,21 +19,6 @@
     {
         private static readonly Fixture AutoFixture = new Fixture();
 
-        [Theory]
-        [InlineData(typeof(DateTime?), true)]
-        [InlineData(typeof(DateTime), true)]
-        [InlineData(typeof(string), false)]
-        public void Can_convert(Type type, bool canConvert)
-        {
-            var converter = new MeteorDateConverter();
-
-            // Act
-            var result = converter.CanConvert(type);
-
-            // Assert
-            result.Should().Be(canConvert);
-        }
-
         [Fact]
         public void Can_write()
         {

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Silvenga</authors>
+    <owners>Silvenga</owners>
+    <licenseUrl>https://github.com/Silvenga/Rocket.Chat.Net/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Silvenga/Rocket.Chat.Net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Portability components for Rocket.Chat.Net</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>Rocket.Chat</tags>
+    
+    <dependencies>
+      <group>
+        <dependency id="WebSocket4Net" version="0.14.1"/>
+      </group>
+    </dependencies>
+    
+  </metadata>
+  
+  <files>
+    <file src=".\bin\Debug\Rocket.Chat.Net.Portability.dll" target="lib/portable-net45+netcore45+wpa81" />
+    <file src="..\Rocket.Chat.Net.Portability.Android\bin\Debug\Rocket.Chat.Net.Portability.dll" target="lib/monoandroid" />
+    <file src="..\Rocket.Chat.Net.Portability.IOS\bin\Debug\Rocket.Chat.Net.Portability.dll" target="lib/xamarinios10" />
+    <file src="..\Rocket.Chat.Net.Portability.Net45\bin\Debug\Rocket.Chat.Net.Portability.dll" target="lib/net45" />
+  </files>
+
+</package>

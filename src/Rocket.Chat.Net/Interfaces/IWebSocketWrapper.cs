@@ -2,15 +2,16 @@
 {
     using System;
 
-    using SuperSocket.ClientEngine;
+    using Newtonsoft.Json.Serialization;
 
-    using WebSocket4Net;
+    using Rocket.Chat.Net.Driver;
+    using Rocket.Chat.Net.Portability.Websockets;
 
     public interface IWebSocketWrapper
     {
-        event EventHandler<MessageReceivedEventArgs> MessageReceived;
+        event EventHandler<PortableMessageReceivedEventArgs> MessageReceived;
         event EventHandler Closed;
-        event EventHandler<ErrorEventArgs> Error;
+        event EventHandler<PortableErrorEventArgs> Error;
         event EventHandler Opened;
         void Open();
         void Close();
