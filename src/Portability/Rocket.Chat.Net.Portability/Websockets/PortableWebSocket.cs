@@ -2,29 +2,30 @@
 {
     using System;
 
-    public class PortableWebSocket
+    using Rocket.Chat.Net.Portability.Contracts;
+
+    public class PortableWebSocket : PortableWebSocketBase
     {
-        public PortableWebSocket(string url)
+        public PortableWebSocket(string url) : base(url)
+        {
+        }
+
+        public override event EventHandler<PortableMessageReceivedEventArgs> MessageReceived;
+        public override event EventHandler Closed;
+        public override event EventHandler<PortableErrorEventArgs> Error;
+        public override event EventHandler Opened;
+
+        public override void Open()
         {
             throw new NotImplementedException();
         }
 
-        public event EventHandler<PortableMessageReceivedEventArgs> MessageReceived;
-        public event EventHandler Closed;
-        public event EventHandler<PortableErrorEventArgs> Error;
-        public event EventHandler Opened;
-
-        public void Open()
+        public override void Close()
         {
             throw new NotImplementedException();
         }
 
-        public void Close()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Send(string json)
+        public override void Send(string json)
         {
             throw new NotImplementedException();
         }

@@ -8,6 +8,7 @@
     using Rocket.Chat.Net.Bot.Models;
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
+    using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models;
 
     public class RocketChatBot : IDisposable
@@ -22,13 +23,13 @@
         public RocketChatBot(IRocketChatDriver driver, ILogger logger)
         {
             Driver = driver;
-            _logger = logger;
+            _logger = logger ?? new DummyLogger();
 
             Driver.MessageReceived += DriverOnMessageReceived;
             Driver.DdpReconnect += DriverOnDdpReconnect;
         }
 
-        public RocketChatBot(string url, bool useSsl, ILogger logger)
+        public RocketChatBot(string url, bool useSsl, ILogger logger = null)
             : this(new RocketChatDriver(url, useSsl, logger), logger)
         {
         }

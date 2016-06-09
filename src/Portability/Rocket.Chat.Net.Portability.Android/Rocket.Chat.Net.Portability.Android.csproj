@@ -47,6 +47,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Rocket.Chat.Net.Portability\Contracts\PortableWebSocketBase.cs">
+      <Link>Contracts\PortableWebSocketBase.cs</Link>
+    </Compile>
     <Compile Include="..\Rocket.Chat.Net.Portability\Websockets\PortableErrorEventArgs.cs">
       <Link>Websockets\PortableErrorEventArgs.cs</Link>
     </Compile>

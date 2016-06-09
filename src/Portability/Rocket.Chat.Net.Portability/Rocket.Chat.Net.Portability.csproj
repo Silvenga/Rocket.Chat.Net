@@ -42,6 +42,7 @@
     <Compile Include="Websockets\PortableErrorEventArgs.cs" />
     <Compile Include="Websockets\PortableMessageReceivedEventArgs.cs" />
     <Compile Include="Websockets\PortableWebSocket.cs" />
+    <Compile Include="Contracts\PortableWebSocketBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
