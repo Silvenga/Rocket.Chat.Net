@@ -151,9 +151,9 @@
     <Compile Include="Helpers\XUnitLogger.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Portability\Rocket.Chat.Net.Portability\Rocket.Chat.Net.Portability.csproj">
-      <Project>{662CE701-056D-420A-B03B-4F2613EEA044}</Project>
-      <Name>Rocket.Chat.Net.Portability</Name>
+    <ProjectReference Include="..\..\src\Portability\Rocket.Chat.Net.Portability.Net45\Rocket.Chat.Net.Portability.Net45.csproj">
+      <Project>{3f922d92-8434-46d2-b16d-bc12631c72dd}</Project>
+      <Name>Rocket.Chat.Net.Portability.Net45</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Rocket.Chat.Net\Rocket.Chat.Net.csproj">
       <Project>{a078aeb9-5502-441c-b44a-ff4bbe007551}</Project>

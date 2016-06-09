@@ -2,7 +2,6 @@
 {
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
@@ -16,10 +15,6 @@
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Portability.Websockets;
     using Rocket.Chat.Net.Tests.Helpers;
-
-    using SuperSocket.ClientEngine;
-
-    using WebSocket4Net;
 
     using Xunit;
     using Xunit.Abstractions;

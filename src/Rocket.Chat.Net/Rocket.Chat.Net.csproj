@@ -131,6 +131,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Rocket.Chat.Net.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Portability\Rocket.Chat.Net.Portability\Rocket.Chat.Net.Portability.csproj">

@@ -29,28 +29,4 @@
             throw new NotImplementedException();
         }
     }
-
-    public class PortableMessageReceivedEventArgs
-    {
-        public PortableMessageReceivedEventArgs(string message)
-        {
-            Message = message;
-        }
-
-        public string Message { get; set; }
-    }
-
-    public class PortableErrorEventArgs
-    {
-        public PortableErrorEventArgs(Exception exception)
-        {
-            Exception = exception;
-        }
-
-        public PortableErrorEventArgs()
-        {
-        }
-
-        public Exception Exception { get; set; }
-    }
 }
