@@ -38,6 +38,7 @@
     <None Include="Rocket.Chat.Net.Portability.nuspec" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crypto\ShaHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Websockets\PortableErrorEventArgs.cs" />
     <Compile Include="Websockets\PortableMessageReceivedEventArgs.cs" />
