@@ -71,6 +71,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Portability\Rocket.Chat.Net.Portability.Net45\Rocket.Chat.Net.Portability.Net45.csproj">
+      <Project>{3f922d92-8434-46d2-b16d-bc12631c72dd}</Project>
+      <Name>Rocket.Chat.Net.Portability.Net45</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rocket.Chat.Net.Bot\Rocket.Chat.Net.Bot.csproj">
       <Project>{a6ff1f57-0837-4f1a-9248-1cce8477295e}</Project>
       <Name>Rocket.Chat.Net.Bot</Name>

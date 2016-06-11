@@ -129,6 +129,7 @@
         /// <returns></returns>
         public IEnumerable<KeyValuePair<string, T>> Items<T>() where T : class
         {
+            // TODO use JsonSerializer
             var settings = new JsonSerializerSettings()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()

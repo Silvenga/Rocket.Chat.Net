@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     using Rocket.Chat.Net.Helpers;
@@ -34,7 +35,10 @@
         public string UserId { get; private set; }
         public string Username { get; private set; }
 
-        public RocketChatDriver(string url, bool useSsl, ILogger logger = null)
+        public JsonSerializerSettings JsonSerializerSettings { get; private set; }
+        public JsonSerializer JsonSerializer => JsonSerializer.Create(JsonSerializerSettings);
+
+        public RocketChatDriver(string url, bool useSsl, ILogger logger = null, JsonSerializerSettings jsonSerializerSettings = null)
         {
             _logger = logger ?? new DummyLogger();
             _collectionDatabase = new StreamCollectionDatabase();
@@ -43,15 +47,30 @@
             _client = new DdpClient(url, useSsl, _logger);
             _client.DataReceivedRaw += ClientOnDataReceivedRaw;
             _client.DdpReconnect += OnDdpReconnect;
+            SetJsonOptions(jsonSerializerSettings);
         }
 
-        public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabaseDatabase)
+        public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabaseDatabase,
+                                JsonSerializerSettings jsonSerializerSettings = null)
         {
             _logger = logger;
             _client = client;
             _collectionDatabase = collectionDatabaseDatabase;
             _client.DataReceivedRaw += ClientOnDataReceivedRaw;
             _client.DdpReconnect += OnDdpReconnect;
+            SetJsonOptions(jsonSerializerSettings);
+        }
+
+        private void SetJsonOptions(JsonSerializerSettings jsonSerializerSettings = null)
+        {
+            JsonSerializerSettings = jsonSerializerSettings ?? new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    _logger.Error("Handled error on (de)serialization. Please report this error to the developer: " + args.ErrorContext.Error.ToString());
+                    args.ErrorContext.Handled = true;
+                }
+            };
         }
 
         private void ClientOnDataReceivedRaw(string type, JObject data)
@@ -62,7 +81,7 @@
 
         private void HandleStreamingCollections(string type, JObject data)
         {
-            var collectionResult = data.ToObject<CollectionResult>();
+            var collectionResult = data.ToObject<CollectionResult>(JsonSerializer);
             if (collectionResult.Name == null)
             {
                 return;
@@ -73,10 +92,10 @@
             switch (type)
             {
                 case "added":
-                    collection.Added(collectionResult.Id, JObject.FromObject(collectionResult.Fields));
+                    collection.Added(collectionResult.Id, collectionResult.Fields);
                     break;
                 case "changed":
-                    collection.Changed(collectionResult.Id, JObject.FromObject(collectionResult.Fields));
+                    collection.Changed(collectionResult.Id, collectionResult.Fields);
                     break;
                 case "removed":
                     collection.Removed(collectionResult.Id);
@@ -88,7 +107,7 @@
 
         private void HandleRocketMessage(string type, JObject data)
         {
-            var o = data.ToObject<SubscriptionResult<JObject>>();
+            var o = data.ToObject<SubscriptionResult<JObject>>(JsonSerializer);
             var isMessage = type == "added" && o.Collection == MessageTopic && o.Fields["args"] != null;
             if (!isMessage)
             {
@@ -96,7 +115,7 @@
             }
 
             var messageRaw = o.Fields["args"][1];
-            var message = messageRaw.ToObject<RocketMessage>();
+            var message = messageRaw.ToObject<RocketMessage>(JsonSerializer);
             message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
             message.IsFromMyself = message.CreatedBy.Id == UserId;
 
@@ -123,7 +142,7 @@
             var results =
                 await _client.CallAsync("createPrivateGroup", TimeoutToken, groupName, members ?? new List<string>());
 
-            return results.ToObject<MethodResult<CreateRoomResult>>();
+            return results.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
 
         public async Task SubscribeToRoomListAsync()
@@ -270,7 +289,7 @@
         public async Task<MethodResult<LoginResult>> GetNewTokenAsync()
         {
             var result = await _client.CallAsync("getNewToken", TimeoutToken);
-            var loginResult = result.ToObject<MethodResult<LoginResult>>();
+            var loginResult = result.ToObject<MethodResult<LoginResult>>(JsonSerializer);
             if (!loginResult.HasError)
             {
                 await SetDriverUserInfoAsync(loginResult.Result.UserId);
@@ -282,13 +301,13 @@
         public async Task<MethodResult> RemoveOtherTokensAsync()
         {
             var result = await _client.CallAsync("removeOtherTokens", TimeoutToken);
-            return result.ToObject<MethodResult>();
+            return result.ToObject<MethodResult>(JsonSerializer);
         }
 
         private async Task<MethodResult<LoginResult>> InternalLoginAsync(object request)
         {
             var data = await _client.CallAsync("login", TimeoutToken, request);
-            var result = data.ToObject<MethodResult<LoginResult>>();
+            var result = data.ToObject<MethodResult<LoginResult>>(JsonSerializer);
             if (!result.HasError)
             {
                 await SetDriverUserInfoAsync(result.Result.UserId);
@@ -315,13 +334,13 @@
             };
 
             var result = await _client.CallAsync("registerUser", TimeoutToken, obj);
-            return result?["result"].ToObject<JObject>();
+            return result?["result"].ToObject<JObject>(JsonSerializer);
         }
 
         public async Task<MethodResult> SetReactionAsync(string reaction, string messageId)
         {
             var result = await _client.CallAsync("setReaction", TimeoutToken, reaction, messageId);
-            return result.ToObject<MethodResult>();
+            return result.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<string>> GetRoomIdAsync(string roomIdOrName)
@@ -329,7 +348,7 @@
             _logger.Info($"Looking up Room ID for: #{roomIdOrName}");
             var result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName);
 
-            return result.ToObject<MethodResult<string>>();
+            return result.ToObject<MethodResult<string>>(JsonSerializer);
         }
 
         public async Task<MethodResult> DeleteMessageAsync(string messageId, string roomId)
@@ -341,28 +360,28 @@
                 _id = messageId
             };
             var result = await _client.CallAsync("deleteMessage", TimeoutToken, request);
-            return result.ToObject<MethodResult>();
+            return result.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<string>> CreatePrivateMessageAsync(string username)
         {
             _logger.Info($"Creating private message with {username}");
             var result = await _client.CallAsync("createDirectMessage", TimeoutToken, username);
-            return result.ToObject<MethodResult<string>>();
+            return result.ToObject<MethodResult<string>>(JsonSerializer);
         }
 
         public async Task<MethodResult<ChannelListResult>> ChannelListAsync()
         {
             _logger.Info("Looking up public channels.");
             var result = await _client.CallAsync("channelsList", TimeoutToken);
-            return result.ToObject<MethodResult<ChannelListResult>>();
+            return result.ToObject<MethodResult<ChannelListResult>>(JsonSerializer);
         }
 
         public async Task<MethodResult> JoinRoomAsync(string roomId)
         {
             _logger.Info($"Joining Room: #{roomId}");
             var result = await _client.CallAsync("joinRoom", TimeoutToken, roomId);
-            return result.ToObject<MethodResult>();
+            return result.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<RocketMessage>> SendMessageAsync(string text, string roomId)
@@ -375,7 +394,7 @@
                 bot = true
             };
             var result = await _client.CallAsync("sendMessage", TimeoutToken, request);
-            return result.ToObject<MethodResult<RocketMessage>>();
+            return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
         }
 
         public async Task<MethodResult<RocketMessage>> SendCustomMessageAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
@@ -399,7 +418,7 @@
                 }
             };
             var result = await _client.CallAsync("sendMessage", TimeoutToken, request);
-            return result.ToObject<MethodResult<RocketMessage>>();
+            return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
         }
 
         public async Task<MethodResult> UpdateMessageAsync(string messageId, string roomId, string newMessage)
@@ -413,7 +432,7 @@
                 _id = messageId
             };
             var result = await _client.CallAsync("updateMessage", TimeoutToken, request);
-            return result.ToObject<MethodResult>();
+            return result.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<LoadMessagesResult>> LoadMessagesAsync(string roomId, DateTime? end = null,
@@ -423,7 +442,7 @@
             _logger.Info($"Loading messages from #{roomId}");
 
             var rawMessage = await _client.CallAsync("loadHistory", TimeoutToken, roomId, end, limit, ls);
-            var messageResult = rawMessage.ToObject<MethodResult<LoadMessagesResult>>();
+            var messageResult = rawMessage.ToObject<MethodResult<LoadMessagesResult>>(JsonSerializer);
             return messageResult;
         }
 
@@ -433,7 +452,7 @@
             _logger.Info($"Searching for messages in #{roomId} using `{query}`.");
 
             var rawMessage = await _client.CallAsync("messageSearch", TimeoutToken, query, roomId, limit);
-            var messageResult = rawMessage.ToObject<MethodResult<LoadMessagesResult>>();
+            var messageResult = rawMessage.ToObject<MethodResult<LoadMessagesResult>>(JsonSerializer);
             return messageResult;
         }
 
@@ -442,7 +461,7 @@
             _logger.Info("Requesting statistics.");
             var results = await _client.CallAsync("getStatistics", TimeoutToken);
 
-            return results.ToObject<MethodResult<StatisticsResult>>();
+            return results.ToObject<MethodResult<StatisticsResult>>(JsonSerializer);
         }
 
         public async Task<MethodResult<CreateRoomResult>> CreateChannelAsync(string roomName, IList<string> members = null)
@@ -451,7 +470,7 @@
             var results =
                 await _client.CallAsync("createChannel", TimeoutToken, roomName, members ?? new List<string>());
 
-            return results.ToObject<MethodResult<CreateRoomResult>>();
+            return results.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
 
         public async Task<MethodResult<CreateRoomResult>> HideRoomAsync(string roomId)
@@ -460,7 +479,7 @@
             var results =
                 await _client.CallAsync("hideRoom", TimeoutToken, roomId);
 
-            return results.ToObject<MethodResult<CreateRoomResult>>();
+            return results.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
 
         public async Task<MethodResult<int>> EraseRoomAsync(string roomId)
@@ -469,19 +488,19 @@
             var results =
                 await _client.CallAsync("eraseRoom", TimeoutToken, roomId);
 
-            return results.ToObject<MethodResult<int>>();
+            return results.ToObject<MethodResult<int>>(JsonSerializer);
         }
 
         public async Task<MethodResult> ResetAvatarAsync()
         {
             var results = await _client.CallAsync("resetAvatar", TimeoutToken);
-            return results.ToObject<MethodResult>();
+            return results.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult> SetAvatarFromUrlAsync(string url)
         {
             var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, url, "", "url");
-            return results.ToObject<MethodResult>();
+            return results.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult> SetAvatarFromImageStreamAsync(Stream sourceStream, string mimeType)
@@ -489,7 +508,7 @@
             var base64 = EncodingHelper.ConvertToBase64(sourceStream);
             var end = $"data:{mimeType};base64,{base64}";
             var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, end, mimeType, "upload");
-            return results.ToObject<MethodResult>();
+            return results.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<RocketMessage>> PinMessageAsync(RocketMessage message)
@@ -497,7 +516,7 @@
             var results =
                 await _client.CallAsync("pinMessage", TimeoutToken, message);
 
-            return results.ToObject<MethodResult<RocketMessage>>();
+            return results.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
         }
 
         public async Task<MethodResult> UnpinMessageAsync(RocketMessage message)
@@ -505,7 +524,7 @@
             var results =
                 await _client.CallAsync("unpinMessage", TimeoutToken, message);
 
-            return results.ToObject<MethodResult>();
+            return results.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<int>> UploadFileAsync(string roomId)
@@ -513,7 +532,7 @@
             var results =
                 await _client.CallAsync("/rocketchat_uploads/insert", TimeoutToken, roomId);
 
-            return results.ToObject<MethodResult<int>>();
+            return results.ToObject<MethodResult<int>>(JsonSerializer);
         }
 
         private void OnMessageReceived(RocketMessage rocketmessage)
