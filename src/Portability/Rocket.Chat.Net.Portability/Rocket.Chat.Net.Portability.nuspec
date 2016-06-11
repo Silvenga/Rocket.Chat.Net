@@ -16,6 +16,10 @@
     <dependencies>
       <group>
         <dependency id="WebSocket4Net" version="0.14.1"/>
+        <dependency id="PCLCrypto" version="2.0.147"/>
+      </group>
+      <group targetFramework="net45">
+        <dependency id="WebSocket4Net" version="0.14.1"/>
       </group>
     </dependencies>
     

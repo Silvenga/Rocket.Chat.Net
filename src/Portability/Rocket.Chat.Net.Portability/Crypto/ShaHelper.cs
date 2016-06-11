@@ -2,9 +2,11 @@
 {
     using System;
 
-    public class ShaHelper
+    using Rocket.Chat.Net.Portability.Contracts;
+
+    public class ShaHelper : ShaHelperBase
     {
-        public static string Sha256Hash(string value)
+        public override string Sha256Hash(string value)
         {
             throw new NotImplementedException();
         }

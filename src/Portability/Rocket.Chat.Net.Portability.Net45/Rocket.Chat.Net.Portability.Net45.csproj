@@ -46,12 +46,16 @@
     <Compile Include="..\Rocket.Chat.Net.Portability\Contracts\PortableWebSocketBase.cs">
       <Link>Contracts\PortableWebSocketBase.cs</Link>
     </Compile>
+    <Compile Include="..\Rocket.Chat.Net.Portability\Contracts\ShaHelperBase.cs">
+      <Link>Contracts\ShaHelperBase.cs</Link>
+    </Compile>
     <Compile Include="..\Rocket.Chat.Net.Portability\Websockets\PortableErrorEventArgs.cs">
       <Link>Websockets\PortableErrorEventArgs.cs</Link>
     </Compile>
     <Compile Include="..\Rocket.Chat.Net.Portability\Websockets\PortableMessageReceivedEventArgs.cs">
       <Link>Websockets\PortableMessageReceivedEventArgs.cs</Link>
     </Compile>
+    <Compile Include="Crypto\ShaHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Websockets\PortableWebSocket.cs" />
   </ItemGroup>
