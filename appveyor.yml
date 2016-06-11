@@ -15,9 +15,6 @@ before_build:
 - ps: nuget restore Rocket.Chat.Net.sln
 build:
   project: Rocket.Chat.Net.sln
-  publish_nuget: true
-  publish_nuget_symbols: true
-  include_nuget_references: true
   parallel: true
   verbosity: minimal
 test_script:

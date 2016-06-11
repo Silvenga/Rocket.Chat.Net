@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Rocket.Chat.Net.Bot\Rocket.Chat.Net.Bot.csproj" />
+    <ProjectReference Include="..\Rocket.Chat.Net.NuGet\Rocket.Chat.Net.NuGet.nuproj" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>65631767-93f5-4f5b-875a-aa5fe4f6a80d</ProjectGuid>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">$(SolutionDir)\packages\NuProj.0.10.4-beta-gf7fc34e7d8\tools\</NuProjPath>
+    <VersionDependsOn>$(VersionDependsOn);GetNuPkgVersion</VersionDependsOn>
+  </PropertyGroup>
+  <Target Name="GetNuPkgVersion">
+    <PropertyGroup>
+      <Version Condition=" '$(APPVEYOR)' == 'True' ">$(APPVEYOR_BUILD_VERSION)</Version>
+      <Version Condition=" '$(APPVEYOR)' == '' ">0.0.0.1</Version>
+    </PropertyGroup>
+  </Target>
+  
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>Rocket.Chat.Net.Bot</Id>
+    <Version>1.0.0</Version>
+    <Title>Rocket.Chat.Net.Bot</Title>
+    <Authors>Silvenga</Authors>
+    <Owners>Silvenga</Owners>
+    <Summary>
+    </Summary>
+    <Description>A Rocket.Chat realtime, managed .Net bot.</Description>
+    <ReleaseNotes>
+    </ReleaseNotes>
+    <ProjectUrl>https://github.com/Silvenga/Rocket.Chat.Net</ProjectUrl>
+    <LicenseUrl>https://github.com/Silvenga/Rocket.Chat.Net/blob/master/LICENSE</LicenseUrl>
+    <Copyright>Copyright © 2016</Copyright>
+    <Tags>Rocket.Chat</Tags>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.targets" />
+</Project>

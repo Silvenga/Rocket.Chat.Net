@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Portability\Rocket.Chat.Net.Portability.Android\Rocket.Chat.Net.Portability.Android.csproj" />
+    <ProjectReference Include="..\..\Portability\Rocket.Chat.Net.Portability.IOS\Rocket.Chat.Net.Portability.IOS.csproj" />
+    <ProjectReference Include="..\..\Portability\Rocket.Chat.Net.Portability.Net45\Rocket.Chat.Net.Portability.Net45.csproj" />
+    <ProjectReference Include="..\..\Portability\Rocket.Chat.Net.Portability\Rocket.Chat.Net.Portability.csproj" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>265e3a7b-4fb5-4a6b-845e-449afbd16d88</ProjectGuid>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">$(SolutionDir)\packages\NuProj.0.10.4-beta-gf7fc34e7d8\tools\</NuProjPath>
+    <VersionDependsOn>$(VersionDependsOn);GetNuPkgVersion</VersionDependsOn>
+  </PropertyGroup>
+  <Target Name="GetNuPkgVersion">
+    <PropertyGroup>
+      <Version Condition=" '$(APPVEYOR)' == 'True' ">$(APPVEYOR_BUILD_VERSION)</Version>
+      <Version Condition=" '$(APPVEYOR)' == '' ">0.0.0.1</Version>
+    </PropertyGroup>
+  </Target>
+
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>Rocket.Chat.Net.Portability</Id>
+    <Version>1.0.0</Version>
+    <Title>Rocket.Chat.Net.Portability</Title>
+    <Authors>Silvenga</Authors>
+    <Owners>Silvenga</Owners>
+    <Summary>
+    </Summary>
+    <Description>Portability components for Rocket.Chat.Net</Description>
+    <ReleaseNotes>
+    </ReleaseNotes>
+    <ProjectUrl>https://github.com/Silvenga/Rocket.Chat.Net</ProjectUrl>
+    <LicenseUrl>https://github.com/Silvenga/Rocket.Chat.Net/blob/master/LICENSE</LicenseUrl>
+    <Copyright>Copyright © 2016</Copyright>
+    <Tags>Rocket.Chat</Tags>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.targets" />
+</Project>
