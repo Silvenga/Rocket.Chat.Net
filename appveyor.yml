@@ -21,4 +21,4 @@ test_script:
 - ps: .\test.ps1
 deploy: off
 artifacts:
-- path: '**\*.nupkg'
+- path: 'src\**\*.nupkg'
