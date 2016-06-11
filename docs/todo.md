@@ -17,7 +17,7 @@
 - [X] Get a different RC server, DO is too slow (Maxing CPU). 
 - [ ] API docs.
 - [X] PCI/.NetStandard support
-- [ ] Remove pclcrypto
+- [X] Remove pclcrypto
 - [ ] Support WP, UAP, Core
 
 # Driver Support
