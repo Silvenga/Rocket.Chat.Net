@@ -27,13 +27,11 @@
             //const string password = "SilverLight";
 
             //var driver = new RocketChatDriver("demo.rocket.chat", true, _xUnitLogger);
-            const string userName = "m@silvenga.com";
-            const string password = "silverlight";
 
             var driver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
 
             await driver.ConnectAsync();
-            var loginResult = await driver.LoginWithEmailAsync(userName, password);
+            var loginResult = await driver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword);
 
             var roomId = await driver.GetRoomIdAsync("GENERAL");
 
@@ -41,7 +39,7 @@
 
             await driver.SubscribeToRoomAsync(roomId.Result);
 
-            var messages = await driver.SearchMessagesAsync($"from:{driver.Username}", roomId.Result);
+            var messages = await driver.SendMessageAsync("", roomId.Result);
 
             driver.Dispose();
         }

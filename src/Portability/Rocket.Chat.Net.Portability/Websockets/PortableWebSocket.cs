@@ -4,6 +4,7 @@
 
     using Rocket.Chat.Net.Portability.Contracts;
 
+#pragma warning disable CS0067
     public class PortableWebSocket : PortableWebSocketBase
     {
         public PortableWebSocket(string url) : base(url)
@@ -30,4 +31,5 @@
             throw new NotImplementedException();
         }
     }
+#pragma warning restore CS0067
 }
