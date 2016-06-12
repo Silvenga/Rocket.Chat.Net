@@ -9,6 +9,11 @@
     {
         public PortableWebSocket(string url) : base(url)
         {
+            throw new NotImplementedException(
+                "You are currently referencing a PCL skeleton - this should never happen. " +
+                "This could either mean you missing a reference to Rocket.Chat.Net.Portability (NuGet should have installed it) " +
+                "or Rocket.Chat.Net.Portability does not currently support your target platform. " +
+                "In the latter case, contact the developer to see if the platform can be supported. ");
         }
 
         public override event EventHandler<PortableMessageReceivedEventArgs> MessageReceived;
