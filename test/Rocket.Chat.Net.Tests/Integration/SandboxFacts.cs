@@ -60,7 +60,7 @@
 
             var roomId = await driver.GetRoomIdAsync("GENERAL");
 
-            var a = await driver.SendCustomMessageAsync("test mesage", "name", roomId.Result);
+            //var a = await driver.SendCustomMessageAsync("test mesage", "name", roomId.Result);
 
             driver.Dispose();
         }
