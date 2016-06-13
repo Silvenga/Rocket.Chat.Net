@@ -19,6 +19,7 @@
 - [X] PCI/.NetStandard support
 - [X] Remove pclcrypto
 - [ ] Support WP, UAP, Core
+- [ ] Make bot flag optional
 
 # Driver Support
 

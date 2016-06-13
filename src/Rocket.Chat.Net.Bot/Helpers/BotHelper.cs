@@ -9,5 +9,10 @@
         {
             return new BasicResponse(reply, message.RoomId);
         }
+
+        public static AttachmentResponse CreateAttachmentReply(this RocketMessage message, Attachment reply)
+        {
+            return new AttachmentResponse(reply, message.RoomId);
+        }
     }
 }

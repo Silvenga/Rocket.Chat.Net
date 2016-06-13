@@ -8,6 +8,7 @@
     using Rocket.Chat.Net.Bot.Helpers;
     using Rocket.Chat.Net.Bot.Interfaces;
     using Rocket.Chat.Net.Bot.Models;
+    using Rocket.Chat.Net.Models;
 
     internal class GiphyResponse : IBotResponse
     {
@@ -22,13 +23,17 @@
             return message.Message.StartsWith(GiphyCommand) && !message.Message.Equals(GiphyCommand);
         }
 
-        public IEnumerable<BasicResponse> GetResponse(ResponseContext context, RocketChatBot caller)
+        public IEnumerable<IMessageResponse> GetResponse(ResponseContext context, RocketChatBot caller)
         {
             var message = context.Message;
 
             var search = message.Message.Replace(GiphyCommand, "").Trim();
             var url = GetGiphy(search);
-            yield return message.CreateBasicReply(url);
+            var attachment = new Attachment
+            {
+                ImageUrl = url
+            };
+            yield return message.CreateAttachmentReply(attachment);
         }
 
         private string GetGiphy(string search)

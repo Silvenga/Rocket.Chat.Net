@@ -48,7 +48,9 @@
   <ItemGroup>
     <Compile Include="Helpers\BotHelper.cs" />
     <Compile Include="Interfaces\IBotResponse.cs" />
+    <Compile Include="Models\AttachmentResponse.cs" />
     <Compile Include="Models\BasicResponse.cs" />
+    <Compile Include="Interfaces\IMessageResponse.cs" />
     <Compile Include="Models\ResponseContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RocketChatBot.cs" />

@@ -89,13 +89,9 @@
         /// NOTE: Don't know the longevity of this as the UI cannot create this manually
         /// TODO
         /// </summary>
-        /// <param name="text">Text the include</param>
-        /// <param name="authorName">Name to put into the author's slot</param>
-        /// <param name="roomId">Room to send this message too</param>
-        /// <param name="timestamp"></param>
-        /// <param name="icon">Reletive path to the user's icon</param>
+        /// <param name="attachment">Attachment to include</param>
+        /// <param name="roomId">Room to send to</param>
         /// <returns></returns>
-        Task<MethodResult<RocketMessage>> SendCustomMessageAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
-                                                              string icon = null);
+        Task<MethodResult<RocketMessage>> SendCustomMessageAsync(Attachment attachment, string roomId);
     }
 }

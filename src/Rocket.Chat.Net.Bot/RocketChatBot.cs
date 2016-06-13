@@ -124,7 +124,7 @@
                         foreach (var response in botResponse.GetResponse(context, this))
                         {
                             hasResponse = true;
-                            await Driver.SendMessageAsync(response.Message, response.RoomId);
+                            await SendMessageAsync(response);
                         }
 
                         if (hasResponse)
@@ -138,6 +138,26 @@
                     }
                 }
             });
+        }
+
+        private async Task SendMessageAsync(IMessageResponse response)
+        {
+            var attachmentMessage = response as AttachmentResponse;
+            var basicMessage = response as BasicResponse;
+
+            if (attachmentMessage != null)
+            {
+                await Driver.SendCustomMessageAsync(attachmentMessage.Attachment, attachmentMessage.RoomId);
+            }
+            else if (basicMessage != null)
+            {
+                await Driver.SendMessageAsync(basicMessage.Message, basicMessage.RoomId);
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    $"The result of {nameof(IBotResponse.GetResponse)} is either null or not of a supported type.");
+            }
         }
 
         private IEnumerable<IBotResponse> GetValidResponses(ResponseContext context, IEnumerable<IBotResponse> possibleResponses)

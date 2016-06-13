@@ -1,12 +1,11 @@
 ﻿namespace Rocket.Chat.Net.Bot.Models
 {
-    using System.Diagnostics.CodeAnalysis;
+    using Rocket.Chat.Net.Bot.Interfaces;
 
     /// <summary>
     /// A basic rocket response message.
     /// </summary>
-    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
-    public class BasicResponse
+    public class BasicResponse : IMessageResponse
     {
         /// <summary>
         /// Text of message.

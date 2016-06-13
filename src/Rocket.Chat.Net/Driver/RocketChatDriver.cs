@@ -397,10 +397,8 @@
             return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
         }
 
-        public async Task<MethodResult<RocketMessage>> SendCustomMessageAsync(string text, string authorName, string roomId, DateTime? timestamp = null,
-                                                                              string icon = null)
+        public async Task<MethodResult<RocketMessage>> SendCustomMessageAsync(Attachment attachment, string roomId)
         {
-            _logger.Info($"Sending message to #{roomId}: {text}");
             var request = new
             {
                 msg = "",
@@ -408,13 +406,7 @@
                 bot = true,
                 attachments = new[]
                 {
-                    new Attachment
-                    {
-                        AuthorName = authorName,
-                        Text = text,
-                        AuthorIcon = icon,
-                        Timestamp = timestamp
-                    }
+                    attachment
                 }
             };
             var result = await _client.CallAsync("sendMessage", TimeoutToken, request);
