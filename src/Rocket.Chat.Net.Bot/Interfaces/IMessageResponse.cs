@@ -2,5 +2,6 @@
 {
     public interface IMessageResponse
     {
+        string RoomId { get; set; }
     }
 }

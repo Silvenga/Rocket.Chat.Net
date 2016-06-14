@@ -59,14 +59,17 @@ namespace Rocket.Chat.Net.Interfaces.Driver
         /// <returns></returns>
         Task<MethodResult> SetAvatarFromImageStreamAsync(Stream sourceStream, string mimeType);
 
-        string UserId { get; }
-        string Username { get; }
-
         /// <summary>
         /// Subscribe to the filtered users list. Can be called multiple times with different filter information.
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
         Task SubscribeToFilteredUsersAsync(string username = "");
+
+        string UserId { get; }
+
+        string Username { get; }
+
+        bool IsBot { get; set; }
     }
 }

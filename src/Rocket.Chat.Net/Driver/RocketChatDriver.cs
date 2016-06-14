@@ -35,11 +35,14 @@
         public string UserId { get; private set; }
         public string Username { get; private set; }
 
+        public bool IsBot { get; set; }
+
         public JsonSerializerSettings JsonSerializerSettings { get; private set; }
         public JsonSerializer JsonSerializer => JsonSerializer.Create(JsonSerializerSettings);
 
-        public RocketChatDriver(string url, bool useSsl, ILogger logger = null, JsonSerializerSettings jsonSerializerSettings = null)
+        public RocketChatDriver(string url, bool useSsl, ILogger logger = null, bool isBot = true, JsonSerializerSettings jsonSerializerSettings = null)
         {
+            IsBot = isBot;
             _logger = logger ?? new DummyLogger();
             _collectionDatabase = new StreamCollectionDatabase();
 
@@ -50,9 +53,10 @@
             SetJsonOptions(jsonSerializerSettings);
         }
 
-        public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabaseDatabase,
+        public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabaseDatabase, bool isBot = true,
                                 JsonSerializerSettings jsonSerializerSettings = null)
         {
+            IsBot = isBot;
             _logger = logger;
             _client = client;
             _collectionDatabase = collectionDatabaseDatabase;
@@ -391,7 +395,7 @@
             {
                 msg = text,
                 rid = roomId,
-                bot = true
+                bot = IsBot
             };
             var result = await _client.CallAsync("sendMessage", TimeoutToken, request);
             return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
@@ -403,7 +407,7 @@
             {
                 msg = "",
                 rid = roomId,
-                bot = true,
+                bot = IsBot,
                 attachments = new[]
                 {
                     attachment
@@ -420,7 +424,7 @@
             {
                 msg = newMessage,
                 rid = roomId,
-                bot = true,
+                bot = IsBot,
                 _id = messageId
             };
             var result = await _client.CallAsync("updateMessage", TimeoutToken, request);
