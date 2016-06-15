@@ -29,6 +29,15 @@ namespace Rocket.Chat.Net.Models
         [JsonProperty(PropertyName = "author_icon")]
         public string AuthorIcon { get; set; }
 
+        [JsonProperty(PropertyName = "thumb_url")]
+        public string ThumbUrl { get; set; }
+
+        /// <summary>
+        /// e.g. #FF0000
+        /// </summary>
+        [JsonProperty(PropertyName = "color")]
+        public string Color { get; set; }
+
         [JsonProperty(PropertyName = "ts"), JsonConverter(typeof(MeteorDateConverter))]
         public DateTime? Timestamp { get; set; }
 
@@ -36,7 +45,8 @@ namespace Rocket.Chat.Net.Models
         {
             return string.Equals(Title, other.Title) && string.Equals(TitleLink, other.TitleLink) && TitleLinkDownloadable == other.TitleLinkDownloadable
                    && string.Equals(Text, other.Text) && string.Equals(ImageUrl, other.ImageUrl) && string.Equals(AuthorName, other.AuthorName)
-                   && string.Equals(AuthorIcon, other.AuthorIcon) && Timestamp.Equals(other.Timestamp);
+                   && string.Equals(AuthorIcon, other.AuthorIcon) && string.Equals(ThumbUrl, other.ThumbUrl) && string.Equals(Color, other.Color)
+                   && Timestamp.Equals(other.Timestamp);
         }
 
         public override bool Equals(object obj)
@@ -61,6 +71,8 @@ namespace Rocket.Chat.Net.Models
                 hashCode = (hashCode * 397) ^ (ImageUrl != null ? ImageUrl.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (AuthorName != null ? AuthorName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (AuthorIcon != null ? AuthorIcon.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (ThumbUrl != null ? ThumbUrl.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Color != null ? Color.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Timestamp.GetHashCode();
                 return hashCode;
             }
