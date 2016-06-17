@@ -60,6 +60,42 @@
         }
 
         [Fact]
+        public async Task Create_direct_message_that_does_not_exist_should_create_room()
+        {
+            var roomName = $"{Constants.TwoUsername}";
+            RoomsCreatedByName.Add(roomName);
+
+            await DefaultAccountLoginAsync();
+
+            await RocketChatDriver.SubscribeToRoomListAsync();
+
+            // Act
+            var result = await RocketChatDriver.CreatePrivateMessageAsync(roomName);
+
+            // Assert
+            result.HasError.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Create_direct_message_that_does_exist_should_update_room()
+        {
+            var roomName = $"{Constants.TwoUsername}";
+            RoomsCreatedByName.Add(roomName);
+
+            await DefaultAccountLoginAsync();
+
+            await RocketChatDriver.SubscribeToRoomListAsync();
+
+            // Act
+            var result = await RocketChatDriver.CreatePrivateMessageAsync(Constants.TwoUsername);
+            var result2 = await RocketChatDriver.CreatePrivateMessageAsync(Constants.TwoUsername);
+
+            // Assert
+            result.HasError.Should().BeFalse();
+            result2.HasError.Should().BeFalse();
+        }
+
+        [Fact]
         public async Task Create_room_that_does_not_exist_should_create_room()
         {
             var roomName = AutoFixture.Create<string>();
@@ -182,12 +218,13 @@
             {
                 driver.ConnectAsync().Wait();
                 driver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword).Wait();
-                var rooms = driver.ChannelListAsync().Result;
-                var toDelete = rooms.Result.Channels.Where(x => RoomsCreatedByName.Contains(x.Name));
+                driver.SubscribeToRoomListAsync().Wait();
+                var rooms = driver.GetRooms();
+                var toDelete = rooms.Where(x => RoomsCreatedByName.Contains(x.Name));
 
                 foreach (var room in toDelete)
                 {
-                    driver.EraseRoomAsync(room.Id).Wait();
+                    driver.EraseRoomAsync(room.RoomId).Wait();
                 }
             }
         }

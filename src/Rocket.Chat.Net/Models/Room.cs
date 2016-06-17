@@ -1,10 +1,8 @@
 ﻿namespace Rocket.Chat.Net.Models
 {
     using System;
-    using System.Runtime.Serialization;
 
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
 
     using Rocket.Chat.Net.JsonConverters;
 
@@ -32,14 +30,6 @@
         public RoomType Type { get; set; }
 
         [JsonProperty("ls"), JsonConverter(typeof(MeteorDateConverter))]
-        public DateTime LastSeen { get; set; }
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum RoomType
-    {
-        [EnumMember(Value = "p")] PrivateGroup = 'p',
-        [EnumMember(Value = "d")] DirectMessage = 'd',
-        [EnumMember(Value = "c")] Channel = 'c'
+        public DateTime? LastSeen { get; set; }
     }
 }

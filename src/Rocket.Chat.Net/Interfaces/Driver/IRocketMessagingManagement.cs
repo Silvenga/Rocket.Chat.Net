@@ -51,7 +51,7 @@
         /// </summary>
         /// <param name="username">The user to create a private message room for</param>
         /// <returns>The private RoomId</returns>
-        Task<MethodResult<string>> CreatePrivateMessageAsync(string username);
+        Task<MethodResult<CreateRoomResult>> CreatePrivateMessageAsync(string username);
 
         /// <summary>
         /// Searches the messages for the given room.

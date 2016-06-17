@@ -6,6 +6,8 @@
 
     using FluentAssertions;
 
+    using Newtonsoft.Json;
+
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Driver;
@@ -22,7 +24,7 @@
         protected DriverFactsBase(ITestOutputHelper helper)
         {
             XUnitLogger = new XUnitLogger(helper);
-            RocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, XUnitLogger);
+            RocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, XUnitLogger, jsonSerializerSettings: new JsonSerializerSettings());
         }
 
         protected async Task DefaultAccountLoginAsync()
@@ -34,11 +36,12 @@
 
         protected async Task CleanupRoomsAsync()
         {
-            var rooms = await RocketChatDriver.ChannelListAsync();
-            rooms.HasError.Should().BeFalse();
-            foreach (var room in rooms.Result.Channels.Where(x => x.Id != "GENERAL"))
+            await RocketChatDriver.SubscribeToRoomListAsync();
+            var rooms = RocketChatDriver.GetRooms().ToList();
+
+            foreach (var room in rooms.Where(x => x.RoomId != "GENERAL"))
             {
-                await RocketChatDriver.EraseRoomAsync(room.Id);
+                await RocketChatDriver.EraseRoomAsync(room.RoomId);
             }
         }
 

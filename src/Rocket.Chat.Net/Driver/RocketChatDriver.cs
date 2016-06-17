@@ -367,11 +367,11 @@
             return result.ToObject<MethodResult>(JsonSerializer);
         }
 
-        public async Task<MethodResult<string>> CreatePrivateMessageAsync(string username)
+        public async Task<MethodResult<CreateRoomResult>> CreatePrivateMessageAsync(string username)
         {
             _logger.Info($"Creating private message with {username}");
             var result = await _client.CallAsync("createDirectMessage", TimeoutToken, username);
-            return result.ToObject<MethodResult<string>>(JsonSerializer);
+            return result.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
 
         public async Task<MethodResult<ChannelListResult>> ChannelListAsync()
