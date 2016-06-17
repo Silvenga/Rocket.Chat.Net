@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Driver
+﻿namespace Rocket.Chat.Net.Collections
 {
     using System;
     using System.Collections.Concurrent;
@@ -30,6 +30,8 @@
             return left;
         };
 
+        public event EventHandler<StreamCollectionEventArgs> Modified;
+
         public StreamCollection(string name)
         {
             Name = name;
@@ -48,7 +50,8 @@
         /// <param name="fields">Value of object updated, will be merged into existing object</param>
         public void Changed(string id, JObject fields)
         {
-            _collection.AddOrUpdate(id, fields, (s, o) => _merge(o, fields));
+            var result = _collection.AddOrUpdate(id, fields, (s, o) => _merge(o, fields));
+            OnModified(result, ModificationType.Changed);
         }
 
         /// <summary>
@@ -58,7 +61,8 @@
         /// <param name="fields">Value of object added, will override existing object</param>
         public void Added(string id, JObject fields)
         {
-            _collection.AddOrUpdate(id, fields, (existingId, existingField) => fields);
+            var result = _collection.AddOrUpdate(id, fields, (existingId, existingField) => fields);
+            OnModified(result, ModificationType.Added);
         }
 
         /// <summary>
@@ -67,8 +71,9 @@
         /// <param name="id">UUID of the removed object</param>
         public void Removed(string id)
         {
-            JObject value;
-            _collection.TryRemove(id, out value);
+            JObject result;
+            _collection.TryRemove(id, out result);
+            OnModified(result, ModificationType.Removed);
         }
 
         /// <summary>
@@ -140,6 +145,11 @@
             return _collection
                 .ToList()
                 .Select(value => new KeyValuePair<string, T>(value.Key, value.Value.ToObject<T>(jsonSerializer)));
+        }
+
+        protected virtual void OnModified(JObject result, ModificationType type)
+        {
+            Modified?.Invoke(this, new StreamCollectionEventArgs(result, type));
         }
     }
 }

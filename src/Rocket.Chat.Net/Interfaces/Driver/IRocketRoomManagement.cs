@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
 
@@ -78,5 +79,12 @@
         /// </summary>
         /// <returns></returns>
         IEnumerable<Room> GetRooms();
+
+        /// <summary>
+        /// Get a list of currently known rooms from the room list subscription.
+        /// SubscribeToRoomListAsync() should be called once before using this method.
+        /// </summary>
+        /// <returns></returns>
+        TypedStreamCollection<Room> GetRoomsCollection();
     }
 }

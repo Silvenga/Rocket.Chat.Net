@@ -8,7 +8,7 @@ namespace Rocket.Chat.Net.Interfaces
         bool TryGetCollection(string collectionName, out IStreamCollection collection);
         IStreamCollection GetOrAddCollection(string collectionName);
 
-        Task<IStreamCollection> WaitForCollectionAsync(string collectionName, string id,
+        Task<IStreamCollection> WaitForObjectInCollectionAsync(string collectionName, string id,
                                                       CancellationToken token);
     }
 }

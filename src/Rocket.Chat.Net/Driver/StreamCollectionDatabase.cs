@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Interfaces;
 
     public class StreamCollectionDatabase : IStreamCollectionDatabase
@@ -24,7 +25,7 @@
             return _collections.GetOrAdd(collectionName, createCollection);
         }
 
-        public async Task<IStreamCollection> WaitForCollectionAsync(string collectionName, string id,
+        public async Task<IStreamCollection> WaitForObjectInCollectionAsync(string collectionName, string id,
                                                                     CancellationToken token)
         {
             return await Task.Run(async () =>

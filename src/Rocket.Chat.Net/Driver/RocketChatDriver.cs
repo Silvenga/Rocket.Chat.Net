@@ -7,9 +7,12 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using JetBrains.Annotations;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
+    using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Loggers;
@@ -322,7 +325,7 @@
         private async Task SetDriverUserInfoAsync(string userId)
         {
             UserId = userId;
-            var collection = await _collectionDatabase.WaitForCollectionAsync("users", userId, TimeoutToken);
+            var collection = await _collectionDatabase.WaitForObjectInCollectionAsync("users", userId, TimeoutToken);
             var user = collection.GetById<FullUser>(userId);
             Username = user?.Username;
         }
@@ -546,20 +549,31 @@
 
         public IEnumerable<Room> GetRooms()
         {
-            IStreamCollection value;
-            var results = _collectionDatabase.TryGetCollection("rocketchat_subscription", out value);
-
-            if (!results)
+            var collection = GetRoomsCollection();
+            if (collection == null)
             {
                 yield break;
             }
 
-            var rooms = value.Items<Room>();
-
+            var rooms = collection.Items();
             foreach (var room in rooms.Select(x => x.Value))
             {
                 yield return room;
             }
+        }
+
+        [CanBeNull]
+        public TypedStreamCollection<Room> GetRoomsCollection()
+        {
+            IStreamCollection value;
+            var results = _collectionDatabase.TryGetCollection("rocketchat_subscription", out value);
+            if (!results)
+            {
+                return null;
+            }
+
+            var typedCollection = new TypedStreamCollection<Room>(value);
+            return typedCollection;
         }
 
         public void Dispose()

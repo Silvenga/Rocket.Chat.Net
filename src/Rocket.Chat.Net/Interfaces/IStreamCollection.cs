@@ -1,8 +1,11 @@
 namespace Rocket.Chat.Net.Interfaces
 {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json.Linq;
+
+    using Rocket.Chat.Net.Collections;
 
     public interface IStreamCollection
     {
@@ -70,5 +73,7 @@ namespace Rocket.Chat.Net.Interfaces
         /// <param name="id">UUID of the object</param>
         /// <returns>The object requested, null if object doesn't exist, null if object could not be created</returns>
         JObject GetJObjectById(string id);
+
+        event EventHandler<StreamCollectionEventArgs> Modified;
     }
 }

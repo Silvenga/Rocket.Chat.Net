@@ -6,9 +6,11 @@
 
     using Newtonsoft.Json.Linq;
 
+    using NSubstitute;
+
     using Ploeh.AutoFixture;
 
-    using Rocket.Chat.Net.Driver;
+    using Rocket.Chat.Net.Collections;
 
     using Xunit;
 
@@ -322,6 +324,92 @@
 
             result.Should().BeNull();
         }
+
+        [Fact]
+        public void When_object_added_modified_event_should_be_called()
+        {
+            var subscriber = Substitute.For<IDummySubscriber>();
+            var item = new
+            {
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
+                Obj = new
+                {
+                    Value = AutoFixture.Create<string>()
+                }
+            };
+            var jObject = JObject.FromObject(item);
+            var collection = new StreamCollection(_name);
+            collection.Modified += subscriber.React;
+
+            // Act
+            collection.Added(item.Id, jObject);
+
+            // Assert
+            subscriber.Received()
+                      .React(Arg.Any<object>(), Arg.Is<StreamCollectionEventArgs>(args =>
+                          args.ModificationType == ModificationType.Added && args.Result == jObject
+                          ));
+        }
+
+        [Fact]
+        public void When_object_changed_modified_event_should_be_called()
+        {
+            var subscriber = Substitute.For<IDummySubscriber>();
+            var item = new
+            {
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
+                Obj = new
+                {
+                    Value = AutoFixture.Create<string>()
+                }
+            };
+            var jObject = JObject.FromObject(item);
+            var collection = new StreamCollection(_name);
+            collection.Added(item.Id, jObject);
+            collection.Modified += subscriber.React;
+
+            // Act
+            collection.Changed(item.Id, jObject);
+
+            // Assert
+            subscriber.Received()
+                      .React(Arg.Any<object>(), Arg.Is<StreamCollectionEventArgs>(args =>
+                          args.ModificationType == ModificationType.Changed && args.Result == jObject
+                          ));
+        }
+
+        [Fact]
+        public void When_object_removed_modified_event_should_be_called()
+        {
+            var subscriber = Substitute.For<IDummySubscriber>();
+            var item = new
+            {
+                Id = AutoFixture.Create<string>(),
+                Str = AutoFixture.Create<string>(),
+                Int = AutoFixture.Create<int>(),
+                Obj = new
+                {
+                    Value = AutoFixture.Create<string>()
+                }
+            };
+            var jObject = JObject.FromObject(item);
+            var collection = new StreamCollection(_name);
+            collection.Added(item.Id, jObject);
+            collection.Modified += subscriber.React;
+
+            // Act
+            collection.Removed(item.Id);
+
+            // Assert
+            subscriber.Received()
+                      .React(Arg.Any<object>(), Arg.Is<StreamCollectionEventArgs>(args =>
+                          args.ModificationType == ModificationType.Removed && args.Result == jObject
+                          ));
+        }
     }
 
     public class StreamCollectionFixture
@@ -337,9 +425,12 @@
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
             return Equals((StreamCollectionFixture) obj);
         }
 
@@ -350,5 +441,10 @@
                 return ((Id?.GetHashCode() ?? 0) * 397) ^ (Username?.GetHashCode() ?? 0);
             }
         }
+    }
+
+    public interface IDummySubscriber
+    {
+        void React(object sender, StreamCollectionEventArgs streamCollectionEventArgs);
     }
 }

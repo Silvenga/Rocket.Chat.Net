@@ -56,6 +56,10 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\ModificationType.cs" />
+    <Compile Include="Collections\StreamCollectionEventArgs.cs" />
+    <Compile Include="Collections\TypedStreamCollection.cs" />
+    <Compile Include="Collections\TypedStreamCollectionEventArgs.cs" />
     <Compile Include="Interfaces\Driver\IRocketClientManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketUserManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketMessagingManagement.cs" />
@@ -71,7 +75,7 @@
     <Compile Include="Interfaces\IStreamCollection.cs" />
     <Compile Include="Interfaces\IDdpClient.cs" />
     <Compile Include="Interfaces\IStreamCollectionDatabase.cs" />
-    <Compile Include="Driver\StreamCollection.cs" />
+    <Compile Include="Collections\StreamCollection.cs" />
     <Compile Include="Driver\StreamCollectionDatabase.cs" />
     <Compile Include="JsonConverters\MeteorDateConverter.cs" />
     <Compile Include="Models\Email.cs" />

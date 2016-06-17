@@ -12,6 +12,7 @@
 
     using Ploeh.AutoFixture;
 
+    using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
@@ -111,7 +112,7 @@
             IStreamCollection collection = new StreamCollection("users");
             var user = JObject.FromObject(new {username = ""});
             collection.Added(loginResult.UserId, user);
-            _mockCollectionDatabase.WaitForCollectionAsync("users", loginResult.UserId, CancellationToken)
+            _mockCollectionDatabase.WaitForObjectInCollectionAsync("users", loginResult.UserId, CancellationToken)
                                    .Returns(Task.FromResult(collection));
 
             // Act
