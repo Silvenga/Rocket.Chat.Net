@@ -38,6 +38,7 @@
                 // Pin messages broken, different return room lookup
                 "0.32.0",
                 "0.33.0",
+                "0.34.0",
             };
 
             await DefaultAccountLoginAsync();

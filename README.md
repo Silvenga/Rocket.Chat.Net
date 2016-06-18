@@ -15,11 +15,11 @@
 [Base-Nuget-Link]: https://www.nuget.org/packages/Rocket.Chat.Net/
 [Bot-Nuget-Link]: https://www.nuget.org/packages/Rocket.Chat.Net.Bot/
 
-
 [![Build status](https://img.shields.io/appveyor/ci/Silvenga/rocket-chat-net.svg?style=flat-square&maxAge=300&label=appveyor)](https://ci.appveyor.com/project/Silvenga/rocket-chat-net) 
 [![Build status](https://img.shields.io/travis/Silvenga/Rocket.Chat.Net.svg?style=flat-square&maxAge=300&label=travis)](https://travis-ci.org/Silvenga/Rocket.Chat.Net) 
 [![Coverage Status](https://img.shields.io/coveralls/Silvenga/Rocket.Chat.Net.svg?style=flat-square&maxAge=300)](https://coveralls.io/github/Silvenga/Rocket.Chat.Net?branch=master)
 [![License](https://img.shields.io/github/license/Silvenga/Rocket.Chat.Net.svg?style=flat-square&maxAge=604800)](https://github.com/Silvenga/Rocket.Chat.Net/blob/master/LICENSE)
+![Rocket.Chat Compatibility](https://img.shields.io/badge/Rocket.Chat%20Compatibility-0.34.0-red.svg?maxAge=3600&style=flat-square)
 
 A Rocket.Chat real-time, managed, .Net driver, and bot. 
 
