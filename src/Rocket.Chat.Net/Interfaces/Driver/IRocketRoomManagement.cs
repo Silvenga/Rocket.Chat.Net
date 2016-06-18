@@ -86,5 +86,8 @@
         /// </summary>
         /// <returns></returns>
         TypedStreamCollection<Room> GetRoomsCollection();
+
+        TypedStreamCollection<RoomInfo> GetRoomInfoCollection();
+        Task SubscribeToRoomInformationAsync(string roomName, RoomType type);
     }
 }

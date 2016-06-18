@@ -9,6 +9,7 @@
     public enum RoomType
     {
         [EnumMember(Value = "p")] PrivateGroup = 'p',
+        [EnumMember(Value = "g")] PrivateGroup2 = 'g',
         [EnumMember(Value = "d")] DirectMessage = 'd',
         [EnumMember(Value = "c")] Channel = 'c'
     }

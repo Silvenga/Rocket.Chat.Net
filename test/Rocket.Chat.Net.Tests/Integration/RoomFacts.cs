@@ -194,6 +194,21 @@
         }
 
         [Fact]
+        public async Task Room_subscription_should_contain_general_room_info()
+        {
+            await DefaultAccountLoginAsync();
+
+            // Act
+            await RocketChatDriver.SubscribeToRoomListAsync();
+
+            var collection = RocketChatDriver.GetRoomInfoCollection();
+            
+            // Assert
+            var room = collection.GetById("GENERAL");
+            room.Should().NotBeNull();
+        }
+
+        [Fact]
         public async Task List_channel_should_return_list_of_channels()
         {
             await DefaultAccountLoginAsync();

@@ -98,6 +98,7 @@
     <Compile Include="Models\Reaction.cs" />
     <Compile Include="Models\RocketUrl.cs" />
     <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\RoomInfo.cs" />
     <Compile Include="Models\RoomType.cs" />
     <Compile Include="Models\SubscriptionResults\SubscriptionResult.cs" />
     <Compile Include="Models\RocketMessage.cs" />

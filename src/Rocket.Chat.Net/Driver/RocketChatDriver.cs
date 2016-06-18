@@ -155,12 +155,35 @@
         public async Task SubscribeToRoomListAsync()
         {
             await _client.SubscribeAndWaitAsync("subscription", TimeoutToken);
+            var roomCollection = GetRoomsCollection();
+            if (roomCollection == null)
+            {
+                _logger.Error("RoomCollection should not be null.");
+                return;
+            }
+            roomCollection.Modified += async (sender, args) =>
+            {
+                if (args.ModificationType == ModificationType.Added)
+                {
+                    var room = args.Result;
+                    await SubscribeToRoomInformationAsync(room.Name, room.Type);
+                }
+            };
+            foreach (var room in roomCollection.Items().ToList().Select(x => x.Value))
+            {
+                await SubscribeToRoomInformationAsync(room.Name, room.Type);
+            }
         }
 
         public async Task SubscribeToRoomAsync(string roomId = null)
         {
             _logger.Info($"Subscribing to Room: #{roomId ?? "ALLROOMS"}");
             await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString());
+        }
+
+        public async Task SubscribeToRoomInformationAsync(string roomName, RoomType type)
+        {
+            await _client.SubscribeAndWaitAsync("room", TimeoutToken, $"{(char) type}{roomName}");
         }
 
         public async Task SubscribeToFilteredUsersAsync(string username = "")
@@ -573,6 +596,20 @@
             }
 
             var typedCollection = new TypedStreamCollection<Room>(value);
+            return typedCollection;
+        }
+
+        [CanBeNull]
+        public TypedStreamCollection<RoomInfo> GetRoomInfoCollection()
+        {
+            IStreamCollection value;
+            var results = _collectionDatabase.TryGetCollection("rocketchat_room", out value);
+            if (!results)
+            {
+                return null;
+            }
+
+            var typedCollection = new TypedStreamCollection<RoomInfo>(value);
             return typedCollection;
         }
 
