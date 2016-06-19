@@ -9,6 +9,7 @@
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Driver;
+    using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Tests.Helpers;
 
@@ -202,7 +203,7 @@
             await RocketChatDriver.SubscribeToRoomListAsync();
 
             var collection = RocketChatDriver.GetRoomInfoCollection();
-            
+
             // Assert
             var room = collection.GetById("GENERAL");
             room.Should().NotBeNull();
@@ -221,6 +222,18 @@
             result.Result.Channels.Should().Contain(x => x.Name == "general" && x.Id == "GENERAL");
         }
 
+        private Task<IRocketChatDriver> _composeTask = ComposeAsync();
+
+        private static async Task<IRocketChatDriver> ComposeAsync()
+        {
+            var driver = new RocketChatDriver(Constants.RocketServer, false);
+            await driver.ConnectAsync();
+            await driver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword);
+            await driver.SubscribeToRoomListAsync();
+
+            return driver;
+        }
+
         public override void Dispose()
         {
             base.Dispose();
@@ -229,11 +242,8 @@
             {
                 return;
             }
-            using (var driver = new RocketChatDriver(Constants.RocketServer, false))
+            using (var driver = _composeTask.Result)
             {
-                driver.ConnectAsync().Wait();
-                driver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword).Wait();
-                driver.SubscribeToRoomListAsync().Wait();
                 var rooms = driver.GetRooms();
                 var toDelete = rooms.Where(x => RoomsCreatedByName.Contains(x.Name));
 

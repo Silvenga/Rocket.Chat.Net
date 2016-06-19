@@ -20,7 +20,7 @@
     [Trait("Category", "Driver")]
     public class MessagingFacts : IDisposable
     {
-        private readonly TimeSpan _timeout = TimeSpan.FromSeconds(10);
+        private readonly TimeSpan _timeout = TimeSpan.FromSeconds(15);
         private readonly MessagingFixture _fixture;
         private static readonly Fixture AutoFixture = new Fixture();
 
