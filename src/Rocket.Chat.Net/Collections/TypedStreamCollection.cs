@@ -11,7 +11,7 @@
 
         public event EventHandler<TypedStreamCollectionEventArgs<T>> Modified;
 
-        public string Name { get; set; }
+        public string Name => _collection.Name;
 
         public TypedStreamCollection(IStreamCollection collection)
         {
