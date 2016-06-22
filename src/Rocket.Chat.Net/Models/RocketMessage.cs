@@ -8,6 +8,7 @@
 
     using Newtonsoft.Json;
 
+    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.JsonConverters;
 
     /// <summary>
@@ -40,7 +41,7 @@
         /// Room the message was recieved in.
         /// </summary>
         [JsonIgnore, CanBeNull]
-        public Room Room { get; set; }
+        public RoomWithInfo Room { get; set; }
 
         /// <summary>
         /// The text contained in this message.

@@ -1,9 +1,11 @@
 ﻿namespace Rocket.Chat.Net.Interfaces.Driver
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Collections;
+    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
 
@@ -78,6 +80,7 @@
         /// SubscribeToRoomListAsync() should be called once before using this method.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Use the property Room instead. This will be removed in version 2.")]
         IEnumerable<Room> GetRooms();
 
         /// <summary>
@@ -88,6 +91,12 @@
         TypedStreamCollection<Room> GetRoomsCollection();
 
         TypedStreamCollection<RoomInfo> GetRoomInfoCollection();
+
         Task SubscribeToRoomInformationAsync(string roomName, RoomType type);
+
+        /// <summary>
+        /// Get the list of known rooms.
+        /// </summary>
+        RoomCollection Rooms { get; }
     }
 }

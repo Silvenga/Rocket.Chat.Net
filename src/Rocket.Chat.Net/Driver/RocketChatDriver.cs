@@ -40,6 +40,8 @@
 
         public bool IsBot { get; set; }
 
+        public RoomCollection Rooms => new RoomCollection(GetRoomsCollection(), GetRoomInfoCollection());
+
         public JsonSerializerSettings JsonSerializerSettings { get; private set; }
         public JsonSerializer JsonSerializer => JsonSerializer.Create(JsonSerializerSettings);
 
@@ -126,9 +128,9 @@
             message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
             message.IsFromMyself = message.CreatedBy.Id == UserId;
 
-            var rooms = GetRooms();
+            var rooms = Rooms;
 
-            message.Room = rooms.FirstOrDefault(x => x.RoomId == message.RoomId);
+            message.Room = rooms.FirstOrDefault(x => x.Id == message.RoomId);
 
             var edit = message.WasEdited ? "(EDIT)" : "";
             var mentioned = message.IsBotMentioned ? "(Mentioned)" : "";
@@ -570,6 +572,7 @@
             return results ? value : null;
         }
 
+        [Obsolete("Use the property Room instead. This will be removed in version 2.")]
         public IEnumerable<Room> GetRooms()
         {
             var collection = GetRoomsCollection();

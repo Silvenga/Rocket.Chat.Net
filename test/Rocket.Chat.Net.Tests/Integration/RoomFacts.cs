@@ -210,6 +210,21 @@
         }
 
         [Fact]
+        public async Task Room_should_contain_general_room_with_info()
+        {
+            await DefaultAccountLoginAsync();
+
+            // Act
+            await RocketChatDriver.SubscribeToRoomListAsync();
+
+            var collection = RocketChatDriver.Rooms;
+
+            // Assert
+            var room = collection.FirstOrDefault(x => x.Id == "GENERAL");
+            room.Should().NotBeNull();
+        }
+
+        [Fact]
         public async Task List_channel_should_return_list_of_channels()
         {
             await DefaultAccountLoginAsync();
@@ -222,7 +237,7 @@
             result.Result.Channels.Should().Contain(x => x.Name == "general" && x.Id == "GENERAL");
         }
 
-        private Task<IRocketChatDriver> _composeTask = ComposeAsync();
+        private readonly Task<IRocketChatDriver> _composeTask = ComposeAsync();
 
         private static async Task<IRocketChatDriver> ComposeAsync()
         {

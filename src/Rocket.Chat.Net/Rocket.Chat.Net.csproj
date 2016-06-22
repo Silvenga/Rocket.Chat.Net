@@ -60,6 +60,8 @@
     <Compile Include="Collections\StreamCollectionEventArgs.cs" />
     <Compile Include="Collections\TypedStreamCollection.cs" />
     <Compile Include="Collections\TypedStreamCollectionEventArgs.cs" />
+    <Compile Include="Driver\RoomCollection.cs" />
+    <Compile Include="Models\RoomWithInfo.cs" />
     <Compile Include="Interfaces\Driver\IRocketClientManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketUserManagement.cs" />
     <Compile Include="Interfaces\Driver\IRocketMessagingManagement.cs" />
