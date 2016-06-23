@@ -80,7 +80,7 @@
         /// SubscribeToRoomListAsync() should be called once before using this method.
         /// </summary>
         /// <returns></returns>
-        [Obsolete("Use the property Room instead. This will be removed in version 2.")]
+        [Obsolete("Use the property Rooms instead. This will be removed in version 2.")]
         IEnumerable<Room> GetRooms();
 
         /// <summary>

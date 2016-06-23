@@ -572,7 +572,7 @@
             return results ? value : null;
         }
 
-        [Obsolete("Use the property Room instead. This will be removed in version 2.")]
+        [Obsolete("Use the property Rooms instead. This will be removed in version 2.")]
         public IEnumerable<Room> GetRooms()
         {
             var collection = GetRoomsCollection();

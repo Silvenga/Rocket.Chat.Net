@@ -259,12 +259,12 @@
             }
             using (var driver = _composeTask.Result)
             {
-                var rooms = driver.GetRooms();
+                var rooms = driver.Rooms;
                 var toDelete = rooms.Where(x => RoomsCreatedByName.Contains(x.Name));
 
                 foreach (var room in toDelete)
                 {
-                    driver.EraseRoomAsync(room.RoomId).Wait();
+                    driver.EraseRoomAsync(room.Id).Wait();
                 }
             }
         }

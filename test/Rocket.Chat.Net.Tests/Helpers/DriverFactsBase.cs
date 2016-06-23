@@ -37,11 +37,11 @@
         protected async Task CleanupRoomsAsync()
         {
             await RocketChatDriver.SubscribeToRoomListAsync();
-            var rooms = RocketChatDriver.GetRooms().ToList();
+            var rooms = RocketChatDriver.Rooms.ToList();
 
-            foreach (var room in rooms.Where(x => x.RoomId != "GENERAL"))
+            foreach (var room in rooms.Where(x => x.Id != "GENERAL"))
             {
-                await RocketChatDriver.EraseRoomAsync(room.RoomId);
+                await RocketChatDriver.EraseRoomAsync(room.Id);
             }
         }
 
