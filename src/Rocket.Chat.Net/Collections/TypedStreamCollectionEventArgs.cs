@@ -1,5 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Collections
 {
+    using Rocket.Chat.Net.Models.Collections;
+
     public class TypedStreamCollectionEventArgs<T>
     {
         public T Result { get; set; }

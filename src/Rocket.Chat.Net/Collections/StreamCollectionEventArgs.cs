@@ -2,6 +2,8 @@
 {
     using Newtonsoft.Json.Linq;
 
+    using Rocket.Chat.Net.Models.Collections;
+
     public class StreamCollectionEventArgs
     {
         public JObject Result { get; set; }

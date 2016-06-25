@@ -17,7 +17,6 @@
 
         public static string ConvertToBase64(Stream stream)
         {
-            // TODO Check performace
             using (var bufferStream = new MemoryStream())
             {
                 stream.CopyTo(bufferStream);

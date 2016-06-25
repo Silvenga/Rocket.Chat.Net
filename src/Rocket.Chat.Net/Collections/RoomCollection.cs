@@ -1,10 +1,9 @@
-﻿namespace Rocket.Chat.Net.Driver
+﻿namespace Rocket.Chat.Net.Collections
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
-    using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Models;
 
     public class RoomCollection : IEnumerable<RoomWithInfo>

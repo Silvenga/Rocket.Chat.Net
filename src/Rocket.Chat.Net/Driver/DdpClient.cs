@@ -30,7 +30,9 @@
         public DdpClient(string baseUrl, bool useSsl, ILogger logger)
         {
             _logger = logger;
-            Url = (useSsl ? "wss://" : "ws://") + baseUrl + "/websocket";
+            
+            var protocol = useSsl ? "wss" : "ws";
+            Url = $"{protocol}://{baseUrl}/websocket";
 
             _socket = new WebSocketWrapper(new PortableWebSocket(Url));
             AttachEvents();

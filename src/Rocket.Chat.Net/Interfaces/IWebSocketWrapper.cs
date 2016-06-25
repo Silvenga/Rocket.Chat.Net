@@ -2,9 +2,6 @@
 {
     using System;
 
-    using Newtonsoft.Json.Serialization;
-
-    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Portability.Websockets;
 
     public interface IWebSocketWrapper

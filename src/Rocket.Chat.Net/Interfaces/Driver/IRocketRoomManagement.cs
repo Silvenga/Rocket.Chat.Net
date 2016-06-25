@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Collections;
-    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
 
@@ -90,12 +89,20 @@
         /// <returns></returns>
         TypedStreamCollection<Room> GetRoomsCollection();
 
+        [Obsolete("Use the property Rooms instead. This will be removed in version 2.")]
         TypedStreamCollection<RoomInfo> GetRoomInfoCollection();
 
+        /// <summary>
+        /// Subscribe to information about a single room.
+        /// </summary>
+        /// <param name="roomName"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         Task SubscribeToRoomInformationAsync(string roomName, RoomType type);
 
         /// <summary>
         /// Get the list of known rooms.
+        /// SubscribeToRoomListAsync() should be called once before using this property.
         /// </summary>
         RoomCollection Rooms { get; }
     }

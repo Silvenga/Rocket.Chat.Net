@@ -9,7 +9,6 @@
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
-    using Xunit.Abstractions;
 
     public class RocketReactionConverterFacts
     {

@@ -2,8 +2,6 @@
 {
     using FluentAssertions;
 
-    using Newtonsoft.Json.Linq;
-
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Collections;

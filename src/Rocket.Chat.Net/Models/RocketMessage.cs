@@ -8,7 +8,6 @@
 
     using Newtonsoft.Json;
 
-    using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.JsonConverters;
 
     /// <summary>
@@ -121,6 +120,7 @@
         /// <summary>
         /// The type of message.
         /// uj: User joined room
+        /// ul: User left
         /// ua: user invited to room
         /// message_pinned: Message pinned
         /// Types: https://github.com/RocketChat/Rocket.Chat/blob/4d898024e23864fe96eaf776085c21fcd8991718/packages/rocketchat-lib/lib/MessageTypes.coffee

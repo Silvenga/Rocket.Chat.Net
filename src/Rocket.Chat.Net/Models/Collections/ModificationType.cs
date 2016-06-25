@@ -1,4 +1,4 @@
-﻿namespace Rocket.Chat.Net.Collections
+﻿namespace Rocket.Chat.Net.Models.Collections
 {
     public enum ModificationType
     {

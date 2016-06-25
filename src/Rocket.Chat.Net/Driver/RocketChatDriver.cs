@@ -17,6 +17,7 @@
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Models.Collections;
     using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Models.MethodResults;
     using Rocket.Chat.Net.Models.SubscriptionResults;

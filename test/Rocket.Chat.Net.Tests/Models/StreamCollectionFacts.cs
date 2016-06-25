@@ -11,6 +11,7 @@
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Collections;
+    using Rocket.Chat.Net.Models.Collections;
     using Rocket.Chat.Net.Tests.Models.Fixtures;
 
     using Xunit;

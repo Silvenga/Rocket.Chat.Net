@@ -66,10 +66,20 @@ namespace Rocket.Chat.Net.Interfaces.Driver
         /// <returns></returns>
         Task SubscribeToFilteredUsersAsync(string username = "");
 
+        /// <summary>
+        /// The currently logged in user's id
+        /// </summary>
         string UserId { get; }
 
+        /// <summary>
+        /// The currently logged in user's name
+        /// </summary>
         string Username { get; }
 
+        /// <summary>
+        /// If the bot flag should be sent with messages. 
+        /// This is recommended if the driver is not being operated by a human. 
+        /// </summary>
         bool IsBot { get; set; }
     }
 }
