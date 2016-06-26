@@ -113,7 +113,7 @@
                 BotUserName = Driver.Username
             };
 
-            Task.Run(async () => // async this to prevent holding up the message loop
+            Task.Run(async () => // async this to prevent holding up the message loop, I will handle exceptions.
             {
                 foreach (var botResponse in GetValidResponses(context, _botResponses))
                 {
@@ -178,7 +178,7 @@
             _logger.Info("Reconnect requested...");
             if (LoginToken != null)
             {
-                Task.Run(async () => await ResumeAsync());
+                ResumeAsync().Wait();
             }
         }
 

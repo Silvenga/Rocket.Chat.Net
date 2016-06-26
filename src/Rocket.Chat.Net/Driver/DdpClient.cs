@@ -30,7 +30,7 @@
         public DdpClient(string baseUrl, bool useSsl, ILogger logger)
         {
             _logger = logger;
-            
+
             var protocol = useSsl ? "wss" : "ws";
             Url = $"{protocol}://{baseUrl}/websocket";
 
@@ -252,30 +252,22 @@
 
         private async Task<JObject> WaitForIdOrReadyAsync(string id, CancellationToken token)
         {
-            var task = Task.Run(async () =>
+            JObject data;
+            while (!_messages.TryRemove(id, out data))
             {
-                JObject data;
-                while (!_messages.TryRemove(id, out data))
-                {
-                    token.ThrowIfCancellationRequested();
-                    await Task.Delay(10, token);
-                }
-                return data;
-            }, token);
-
-            return await task;
+                token.ThrowIfCancellationRequested();
+                await Task.Delay(10, token);
+            }
+            return data;
         }
 
         private async Task WaitForConnectAsync(CancellationToken token)
         {
-            await Task.Run(async () =>
+            while (SessionId == null)
             {
-                while (SessionId == null)
-                {
-                    token.ThrowIfCancellationRequested();
-                    await Task.Delay(10, token);
-                }
-            }, token);
+                token.ThrowIfCancellationRequested();
+                await Task.Delay(10, token);
+            }
         }
 
         private static string CreateId()

@@ -26,25 +26,22 @@
         }
 
         public async Task<IStreamCollection> WaitForObjectInCollectionAsync(string collectionName, string id,
-                                                                    CancellationToken token)
+                                                                            CancellationToken token)
         {
-            return await Task.Run(async () =>
+            while (true)
             {
-                while (true)
+                IStreamCollection collection;
+                var success = TryGetCollection(collectionName, out collection);
+
+                var collectonPopulated = success && collection.ContainsId(id);
+                if (collectonPopulated)
                 {
-                    IStreamCollection collection;
-                    var success = TryGetCollection(collectionName, out collection);
-
-                    var collectonPopulated = success && collection.ContainsId(id);
-                    if (collectonPopulated)
-                    {
-                        return collection;
-                    }
-
-                    token.ThrowIfCancellationRequested();
-                    await Task.Delay(10, token);
+                    return collection;
                 }
-            }, token);
+
+                token.ThrowIfCancellationRequested();
+                await Task.Delay(10, token);
+            }
         }
     }
 }
