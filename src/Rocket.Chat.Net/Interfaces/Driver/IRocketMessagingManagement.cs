@@ -85,9 +85,7 @@
         Task<MethodResult> UnpinMessageAsync(RocketMessage message);
 
         /// <summary>
-        /// Send a message with an attachment. 
-        /// NOTE: Don't know the longevity of this as the UI cannot create this manually
-        /// TODO
+        /// Send a message with an attachment.
         /// </summary>
         /// <param name="attachment">Attachment to include</param>
         /// <param name="roomId">Room to send to</param>
