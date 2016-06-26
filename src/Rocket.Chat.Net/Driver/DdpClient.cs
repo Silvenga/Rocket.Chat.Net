@@ -147,8 +147,8 @@
                 id
             };
 
-            await SendObjectAsync(request, token);
-            await WaitForIdOrReadyAsync(id, token);
+            await SendObjectAsync(request, token).ConfigureAwait(false);
+            await WaitForIdOrReadyAsync(id, token).ConfigureAwait(false);
         }
 
         private async Task PongAsync(JObject data)
@@ -159,13 +159,13 @@
                 id = data["id"]?.ToObject<string>()
             };
 
-            await SendObjectAsync(request, CancellationToken.None);
+            await SendObjectAsync(request, CancellationToken.None).ConfigureAwait(false);
         }
 
         public async Task ConnectAsync(CancellationToken token)
         {
             _socket.Open();
-            await WaitForConnectAsync(token);
+            await WaitForConnectAsync(token).ConfigureAwait(false);
         }
 
         public async Task<string> SubscribeAsync(string name, CancellationToken token, params object[] args)
@@ -179,7 +179,7 @@
                 id
             };
 
-            await SendObjectAsync(request, token);
+            await SendObjectAsync(request, token).ConfigureAwait(false);
             return id;
         }
 
@@ -194,8 +194,8 @@
                 id
             };
 
-            await SendObjectAsync(request, token);
-            await WaitForIdOrReadyAsync(id, token);
+            await SendObjectAsync(request, token).ConfigureAwait(false);
+            await WaitForIdOrReadyAsync(id, token).ConfigureAwait(false);
             return id;
         }
 
@@ -207,8 +207,8 @@
                 id
             };
 
-            await SendObjectAsync(request, token);
-            await WaitForIdOrReadyAsync(id, token);
+            await SendObjectAsync(request, token).ConfigureAwait(false);
+            await WaitForIdOrReadyAsync(id, token).ConfigureAwait(false);
         }
 
         public async Task<JObject> CallAsync(string method, CancellationToken token, params object[] args)
@@ -222,8 +222,8 @@
                 id
             };
 
-            await SendObjectAsync(request, token);
-            var result = await WaitForIdOrReadyAsync(id, token);
+            await SendObjectAsync(request, token).ConfigureAwait(false);
+            var result = await WaitForIdOrReadyAsync(id, token).ConfigureAwait(false);
 
             return result;
         }
@@ -247,7 +247,7 @@
                 var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
                 _logger.Debug($"SEND: {json}");
                 _socket.Send(json);
-            }, token);
+            }, token).ConfigureAwait(false);
         }
 
         private async Task<JObject> WaitForIdOrReadyAsync(string id, CancellationToken token)
@@ -256,7 +256,7 @@
             while (!_messages.TryRemove(id, out data))
             {
                 token.ThrowIfCancellationRequested();
-                await Task.Delay(10, token);
+                await Task.Delay(10, token).ConfigureAwait(false);
             }
             return data;
         }
@@ -266,7 +266,7 @@
             while (SessionId == null)
             {
                 token.ThrowIfCancellationRequested();
-                await Task.Delay(10, token);
+                await Task.Delay(10, token).ConfigureAwait(false);
             }
         }
 

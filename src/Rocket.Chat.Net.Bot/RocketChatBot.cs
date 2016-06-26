@@ -36,13 +36,13 @@
 
         public async Task ConnectAsync()
         {
-            await Driver.ConnectAsync();
+            await Driver.ConnectAsync().ConfigureAwait(false);
         }
 
         public async Task LoginAsync(ILoginOption loginOption)
         {
             _logger.Info("Logging-in.");
-            var result = await Driver.LoginAsync(loginOption);
+            var result = await Driver.LoginAsync(loginOption).ConfigureAwait(false);
             if (result.HasError)
             {
                 throw new Exception($"Login failed: {result.Error.Message}.");
@@ -53,7 +53,7 @@
 
         public async Task SubscribeAsync()
         {
-            await Driver.SubscribeToRoomAsync();
+            await Driver.SubscribeToRoomAsync().ConfigureAwait(false);
         }
 
         public async Task ResumeAsync()
@@ -64,7 +64,7 @@
             }
 
             _logger.Info($"Resuming session {LoginToken}.");
-            var result = await Driver.LoginResumeAsync(LoginToken);
+            var result = await Driver.LoginResumeAsync(LoginToken).ConfigureAwait(false);
             if (result.HasError)
             {
                 throw new Exception($"Resume failed: {result.Error.Message}.");
@@ -81,14 +81,14 @@
             }
 
             _logger.Info($"Getting new token {LoginToken}.");
-            var newToken = await Driver.GetNewTokenAsync();
+            var newToken = await Driver.GetNewTokenAsync().ConfigureAwait(false);
             if (newToken.HasError)
             {
                 throw new Exception($"Resume failed: {newToken.Error.Message}.");
             }
 
             _logger.Info($"Logging out all other users {LoginToken}.");
-            var result = await Driver.RemoveOtherTokensAsync();
+            var result = await Driver.RemoveOtherTokensAsync().ConfigureAwait(false);
             if (result.HasError)
             {
                 throw new Exception($"Resume failed: {result.Error.Message}.");
@@ -124,7 +124,7 @@
                         foreach (var response in botResponse.GetResponse(context, this))
                         {
                             hasResponse = true;
-                            await SendMessageAsync(response);
+                            await SendMessageAsync(response).ConfigureAwait(false);
                         }
 
                         if (hasResponse)
@@ -147,11 +147,11 @@
 
             if (attachmentMessage != null)
             {
-                await Driver.SendCustomMessageAsync(attachmentMessage.Attachment, attachmentMessage.RoomId);
+                await Driver.SendCustomMessageAsync(attachmentMessage.Attachment, attachmentMessage.RoomId).ConfigureAwait(false);
             }
             else if (basicMessage != null)
             {
-                await Driver.SendMessageAsync(basicMessage.Message, basicMessage.RoomId);
+                await Driver.SendMessageAsync(basicMessage.Message, basicMessage.RoomId).ConfigureAwait(false);
             }
             else
             {

@@ -144,20 +144,20 @@
         public async Task ConnectAsync()
         {
             _logger.Info($"Connecting client to {_client.Url}...");
-            await _client.ConnectAsync(TimeoutToken);
+            await _client.ConnectAsync(TimeoutToken).ConfigureAwait(false);
         }
 
         public async Task<MethodResult<CreateRoomResult>> CreateGroupAsync(string groupName, IList<string> members = null)
         {
             var results =
-                await _client.CallAsync("createPrivateGroup", TimeoutToken, groupName, members ?? new List<string>());
+                await _client.CallAsync("createPrivateGroup", TimeoutToken, groupName, members ?? new List<string>()).ConfigureAwait(false);
 
             return results.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
 
         public async Task SubscribeToRoomListAsync()
         {
-            await _client.SubscribeAndWaitAsync("subscription", TimeoutToken);
+            await _client.SubscribeAndWaitAsync("subscription", TimeoutToken).ConfigureAwait(false);
             var roomCollection = GetRoomsCollection();
             if (roomCollection == null)
             {
@@ -169,40 +169,40 @@
                 if (args.ModificationType == ModificationType.Added)
                 {
                     var room = args.Result;
-                    await SubscribeToRoomInformationAsync(room.Name, room.Type);
+                    await SubscribeToRoomInformationAsync(room.Name, room.Type).ConfigureAwait(false);
                 }
             };
             foreach (var room in roomCollection.Items().ToList().Select(x => x.Value))
             {
-                await SubscribeToRoomInformationAsync(room.Name, room.Type);
+                await SubscribeToRoomInformationAsync(room.Name, room.Type).ConfigureAwait(false);
             }
         }
 
         public async Task SubscribeToRoomAsync(string roomId = null)
         {
             _logger.Info($"Subscribing to Room: #{roomId ?? "ALLROOMS"}");
-            await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString());
+            await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString()).ConfigureAwait(false);
         }
 
         public async Task SubscribeToRoomInformationAsync(string roomName, RoomType type)
         {
-            await _client.SubscribeAndWaitAsync("room", TimeoutToken, $"{(char) type}{roomName}");
+            await _client.SubscribeAndWaitAsync("room", TimeoutToken, $"{(char) type}{roomName}").ConfigureAwait(false);
         }
 
         public async Task SubscribeToFilteredUsersAsync(string username = "")
         {
             _logger.Info($"Subscribing to filtered users searching for {username ?? "ANY"}.");
-            await _client.SubscribeAsync("userData", TimeoutToken);
+            await _client.SubscribeAsync("userData", TimeoutToken).ConfigureAwait(false);
         }
 
         public async Task SubscribeToAsync(string streamName, params object[] o)
         {
-            await _client.SubscribeAsync(streamName, TimeoutToken, o);
+            await _client.SubscribeAsync(streamName, TimeoutToken, o).ConfigureAwait(false);
         }
 
         public async Task<FullUser> GetFullUserDataAsync(string username)
         {
-            await _client.SubscribeAndWaitAsync("fullUserData", TimeoutToken, username, 1);
+            await _client.SubscribeAndWaitAsync("fullUserData", TimeoutToken, username, 1).ConfigureAwait(false);
 
             IStreamCollection data;
             var success = _collectionDatabase.TryGetCollection("users", out data);
@@ -225,7 +225,7 @@
         public async Task PingAsync()
         {
             _logger.Info("Pinging server.");
-            await _client.PingAsync(TimeoutToken);
+            await _client.PingAsync(TimeoutToken).ConfigureAwait(false);
         }
 
         public async Task<MethodResult<LoginResult>> LoginAsync(ILoginOption loginOption)
@@ -233,22 +233,22 @@
             var ldapLogin = loginOption as LdapLoginOption;
             if (ldapLogin != null)
             {
-                return await LoginWithLdapAsync(ldapLogin.Username, ldapLogin.Password);
+                return await LoginWithLdapAsync(ldapLogin.Username, ldapLogin.Password).ConfigureAwait(false);
             }
             var emailLogin = loginOption as EmailLoginOption;
             if (emailLogin != null)
             {
-                return await LoginWithEmailAsync(emailLogin.Email, emailLogin.Password);
+                return await LoginWithEmailAsync(emailLogin.Email, emailLogin.Password).ConfigureAwait(false);
             }
             var usernameLogin = loginOption as UsernameLoginOption;
             if (usernameLogin != null)
             {
-                return await LoginWithUsernameAsync(usernameLogin.Username, usernameLogin.Password);
+                return await LoginWithUsernameAsync(usernameLogin.Username, usernameLogin.Password).ConfigureAwait(false);
             }
             var resumeLogin = loginOption as ResumeLoginOption;
             if (resumeLogin != null)
             {
-                return await LoginResumeAsync(resumeLogin.Token);
+                return await LoginResumeAsync(resumeLogin.Token).ConfigureAwait(false);
             }
 
             throw new NotSupportedException($"The given login option `{loginOption.GetType()}` is not supported.");
@@ -271,7 +271,7 @@
                 }
             };
 
-            return await InternalLoginAsync(request);
+            return await InternalLoginAsync(request).ConfigureAwait(false);
         }
 
         public async Task<MethodResult<LoginResult>> LoginWithUsernameAsync(string username, string password)
@@ -291,7 +291,7 @@
                 }
             };
 
-            return await InternalLoginAsync(request);
+            return await InternalLoginAsync(request).ConfigureAwait(false);
         }
 
         public async Task<MethodResult<LoginResult>> LoginWithLdapAsync(string username, string password)
@@ -305,7 +305,7 @@
                 ldapOptions = new {}
             };
 
-            return await InternalLoginAsync(request);
+            return await InternalLoginAsync(request).ConfigureAwait(false);
         }
 
         public async Task<MethodResult<LoginResult>> LoginResumeAsync(string sessionToken)
@@ -316,16 +316,16 @@
                 resume = sessionToken
             };
 
-            return await InternalLoginAsync(request);
+            return await InternalLoginAsync(request).ConfigureAwait(false);
         }
 
         public async Task<MethodResult<LoginResult>> GetNewTokenAsync()
         {
-            var result = await _client.CallAsync("getNewToken", TimeoutToken);
+            var result = await _client.CallAsync("getNewToken", TimeoutToken).ConfigureAwait(false);
             var loginResult = result.ToObject<MethodResult<LoginResult>>(JsonSerializer);
             if (!loginResult.HasError)
             {
-                await SetDriverUserInfoAsync(loginResult.Result.UserId);
+                await SetDriverUserInfoAsync(loginResult.Result.UserId).ConfigureAwait(false);
             }
 
             return loginResult;
@@ -333,17 +333,17 @@
 
         public async Task<MethodResult> RemoveOtherTokensAsync()
         {
-            var result = await _client.CallAsync("removeOtherTokens", TimeoutToken);
+            var result = await _client.CallAsync("removeOtherTokens", TimeoutToken).ConfigureAwait(false);
             return result.ToObject<MethodResult>(JsonSerializer);
         }
 
         private async Task<MethodResult<LoginResult>> InternalLoginAsync(object request)
         {
-            var data = await _client.CallAsync("login", TimeoutToken, request);
+            var data = await _client.CallAsync("login", TimeoutToken, request).ConfigureAwait(false);
             var result = data.ToObject<MethodResult<LoginResult>>(JsonSerializer);
             if (!result.HasError)
             {
-                await SetDriverUserInfoAsync(result.Result.UserId);
+                await SetDriverUserInfoAsync(result.Result.UserId).ConfigureAwait(false);
             }
             return result;
         }
@@ -351,7 +351,7 @@
         private async Task SetDriverUserInfoAsync(string userId)
         {
             UserId = userId;
-            var collection = await _collectionDatabase.WaitForObjectInCollectionAsync("users", userId, TimeoutToken);
+            var collection = await _collectionDatabase.WaitForObjectInCollectionAsync("users", userId, TimeoutToken).ConfigureAwait(false);
             var user = collection.GetById<FullUser>(userId);
             Username = user?.Username;
         }
@@ -366,20 +366,20 @@
                 {"confirm-pass", password}
             };
 
-            var result = await _client.CallAsync("registerUser", TimeoutToken, obj);
+            var result = await _client.CallAsync("registerUser", TimeoutToken, obj).ConfigureAwait(false);
             return result?["result"].ToObject<JObject>(JsonSerializer);
         }
 
         public async Task<MethodResult> SetReactionAsync(string reaction, string messageId)
         {
-            var result = await _client.CallAsync("setReaction", TimeoutToken, reaction, messageId);
+            var result = await _client.CallAsync("setReaction", TimeoutToken, reaction, messageId).ConfigureAwait(false);
             return result.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<string>> GetRoomIdAsync(string roomIdOrName)
         {
             _logger.Info($"Looking up Room ID for: #{roomIdOrName}");
-            var result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName);
+            var result = await _client.CallAsync("getRoomIdByNameOrId", TimeoutToken, roomIdOrName).ConfigureAwait(false);
 
             return result.ToObject<MethodResult<string>>(JsonSerializer);
         }
@@ -392,28 +392,28 @@
                 rid = roomId,
                 _id = messageId
             };
-            var result = await _client.CallAsync("deleteMessage", TimeoutToken, request);
+            var result = await _client.CallAsync("deleteMessage", TimeoutToken, request).ConfigureAwait(false);
             return result.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<CreateRoomResult>> CreatePrivateMessageAsync(string username)
         {
             _logger.Info($"Creating private message with {username}");
-            var result = await _client.CallAsync("createDirectMessage", TimeoutToken, username);
+            var result = await _client.CallAsync("createDirectMessage", TimeoutToken, username).ConfigureAwait(false);
             return result.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
 
         public async Task<MethodResult<ChannelListResult>> ChannelListAsync()
         {
             _logger.Info("Looking up public channels.");
-            var result = await _client.CallAsync("channelsList", TimeoutToken);
+            var result = await _client.CallAsync("channelsList", TimeoutToken).ConfigureAwait(false);
             return result.ToObject<MethodResult<ChannelListResult>>(JsonSerializer);
         }
 
         public async Task<MethodResult> JoinRoomAsync(string roomId)
         {
             _logger.Info($"Joining Room: #{roomId}");
-            var result = await _client.CallAsync("joinRoom", TimeoutToken, roomId);
+            var result = await _client.CallAsync("joinRoom", TimeoutToken, roomId).ConfigureAwait(false);
             return result.ToObject<MethodResult>(JsonSerializer);
         }
 
@@ -426,7 +426,7 @@
                 rid = roomId,
                 bot = IsBot
             };
-            var result = await _client.CallAsync("sendMessage", TimeoutToken, request);
+            var result = await _client.CallAsync("sendMessage", TimeoutToken, request).ConfigureAwait(false);
             return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
         }
 
@@ -442,7 +442,7 @@
                     attachment
                 }
             };
-            var result = await _client.CallAsync("sendMessage", TimeoutToken, request);
+            var result = await _client.CallAsync("sendMessage", TimeoutToken, request).ConfigureAwait(false);
             return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
         }
 
@@ -456,7 +456,7 @@
                 bot = IsBot,
                 _id = messageId
             };
-            var result = await _client.CallAsync("updateMessage", TimeoutToken, request);
+            var result = await _client.CallAsync("updateMessage", TimeoutToken, request).ConfigureAwait(false);
             return result.ToObject<MethodResult>(JsonSerializer);
         }
 
@@ -466,7 +466,7 @@
         {
             _logger.Info($"Loading messages from #{roomId}");
 
-            var rawMessage = await _client.CallAsync("loadHistory", TimeoutToken, roomId, end, limit, ls);
+            var rawMessage = await _client.CallAsync("loadHistory", TimeoutToken, roomId, end, limit, ls).ConfigureAwait(false);
             var messageResult = rawMessage.ToObject<MethodResult<LoadMessagesResult>>(JsonSerializer);
             return messageResult;
         }
@@ -476,7 +476,7 @@
         {
             _logger.Info($"Searching for messages in #{roomId} using `{query}`.");
 
-            var rawMessage = await _client.CallAsync("messageSearch", TimeoutToken, query, roomId, limit);
+            var rawMessage = await _client.CallAsync("messageSearch", TimeoutToken, query, roomId, limit).ConfigureAwait(false);
             var messageResult = rawMessage.ToObject<MethodResult<LoadMessagesResult>>(JsonSerializer);
             return messageResult;
         }
@@ -484,7 +484,7 @@
         public async Task<MethodResult<StatisticsResult>> GetStatisticsAsync(bool refresh = false)
         {
             _logger.Info("Requesting statistics.");
-            var results = await _client.CallAsync("getStatistics", TimeoutToken);
+            var results = await _client.CallAsync("getStatistics", TimeoutToken).ConfigureAwait(false);
 
             return results.ToObject<MethodResult<StatisticsResult>>(JsonSerializer);
         }
@@ -493,7 +493,7 @@
         {
             _logger.Info($"Creating room {roomName}.");
             var results =
-                await _client.CallAsync("createChannel", TimeoutToken, roomName, members ?? new List<string>());
+                await _client.CallAsync("createChannel", TimeoutToken, roomName, members ?? new List<string>()).ConfigureAwait(false);
 
             return results.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
@@ -502,7 +502,7 @@
         {
             _logger.Info($"Hiding room {roomId}.");
             var results =
-                await _client.CallAsync("hideRoom", TimeoutToken, roomId);
+                await _client.CallAsync("hideRoom", TimeoutToken, roomId).ConfigureAwait(false);
 
             return results.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
@@ -511,20 +511,20 @@
         {
             _logger.Info($"Deleting room {roomId}.");
             var results =
-                await _client.CallAsync("eraseRoom", TimeoutToken, roomId);
+                await _client.CallAsync("eraseRoom", TimeoutToken, roomId).ConfigureAwait(false);
 
             return results.ToObject<MethodResult<int>>(JsonSerializer);
         }
 
         public async Task<MethodResult> ResetAvatarAsync()
         {
-            var results = await _client.CallAsync("resetAvatar", TimeoutToken);
+            var results = await _client.CallAsync("resetAvatar", TimeoutToken).ConfigureAwait(false);
             return results.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult> SetAvatarFromUrlAsync(string url)
         {
-            var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, url, "", "url");
+            var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, url, "", "url").ConfigureAwait(false);
             return results.ToObject<MethodResult>(JsonSerializer);
         }
 
@@ -532,14 +532,14 @@
         {
             var base64 = EncodingHelper.ConvertToBase64(sourceStream);
             var end = $"data:{mimeType};base64,{base64}";
-            var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, end, mimeType, "upload");
+            var results = await _client.CallAsync("setAvatarFromService", TimeoutToken, end, mimeType, "upload").ConfigureAwait(false);
             return results.ToObject<MethodResult>(JsonSerializer);
         }
 
         public async Task<MethodResult<RocketMessage>> PinMessageAsync(RocketMessage message)
         {
             var results =
-                await _client.CallAsync("pinMessage", TimeoutToken, message);
+                await _client.CallAsync("pinMessage", TimeoutToken, message).ConfigureAwait(false);
 
             return results.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
         }
@@ -547,7 +547,7 @@
         public async Task<MethodResult> UnpinMessageAsync(RocketMessage message)
         {
             var results =
-                await _client.CallAsync("unpinMessage", TimeoutToken, message);
+                await _client.CallAsync("unpinMessage", TimeoutToken, message).ConfigureAwait(false);
 
             return results.ToObject<MethodResult>(JsonSerializer);
         }
@@ -555,7 +555,7 @@
         public async Task<MethodResult<int>> UploadFileAsync(string roomId)
         {
             var results =
-                await _client.CallAsync("/rocketchat_uploads/insert", TimeoutToken, roomId);
+                await _client.CallAsync("/rocketchat_uploads/insert", TimeoutToken, roomId).ConfigureAwait(false);
 
             return results.ToObject<MethodResult<int>>(JsonSerializer);
         }

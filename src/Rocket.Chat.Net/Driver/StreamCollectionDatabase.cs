@@ -40,7 +40,7 @@
                 }
 
                 token.ThrowIfCancellationRequested();
-                await Task.Delay(10, token);
+                await Task.Delay(10, token).ConfigureAwait(false);
             }
         }
     }
