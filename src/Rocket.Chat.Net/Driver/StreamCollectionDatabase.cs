@@ -5,6 +5,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using JetBrains.Annotations;
+
     using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Interfaces;
 
@@ -18,6 +20,7 @@
             return _collections.TryGetValue(collectionName, out collection);
         }
 
+        [NotNull]
         public IStreamCollection GetOrAddCollection(string collectionName)
         {
             Func<string, StreamCollection> createCollection = name => new StreamCollection(name);

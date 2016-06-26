@@ -629,7 +629,7 @@
 
         private CancellationToken CreateTimeoutToken()
         {
-            const int timeoutSeconds = 30;
+            const int timeoutSeconds = 60;
             var source = new CancellationTokenSource();
             source.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
 

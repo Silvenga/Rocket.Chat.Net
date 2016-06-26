@@ -68,8 +68,6 @@
 
             await DefaultAccountLoginAsync();
 
-            await RocketChatDriver.SubscribeToRoomListAsync();
-
             // Act
             var result = await RocketChatDriver.CreatePrivateMessageAsync(roomName);
 
@@ -84,8 +82,6 @@
             RoomsCreatedByName.Add(roomName);
 
             await DefaultAccountLoginAsync();
-
-            await RocketChatDriver.SubscribeToRoomListAsync();
 
             // Act
             var result = await RocketChatDriver.CreatePrivateMessageAsync(Constants.TwoUsername);
