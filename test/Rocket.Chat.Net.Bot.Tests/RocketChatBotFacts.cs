@@ -172,14 +172,6 @@
         }
 
         [Fact]
-        public void On_add_response_add_response()
-        {
-            // Act
-
-            // Assert
-        }
-
-        [Fact]
         public void On_message_receive_process_messages()
         {
             var rocketMessage = AutoFixture.Create<RocketMessage>();
@@ -242,6 +234,50 @@
         }
 
         [Fact]
+        public void When_response_returns_attachment_send_attachment()
+        {
+            var rocketMessage = AutoFixture.Create<RocketMessage>();
+            var basicResponses = AutoFixture.Build<AttachmentResponse>().CreateMany().ToList();
+
+            var responseMock = Substitute.For<IBotResponse>();
+            responseMock.CanRespond(Arg.Any<ResponseContext>()).Returns(true);
+            responseMock.GetResponse(Arg.Any<ResponseContext>(), Arg.Any<RocketChatBot>()).Returns(basicResponses);
+
+            var bot = new RocketChatBot(_driverMock, _loggerMock);
+            bot.AddResponse(responseMock);
+
+            // Act
+            _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
+            Thread.Sleep(200);
+
+            // Assert
+            _driverMock.Received(basicResponses.Count)
+                       .SendCustomMessageAsync(Arg.Is<Attachment>(s => basicResponses.Any(x => x.Attachment.Equals(s))), Arg.Any<string>());
+        }
+
+        [Fact]
+        public void When_response_returns_unsupported_response_throw()
+        {
+            var rocketMessage = AutoFixture.Create<RocketMessage>();
+            var basicResponses = AutoFixture.Build<MockMessageResponse>().CreateMany().ToList();
+
+            var responseMock = Substitute.For<IBotResponse>();
+            responseMock.CanRespond(Arg.Any<ResponseContext>()).Returns(true);
+            responseMock.GetResponse(Arg.Any<ResponseContext>(), Arg.Any<RocketChatBot>()).Returns(basicResponses);
+
+            var bot = new RocketChatBot(_driverMock, _loggerMock);
+            bot.AddResponse(responseMock);
+
+            // Act
+            _driverMock.MessageReceived += Raise.Event<MessageReceived>(rocketMessage);
+            Thread.Sleep(100);
+
+            // Assert
+            _driverMock.DidNotReceive().SendMessageAsync(Arg.Any<string>(), Arg.Any<string>());
+            _driverMock.DidNotReceive().SendCustomMessageAsync(Arg.Any<Attachment>(), Arg.Any<string>());
+        }
+
+        [Fact]
         public void When_response_throws_handle_and_try_next()
         {
             var responseMock1 = Substitute.For<IBotResponse>();
@@ -293,5 +329,10 @@
             // Assert
             await _driverMock.Received().LoginResumeAsync(Arg.Any<string>());
         }
+    }
+
+    public class MockMessageResponse : IMessageResponse
+    {
+        public string RoomId { get; set; }
     }
 }
