@@ -60,7 +60,7 @@
             result.Error.Reason.Should().Be("Not allowed");
         }
         
-        [Fact(Skip = "Preventing tests from completing")]
+        [Fact]
         public async Task Create_direct_message_that_does_not_exist_should_create_room()
         {
             var roomName = $"{Constants.TwoUsername}";
