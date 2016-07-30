@@ -15,7 +15,7 @@ init:
 - ps: $env:APPVEYOR_REPO_TAG_NAME
 - ps: Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
 before_build:
-- ps: nuget restore
+- ps: nuget restore Rocket.Chat.Net.sln
 build:
   project: Rocket.Chat.Net.sln
   parallel: true
