@@ -1,0 +1,103 @@
+version: '2'
+services:
+  nginx:
+    image: nginx
+    volumes: 
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx
+    ports:
+      - 3000:80
+    links:
+      - rocketchat-1
+      - rocketchat-2
+      - rocketchat-3
+      - rocketchat-4
+      - rocketchat-5
+      - rocketchat-6
+      - rocketchat-7
+  mongo-core:
+    image: mongo
+    volumes:
+      - ./data/runtime/db:/data/db
+      - ./data/dump:/dump
+    command: mongod --smallfiles --oplogSize 128
+  rocketchat-1:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://d9.silvenga.net:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+    links:
+      - mongo-core:mongo
+  rocketchat-2:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://d9.silvenga.net:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+    links:
+      - mongo-core:mongo
+  rocketchat-3:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://d9.silvenga.net:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+    links:
+      - mongo-core:mongo
+  rocketchat-4:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://d9.silvenga.net:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+    links:
+      - mongo-core:mongo
+  rocketchat-5:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://d9.silvenga.net:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+    links:
+      - mongo-core:mongo
+  rocketchat-6:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://d9.silvenga.net:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+    links:
+      - mongo-core:mongo
+  rocketchat-6:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://d9.silvenga.net:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+    links:
+      - mongo-core:mongo
+  rocketchat-7:
+    image: rocketchat/rocket.chat:latest
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://d9.silvenga.net:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+    links:
+      - mongo-core:mongo
