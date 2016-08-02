@@ -23,7 +23,39 @@
 
 A Rocket.Chat real-time, managed, .Net driver, and bot. 
 
-## Usage
+## Driver Usage
+
+```csharp
+const string username = "m@silvenga.com";
+const string password = "silverlight";
+const string rocketServerUrl = "demo.rocket.chat:3000";
+const bool useSsl = false;
+
+ILoginOption loginOption = new LdapLoginOption
+{
+    Username = username,
+    Password = password
+};
+
+IRocketChatDriver driver = new RocketChatDriver(rocketServerUrl, useSsl);
+
+await driver.ConnectAsync(); // Connect to server
+await driver.LoginAsync(loginOption); // Login via LDAP
+await driver.SubscribeToRoomAsync(); // Listen on all rooms
+
+driver.MessageReceived += Console.WriteLine;
+
+var generalRoomIdResult = await driver.GetRoomIdAsync("general");
+if (generalRoomIdResult.HasError)
+{
+    throw new Exception("Could not find room by name.");
+}
+
+var generalRoomId = generalRoomIdResult.Result;
+await driver.SendMessageAsync("message", generalRoomId);
+```
+
+## Bot Usage
 
 ```csharp
 const string username = "m@silvenga.com";
