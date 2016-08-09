@@ -16,7 +16,7 @@
         /// <param name="roomId">The room to listen to. Null will listen to all authorized rooms. 
         /// This may or may not be correct. </param>
         /// <returns></returns>
-        Task SubscribeToRoomAsync(string roomId = null);
+        Task SubscribeToRoomAsync(string roomId = "__my_messages__");
 
         /// <summary>
         /// Get roomId by either roomId or room name

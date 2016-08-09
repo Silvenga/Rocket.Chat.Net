@@ -24,7 +24,6 @@
 
     public class RocketChatDriver : IRocketChatDriver
     {
-        private const string MessageTopic = "stream-messages";
         private const int MessageSubscriptionLimit = 10;
 
         private readonly IStreamCollectionDatabase _collectionDatabase;
@@ -118,13 +117,13 @@
         private void HandleRocketMessage(string type, JObject data)
         {
             var o = data.ToObject<SubscriptionResult<JObject>>(JsonSerializer);
-            var isMessage = type == "added" && o.Collection == MessageTopic && o.Fields["args"] != null;
+            var isMessage = o.Collection == "stream-room-messages" && o.Fields["args"] != null;
             if (!isMessage)
             {
                 return;
             }
 
-            var messageRaw = o.Fields["args"][1];
+            var messageRaw = o.Fields["args"][0];
             var message = messageRaw.ToObject<RocketMessage>(JsonSerializer);
             message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
             message.IsFromMyself = message.CreatedBy.Id == UserId;
@@ -178,10 +177,10 @@
             }
         }
 
-        public async Task SubscribeToRoomAsync(string roomId = null)
+        public async Task SubscribeToRoomAsync(string roomId = "__my_messages__")
         {
             _logger.Info($"Subscribing to Room: #{roomId ?? "ALLROOMS"}");
-            await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString()).ConfigureAwait(false);
+            await _client.SubscribeAsync("stream-room-messages", TimeoutToken, roomId, true).ConfigureAwait(false);
         }
 
         public async Task SubscribeToRoomInformationAsync(string roomName, RoomType type)
