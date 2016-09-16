@@ -24,6 +24,7 @@
 A Rocket.Chat real-time, managed, .Net driver, and bot. 
 
 > Not compatible with 0.36.0, 0.37.0, 0.37.1, see https://github.com/Silvenga/Rocket.Chat.Net/issues/2
+>  Waiting for things to settle down. 
 
 ## Driver Usage
 
