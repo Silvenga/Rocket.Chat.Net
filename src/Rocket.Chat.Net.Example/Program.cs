@@ -1,6 +1,7 @@
 ﻿namespace Rocket.Chat.Net.Example
 {
     using System;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Bot;
@@ -19,10 +20,10 @@
 
         private static async Task MainAsync()
         {
-            const string username = "m@silvenga.com";
-            const string password = "silverlight";
-            const string rocketServerUrl = "dev0:3000"; // just the host and port
-            const bool useSsl = false; // Basically use ws or wss.
+            const string username = "test@softbauware.de";
+            const string password = "hallotheo123";
+            const string rocketServerUrl = "softbauware.rocket.chat:443"; // just the host and port
+            const bool useSsl = true; // Basically use ws or wss.
             
             // Create the bot - an abstraction of the driver
             RocketChatBot bot = new RocketChatBot(rocketServerUrl, useSsl);
@@ -36,7 +37,13 @@
                 Email = username,
                 Password = password
             };
-            await bot.LoginAsync(loginOption);
+            try
+            {
+                await bot.LoginAsync(loginOption);
+            }
+            catch (Exception e) {
+                Console.Write(e);
+            }
 
             // Start listening for messages
             await bot.SubscribeAsync();

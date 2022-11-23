@@ -12,7 +12,7 @@
 
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
-    using Rocket.Chat.Net.Portability.Websockets;
+    using WebSocket4Net;
 
     public class DdpClient : IDdpClient
     {
@@ -34,7 +34,7 @@
             var protocol = useSsl ? "wss" : "ws";
             Url = $"{protocol}://{baseUrl}/websocket";
 
-            _socket = new WebSocketWrapper(new PortableWebSocket(Url));
+            _socket = new WebSocketWrapper(new WebSocket(Url));
             AttachEvents();
         }
 
@@ -88,11 +88,12 @@
             SendObjectAsync(request, CancellationToken.None).Wait();
         }
 
+        // TODO: Real time API implementieren
         private void SocketOnMessage(object sender, PortableMessageReceivedEventArgs messageEventArgs)
         {
             var json = messageEventArgs.Message;
             var data = JObject.Parse(json);
-            _logger.Debug($"RECIEVED: {JsonConvert.SerializeObject(data, Formatting.Indented)}");
+            _logger.Debug($"RECEIVED: {JsonConvert.SerializeObject(data, Formatting.Indented)}");
 
             var isRocketMessage = data?["msg"] != null;
             if (isRocketMessage)

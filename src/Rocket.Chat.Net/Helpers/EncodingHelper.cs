@@ -2,8 +2,8 @@
 {
     using System;
     using System.IO;
-
-    using Rocket.Chat.Net.Portability.Crypto;
+    using System.Text;
+    using System.Security.Cryptography;
 
     public static class EncodingHelper
     {
@@ -11,8 +11,19 @@
 
         public static string Sha256Hash(string value)
         {
-            var portableCrypto = new ShaHelper();
-            return portableCrypto.Sha256Hash(value);
+            var builder = new StringBuilder();
+            var encoding = Encoding.UTF8;
+
+            using (var hash = SHA256.Create())
+            {
+                var result = hash.ComputeHash(encoding.GetBytes(value));
+                foreach (var b in result)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+            }
+
+            return builder.ToString();
         }
 
         public static string ConvertToBase64(Stream stream)

@@ -3,18 +3,19 @@
     using System;
 
     using Rocket.Chat.Net.Interfaces;
-    using Rocket.Chat.Net.Portability.Websockets;
+    using WebSocket4Net;
+    using SuperSocket.ClientEngine;
 
     public class WebSocketWrapper : IWebSocketWrapper
     {
-        private readonly PortableWebSocket _socket;
+        private readonly WebSocket _socket;
 
-        public WebSocketWrapper(PortableWebSocket socket)
+        public WebSocketWrapper(WebSocket socket)
         {
             _socket = socket;
         }
 
-        public event EventHandler<PortableMessageReceivedEventArgs> MessageReceived
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived
         {
             add { _socket.MessageReceived += value; }
             remove { _socket.MessageReceived -= value; }
@@ -26,7 +27,7 @@
             remove { _socket.Closed -= value; }
         }
 
-        public event EventHandler<PortableErrorEventArgs> Error
+        public event EventHandler<ErrorEventArgs> Error
         {
             add { _socket.Error += value; }
             remove { _socket.Error -= value; }

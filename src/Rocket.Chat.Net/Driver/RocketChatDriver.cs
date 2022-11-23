@@ -246,7 +246,7 @@
                 return await LoginWithUsernameAsync(usernameLogin.Username, usernameLogin.Password).ConfigureAwait(false);
             }
             var resumeLogin = loginOption as ResumeLoginOption;
-            if (resumeLogin != null)
+            if (resumeLogin != null)    
             {
                 return await LoginResumeAsync(resumeLogin.Token).ConfigureAwait(false);
             }
