@@ -14,6 +14,8 @@
     using Rocket.Chat.Net.Models;
     using WebSocket4Net;
 
+    using SuperSocket.ClientEngine;
+
     public class DdpClient : IDdpClient
     {
         private readonly ILogger _logger;
@@ -63,7 +65,7 @@
             }
         }
 
-        private void SocketOnError(object sender, PortableErrorEventArgs errorEventArgs)
+        private void SocketOnError(object sender, ErrorEventArgs errorEventArgs)
         {
             _logger.Info("ERROR: " + errorEventArgs?.Exception?.Message);
         }
@@ -89,7 +91,7 @@
         }
 
         // TODO: Real time API implementieren
-        private void SocketOnMessage(object sender, PortableMessageReceivedEventArgs messageEventArgs)
+        private void SocketOnMessage(object sender, MessageReceivedEventArgs messageEventArgs)
         {
             var json = messageEventArgs.Message;
             var data = JObject.Parse(json);
