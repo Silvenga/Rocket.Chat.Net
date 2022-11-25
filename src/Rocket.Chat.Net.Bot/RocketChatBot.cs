@@ -64,7 +64,7 @@
             }
 
             _logger.Info($"Resuming session {LoginToken}.");
-            var result = await Driver.LoginResumeAsync(LoginToken).ConfigureAwait(false);
+            var result = await Driver.LoginResumeAsync(new Net.Models.LoginOptions.ResumeLoginOption() { Token = LoginToken }).ConfigureAwait(false);
             if (result.HasError)
             {
                 throw new Exception($"Resume failed: {result.Error.Message}.");

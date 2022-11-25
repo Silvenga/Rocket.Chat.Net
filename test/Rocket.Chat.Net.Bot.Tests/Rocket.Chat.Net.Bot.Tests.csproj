@@ -90,7 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Rocket.Chat.Net.Bot\Rocket.Chat.Net.Bot.csproj">
-      <Project>{a6ff1f57-0837-4f1a-9248-1cce8477295e}</Project>
+      <Project>{0c2862be-2cfb-4890-b154-4b4e7753e11f}</Project>
       <Name>Rocket.Chat.Net.Bot</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Rocket.Chat.Net\Rocket.Chat.Net.csproj">

@@ -116,7 +116,7 @@
                                    .Returns(Task.FromResult(collection));
 
             // Act
-            await _driver.LoginWithEmailAsync(email, password);
+            await _driver.LoginWithEmailAsync(new Net.Models.LoginOptions.EmailLoginOption { Email = email, Password = password });
 
             // Assert
             await _mockClient.ReceivedWithAnyArgs().CallAsync("login", CancellationToken, payload);

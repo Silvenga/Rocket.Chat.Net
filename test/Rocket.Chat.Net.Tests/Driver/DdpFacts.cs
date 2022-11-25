@@ -15,7 +15,7 @@
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Portability.Websockets;
     using Rocket.Chat.Net.Tests.Helpers;
-
+    using WebSocket4Net;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -47,7 +47,7 @@
             var jsonMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(message));
 
             // Act
-            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), jsonMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), jsonMessage);
 
             // Assert
             client.SessionId.Should().Be(sessionId);
@@ -68,7 +68,7 @@
 
             // Act
             var task = client.UnsubscribeAsync(subId, TimeoutToken);
-            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), jsonMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), jsonMessage);
 
             Action action = async () => await task;
 
@@ -96,9 +96,9 @@
             }));
 
             // Act
-            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), firstMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), firstMessage);
             _socket.Closed += Raise.Event<EventHandler>();
-            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), secondMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), secondMessage);
 
             // Assert
             _socket.Received().Open();
@@ -116,7 +116,7 @@
             var exception = new Exception(message);
 
             // Act
-            _socket.Error += Raise.Event<EventHandler<PortableErrorEventArgs>>(new object(), new PortableErrorEventArgs(exception));
+            _socket.Error += Raise.Event<EventHandler<ErrorEventArgs>>(new object(), new ErrorEventArgs(exception));
 
             // Assert
             logger.Received().Info($"ERROR: {message}");

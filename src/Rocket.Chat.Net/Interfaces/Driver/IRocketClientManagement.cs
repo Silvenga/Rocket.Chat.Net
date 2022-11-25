@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
 
     using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Models.MethodResults;
 
     public interface IRocketClientManagement
@@ -19,7 +20,7 @@
         /// <param name="email">Email to use</param>
         /// <param name="password">Plaintext password to use (will be SHA-256 before sending)</param>
         /// <returns></returns>
-        Task<MethodResult<LoginResult>> LoginWithEmailAsync(string email, string password);
+        Task<MethodResult<LoginResult>> LoginWithEmailAsync(EmailLoginOption login);
 
         /// <summary>
         /// Login with LDAP
@@ -27,7 +28,7 @@
         /// <param name="username">Email/Username to use</param>
         /// <param name="password">Plaintext password to use</param>
         /// <returns></returns>
-        Task<MethodResult<LoginResult>> LoginWithLdapAsync(string username, string password);
+        Task<MethodResult<LoginResult>> LoginWithLdapAsync(LdapLoginOption login);
 
         /// <summary>
         /// Login with username
@@ -35,14 +36,14 @@
         /// <param name="username">Username to use</param>
         /// <param name="password">Plaintext password to use (will be SHA-256 before sending)</param>
         /// <returns></returns>
-        Task<MethodResult<LoginResult>> LoginWithUsernameAsync(string username, string password);
+        Task<MethodResult<LoginResult>> LoginWithUsernameAsync(UsernameLoginOption login);
 
         /// <summary>
         /// Resume a login session
         /// </summary>
         /// <param name="sessionToken">Active token given from a previous login</param>
         /// <returns></returns>
-        Task<MethodResult<LoginResult>> LoginResumeAsync(string sessionToken);
+        Task<MethodResult<LoginResult>> LoginResumeAsync(ResumeLoginOption login);
 
         /// <summary>
         /// Login with a ILogin object

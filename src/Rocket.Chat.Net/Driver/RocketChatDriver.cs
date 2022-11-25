@@ -233,29 +233,32 @@
             var ldapLogin = loginOption as LdapLoginOption;
             if (ldapLogin != null)
             {
-                return await LoginWithLdapAsync(ldapLogin.Username, ldapLogin.Password).ConfigureAwait(false);
+                return await LoginWithLdapAsync(ldapLogin).ConfigureAwait(false);
             }
             var emailLogin = loginOption as EmailLoginOption;
             if (emailLogin != null)
             {
-                return await LoginWithEmailAsync(emailLogin.Email, emailLogin.Password).ConfigureAwait(false);
+                return await LoginWithEmailAsync(emailLogin).ConfigureAwait(false);
             }
             var usernameLogin = loginOption as UsernameLoginOption;
             if (usernameLogin != null)
             {
-                return await LoginWithUsernameAsync(usernameLogin.Username, usernameLogin.Password).ConfigureAwait(false);
+                return await LoginWithUsernameAsync(usernameLogin).ConfigureAwait(false);
             }
             var resumeLogin = loginOption as ResumeLoginOption;
             if (resumeLogin != null)    
             {
-                return await LoginResumeAsync(resumeLogin.Token).ConfigureAwait(false);
+                return await LoginResumeAsync(resumeLogin).ConfigureAwait(false);
             }
 
             throw new NotSupportedException($"The given login option `{loginOption.GetType()}` is not supported.");
         }
 
-        public async Task<MethodResult<LoginResult>> LoginWithEmailAsync(string email, string password)
+        public async Task<MethodResult<LoginResult>> LoginWithEmailAsync(EmailLoginOption login)
         {
+            string email = login.Email;
+            string password = login.Password;
+
             _logger.Info($"Logging in with user {email} using an email...");
             var passwordHash = EncodingHelper.Sha256Hash(password);
             var request = new
@@ -274,8 +277,11 @@
             return await InternalLoginAsync(request).ConfigureAwait(false);
         }
 
-        public async Task<MethodResult<LoginResult>> LoginWithUsernameAsync(string username, string password)
+        public async Task<MethodResult<LoginResult>> LoginWithUsernameAsync(UsernameLoginOption login)
         {
+            string username = login.Username;
+            string password = login.Password;
+
             _logger.Info($"Logging in with user {username} using a username...");
             var passwordHash = EncodingHelper.Sha256Hash(password);
             var request = new
@@ -294,8 +300,11 @@
             return await InternalLoginAsync(request).ConfigureAwait(false);
         }
 
-        public async Task<MethodResult<LoginResult>> LoginWithLdapAsync(string username, string password)
+        public async Task<MethodResult<LoginResult>> LoginWithLdapAsync(LdapLoginOption login)
         {
+            string username = login.Username;
+            string password = login.Password;
+
             _logger.Info($"Logging in with user {username} using LDAP...");
             var request = new
             {
@@ -308,8 +317,10 @@
             return await InternalLoginAsync(request).ConfigureAwait(false);
         }
 
-        public async Task<MethodResult<LoginResult>> LoginResumeAsync(string sessionToken)
+        public async Task<MethodResult<LoginResult>> LoginResumeAsync(ResumeLoginOption login)
         {
+            string sessionToken = login.Token;
+
             _logger.Info($"Resuming session {sessionToken}");
             var request = new
             {
@@ -345,6 +356,20 @@
             {
                 await SetDriverUserInfoAsync(result.Result.UserId).ConfigureAwait(false);
             }
+            return result;
+        }
+
+        /// <summary>
+        /// This method will retry the request with a totp code additionally sent to the server.
+        /// https://developer.rocket.chat/reference/api/realtime-api/2fa
+        /// </summary>
+        /// <param name="originalRequest"></param>
+        /// <param name="totpCode"></param>
+        /// <returns></returns>
+        private async Task<MethodResult<LoginResult>> InternalTotpAsync(MethodResult<LoginResult> errorResponse, object originalRequest, string totpCode)
+        {
+            var data = await _client.CallAsync("callWithTwoFactorRequired ", TimeoutToken, originalRequest).ConfigureAwait(false);
+            var result = data.ToObject<MethodResult<LoginResult>>(JsonSerializer);
             return result;
         }
 
