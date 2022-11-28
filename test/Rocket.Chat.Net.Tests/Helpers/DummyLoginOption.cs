@@ -5,7 +5,27 @@
 
     public class DummyLoginOption : ILoginOption
     {
-        public Totp TOTPSeed { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string TOTPToken { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public Totp TOTPSeed
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+        public string TOTPToken
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
     }
 }
