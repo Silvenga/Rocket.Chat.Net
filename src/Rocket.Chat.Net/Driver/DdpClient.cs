@@ -13,8 +13,8 @@
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
     using WebSocket4Net;
-
     using SuperSocket.ClientEngine;
+    using System.Security.Authentication;
 
     public class DdpClient : IDdpClient
     {
@@ -36,7 +36,7 @@
             var protocol = useSsl ? "wss" : "ws";
             Url = $"{protocol}://{baseUrl}/websocket";
 
-            _socket = new WebSocket(Url);
+            _socket = new WebSocket(Url, sslProtocols : SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls);
             AttachEvents();
         }
 
