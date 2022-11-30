@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Design;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -180,8 +181,30 @@
 
         public async Task SubscribeToRoomAsync(string roomId = null)
         {
-            _logger.Info($"Subscribing to Room: #{roomId ?? "ALLROOMS"}");
-            await _client.SubscribeAsync(MessageTopic, TimeoutToken, roomId, MessageSubscriptionLimit.ToString()).ConfigureAwait(false);
+            List<string> ids = new List<string>();
+
+            // Subscribe to all rooms when roomId is null
+            if (roomId == null)
+            {
+                var methodResult = await GetAvailableRoomInfoCollection().ConfigureAwait(false);
+                ids.AddRange(methodResult.Result.Select(roomInfo => roomInfo.Id));
+            } else
+            // Subsribe to given roomId 
+            {
+                ids.Add(roomId);
+            }
+
+            List<Task> tasks = new List<Task>();
+            foreach (string id in ids)
+            {
+                _logger.Info($"Subscribing to Room: #{id}");
+                Task task = new Task(() => _client.SubscribeAsync(MessageTopic, TimeoutToken, id, MessageSubscriptionLimit.ToString()));
+                tasks.Add(task);
+                task.Start();
+            }
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+            
         }
 
         public async Task SubscribeToRoomInformationAsync(string roomName, RoomType type)
@@ -640,6 +663,19 @@
 
             var typedCollection = new TypedStreamCollection<RoomInfo>(value);
             return typedCollection;
+        }
+
+        public async Task<MethodResult<IEnumerable<RoomInfo>>> GetAvailableRoomInfoCollection()
+        {
+            JObject result = await _client.CallAsync("rooms/get", CancellationToken.None, new object[] { 0 }).ConfigureAwait(false);
+            return result.ToObject<MethodResult<IEnumerable<RoomInfo>>>(JsonSerializer);
+        }
+
+        public async Task<TypedStreamCollection<Room>> GetAvailableRoomsCollection()
+        {
+            JObject result = await _client.CallAsync("rooms/get", CancellationToken.None, new object[] { 0 }).ConfigureAwait(false);
+            MethodResult<IEnumerable<RoomInfo>> roomMethodResult = result.ToObject<MethodResult<IEnumerable<RoomInfo>>>(JsonSerializer);
+            throw new NotImplementedException();
         }
 
         public void Dispose()

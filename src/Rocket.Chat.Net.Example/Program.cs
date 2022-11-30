@@ -32,17 +32,19 @@
             await bot.ConnectAsync();
 
             // Login
-            ILoginOption loginOption = new EmailLoginOption
+            ILoginOption loginOption = new UsernameLoginOption()
             {
-                Email = username,
+                Username = username,
                 Password = password
             };
             try
             {
                 await bot.LoginAsync(loginOption);
+                Console.WriteLine("Logged in!");
             }
-            catch (Exception e) {
-                Console.Write(e);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
             // Start listening for messages
