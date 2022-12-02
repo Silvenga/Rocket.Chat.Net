@@ -3,12 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
+    using NLog;
     using Rocket.Chat.Net.Bot.Interfaces;
     using Rocket.Chat.Net.Bot.Models;
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
-    using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models;
 
     public class RocketChatBot : IDisposable
@@ -23,7 +22,7 @@
         public RocketChatBot(IRocketChatDriver driver, ILogger logger)
         {
             Driver = driver;
-            _logger = logger ?? new DummyLogger();
+            _logger = logger ?? NLog.LogManager.CreateNullLogger();
 
             Driver.MessageReceived += DriverOnMessageReceived;
             Driver.DdpReconnect += DriverOnDdpReconnect;

@@ -5,9 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Collections\RoomCollection.cs" />
+    <Compile Remove="Models\Collections\StreamCollection.cs" />
+    <Compile Remove="Models\Collections\StreamCollectionEventArgs.cs" />
+    <Compile Remove="Models\Collections\TypedStreamCollection.cs" />
+    <Compile Remove="Models\Collections\TypedStreamCollectionEventArgs.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog" Version="5.1.0" />
     <PackageReference Include="Otp.NET" Version="1.2.2" />
     <PackageReference Include="WebSocket4Net" Version="0.15.2" />
+    <PackageReference Include="WebsocketSharp.Standard2" Version="2022.4.16.1520" />
   </ItemGroup>
 
 </Project>

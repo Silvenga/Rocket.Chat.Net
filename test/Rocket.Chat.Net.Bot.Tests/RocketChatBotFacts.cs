@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
 
     using FluentAssertions;
-
+    using NLog;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
 

@@ -3,6 +3,7 @@
     using System;
 
     using Rocket.Chat.Net.Interfaces;
+    using NLog;
 
     using Xunit.Abstractions;
 

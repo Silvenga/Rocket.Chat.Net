@@ -24,7 +24,7 @@
         private static readonly Fixture AutoFixture = new Fixture();
 
         private readonly XUnitLogger _helper;
-        private readonly IWebSocketWrapper _socket = Substitute.For<IWebSocketWrapper>();
+        private readonly WebSocket _socket = Substitute.For<WebSocket>();
 
         private CancellationToken TimeoutToken => CreateTimeoutToken();
 
@@ -116,7 +116,7 @@
             var exception = new Exception(message);
 
             // Act
-            _socket.Error += Raise.Event<EventHandler<ErrorEventArgs>>(new object(), new ErrorEventArgs(exception));
+            _socket.Error += Raise.Event<EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>>(new object(), new SuperSocket.ClientEngine.ErrorEventArgs(exception));
 
             // Assert
             logger.Received().Info($"ERROR: {message}");

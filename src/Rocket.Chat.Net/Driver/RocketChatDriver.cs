@@ -12,11 +12,10 @@
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
+    using NLog;
     using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Helpers;
     using Rocket.Chat.Net.Interfaces;
-    using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.Collections;
     using Rocket.Chat.Net.Models.LoginOptions;
@@ -25,7 +24,7 @@
 
     public class RocketChatDriver : IRocketChatDriver
     {
-        private const string MessageTopic = "stream-messages";
+        private const string MessageTopic = "stream-room-messages";
         private const int MessageSubscriptionLimit = 10;
 
         private readonly IStreamCollectionDatabase _collectionDatabase;
@@ -50,7 +49,7 @@
         public RocketChatDriver(string url, bool useSsl, ILogger logger = null, bool isBot = true, JsonSerializerSettings jsonSerializerSettings = null)
         {
             IsBot = isBot;
-            _logger = logger ?? new DummyLogger();
+            _logger = logger ?? NLog.LogManager.CreateNullLogger();
             _collectionDatabase = new StreamCollectionDatabase();
 
             _logger.Info("Creating client...");
@@ -119,13 +118,13 @@
         private void HandleRocketMessage(string type, JObject data)
         {
             var o = data.ToObject<SubscriptionResult<JObject>>(JsonSerializer);
-            var isMessage = type == "added" && o.Collection == MessageTopic && o.Fields["args"] != null;
+            var isMessage = type == "changed" && o.Collection == MessageTopic && o.Fields["args"] != null;
             if (!isMessage)
             {
                 return;
             }
 
-            var messageRaw = o.Fields["args"][1];
+            var messageRaw = o.Fields["args"][0];
             var message = messageRaw.ToObject<RocketMessage>(JsonSerializer);
             message.IsBotMentioned = message.Mentions.Any(x => x.Id == UserId);
             message.IsFromMyself = message.CreatedBy.Id == UserId;
@@ -198,7 +197,7 @@
             foreach (string id in ids)
             {
                 _logger.Info($"Subscribing to Room: #{id}");
-                Task task = new Task(() => _client.SubscribeAsync(MessageTopic, TimeoutToken, id, MessageSubscriptionLimit.ToString()));
+                Task task = new Task(() => _client.SubscribeAndWaitAsync(MessageTopic, TimeoutToken, id, false));
                 tasks.Add(task);
                 task.Start();
             }
@@ -667,7 +666,7 @@
 
         public async Task<MethodResult<IEnumerable<RoomInfo>>> GetAvailableRoomInfoCollection()
         {
-            JObject result = await _client.CallAsync("rooms/get", CancellationToken.None, new object[] { 0 }).ConfigureAwait(false);
+            JObject result = await _client.CallAsync("rooms/get", CancellationToken.None, 0).ConfigureAwait(false);
             return result.ToObject<MethodResult<IEnumerable<RoomInfo>>>(JsonSerializer);
         }
 

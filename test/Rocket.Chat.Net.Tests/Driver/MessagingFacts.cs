@@ -3,7 +3,7 @@
     using FluentAssertions;
 
     using Newtonsoft.Json.Linq;
-
+    using NLog;
     using NSubstitute;
 
     using Ploeh.AutoFixture;

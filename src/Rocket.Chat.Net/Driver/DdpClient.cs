@@ -15,6 +15,7 @@
     using WebSocket4Net;
     using SuperSocket.ClientEngine;
     using System.Security.Authentication;
+    using NLog;
 
     public class DdpClient : IDdpClient
     {
@@ -61,7 +62,15 @@
             _logger.Debug("CLOSE");
             if (SessionId != null && !IsDisposed)
             {
-                ConnectAsync(CancellationToken.None).Wait();
+                // TODO: Fix reconnect
+                try
+                {
+                    ConnectAsync(CancellationToken.None).Wait();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                }
             }
         }
 
@@ -70,10 +79,14 @@
             _logger.Info("ERROR: " + errorEventArgs?.Exception?.Message);
         }
 
-        private void SocketOnOpened(object sender, EventArgs eventArgs)
+        private async void SocketOnOpened(object sender, EventArgs eventArgs)
         {
             _logger.Debug("OPEN");
+            await SendConnectRequest().ConfigureAwait(false);
+        }
 
+        public async Task SendConnectRequest()
+        {
             _logger.Debug("Sending connection request");
             const string ddpVersion = "1";
             var request = new
@@ -87,7 +100,7 @@
                 }
             };
 
-            SendObjectAsync(request, CancellationToken.None).Wait();
+            await SendObjectAsync(request, CancellationToken.None).ConfigureAwait(false);
         }
 
         // TODO: Real time API implementieren
@@ -198,7 +211,7 @@
             };
 
             await SendObjectAsync(request, token).ConfigureAwait(false);
-            await WaitForIdOrReadyAsync(id, token).ConfigureAwait(false);
+            JObject result = await WaitForIdOrReadyAsync(id, token).ConfigureAwait(false);
             return id;
         }
 
