@@ -5,6 +5,7 @@
     using Rocket.Chat.Net.Interfaces.Driver;
 
     public interface IRocketChatDriver : IDisposable,
+                                         IRocketRestClientManagement,
                                          IRocketClientManagement,
                                          IRocketUserManagement,
                                          IRocketMessagingManagement,

@@ -30,6 +30,7 @@
         private readonly IStreamCollectionDatabase _collectionDatabase;
         private readonly ILogger _logger;
         private readonly IDdpClient _client;
+        private readonly IRestClient _restClient;
 
         public event MessageReceived MessageReceived;
         public event DdpReconnect DdpReconnect;
@@ -57,6 +58,8 @@
             _client.DataReceivedRaw += ClientOnDataReceivedRaw;
             _client.DdpReconnect += OnDdpReconnect;
             SetJsonOptions(jsonSerializerSettings);
+
+            _restClient = new RestClient(url, logger);
         }
 
         public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabaseDatabase, bool isBot = true,
@@ -250,6 +253,7 @@
             await _client.PingAsync(TimeoutToken).ConfigureAwait(false);
         }
 
+        // TODO: Reuse login option for REST?
         public async Task<MethodResult<LoginResult>> LoginAsync(ILoginOption loginOption)
         {
             var ldapLogin = loginOption as LdapLoginOption;
@@ -694,6 +698,11 @@
             source.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
 
             return source.Token;
+        }
+
+        public async Task LoginRestApi(object args)
+        {
+            await _restClient.LoginAsync(args).ConfigureAwait(false);
         }
     }
 }
