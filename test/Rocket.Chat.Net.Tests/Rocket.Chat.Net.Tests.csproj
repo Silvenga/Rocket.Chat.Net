@@ -211,7 +211,6 @@
     <Compile Include="Driver\EncodingHelperFacts.cs" />
     <Compile Include="Driver\MessagingFacts.cs" />
     <Compile Include="Driver\RocketChatDriverFacts.cs" />
-    <Compile Include="Helpers\ILogger.cs" />
     <Compile Include="Helpers\RocketReactionConverterModel.cs" />
     <Compile Include="Integration\AdministrationFacts.cs" />
     <Compile Include="Integration\ClientFacts.cs" />
@@ -232,7 +231,6 @@
     <Compile Include="Models\Fixtures\StreamCollectionFixture.cs" />
     <Compile Include="Models\TypedStreamCollectionFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\XUnitLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Portability\Rocket.Chat.Net.Portability.Net45\Rocket.Chat.Net.Portability.Net45.csproj">

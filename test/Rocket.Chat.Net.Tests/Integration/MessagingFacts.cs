@@ -12,10 +12,13 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
-    using Rocket.Chat.Net.Tests.Helpers;
+
+    using NLog;
 
     using Xunit;
     using Xunit.Abstractions;
+    using Rocket.Chat.Net.Tests.Helpers;
+    using Rocket.Chat.Net.Models.LoginOptions;
 
     [Trait("Category", "Driver")]
     public class MessagingFacts : IDisposable
@@ -478,7 +481,7 @@
 
     public class MessagingFixture : IDisposable
     {
-        private readonly XUnitLogger _logger;
+        private readonly ILogger _logger;
         public RocketChatDriverFixture Fixture { get; }
         public RocketChatDriverFixture Master { get; }
         public RocketChatDriverFixture Slave { get; }
@@ -489,7 +492,7 @@
         public MessagingFixture(ITestOutputHelper helper, string roomName)
         {
             RoomName = roomName;
-            _logger = new XUnitLogger(helper);
+            _logger = NLog.LogManager.GetCurrentClassLogger();
             Master = new RocketChatDriverFixture(_logger);
             Slave = new RocketChatDriverFixture(_logger);
 
@@ -500,8 +503,6 @@
 
         public void Dispose()
         {
-            _logger.Dispose();
-
             Fixture.Driver.EraseRoomAsync(RoomId).Wait();
 
             Fixture.Dispose();
@@ -522,7 +523,7 @@
         public async Task InitAsync(string username, string password)
         {
             await Driver.ConnectAsync();
-            await Driver.LoginWithUsernameAsync(username, password);
+            await Driver.LoginWithUsernameAsync(new UsernameLoginOption() { Username = username, Password = password });
             await Driver.SubscribeToRoomAsync();
         }
 

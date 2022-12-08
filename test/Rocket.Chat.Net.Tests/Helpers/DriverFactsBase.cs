@@ -8,29 +8,31 @@
 
     using Newtonsoft.Json;
 
+    using NLog; 
+
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
-
+    using Rocket.Chat.Net.Models.LoginOptions;
     using Xunit.Abstractions;
 
     public class DriverFactsBase : IDisposable
     {
         protected static readonly Fixture AutoFixture = new Fixture();
         protected readonly IRocketChatDriver RocketChatDriver;
-        protected readonly XUnitLogger XUnitLogger;
+        protected readonly ILogger _logger;
 
         protected DriverFactsBase(ITestOutputHelper helper)
         {
-            XUnitLogger = new XUnitLogger(helper);
-            RocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, XUnitLogger, jsonSerializerSettings: new JsonSerializerSettings());
+            _logger = NLog.LogManager.GetCurrentClassLogger();
+            RocketChatDriver = new RocketChatDriver(Constants.RocketServer, false, _logger, jsonSerializerSettings: new JsonSerializerSettings());
         }
 
         protected async Task DefaultAccountLoginAsync()
         {
             await RocketChatDriver.ConnectAsync();
-            var result = await RocketChatDriver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword);
+            var result = await RocketChatDriver.LoginWithEmailAsync(new EmailLoginOption() { Email = Constants.OneEmail, Password = Constants.OnePassword });
             result.HasError.Should().BeFalse();
         }
 
@@ -48,7 +50,6 @@
         public virtual void Dispose()
         {
             RocketChatDriver.Dispose();
-            XUnitLogger.Dispose();
         }
     }
 }

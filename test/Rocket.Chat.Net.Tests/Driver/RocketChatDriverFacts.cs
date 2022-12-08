@@ -9,18 +9,20 @@
     using Newtonsoft.Json.Linq;
 
     using NSubstitute;
+    using NLog;
 
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Driver;
-    using Rocket.Chat.Net.Helpers;
+    
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
-    using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
+    using Rocket.Chat.Net.Helpers;
+    using Rocket.Chat.Net.Tests.Helpers;
 
     public class RocketChatDriverFacts
     {

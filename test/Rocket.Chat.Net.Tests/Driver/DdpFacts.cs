@@ -6,7 +6,7 @@
     using FluentAssertions;
 
     using Newtonsoft.Json;
-
+    using NLog;
     using NSubstitute;
 
     using Ploeh.AutoFixture;
@@ -14,7 +14,6 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Portability.Websockets;
-    using Rocket.Chat.Net.Tests.Helpers;
     using WebSocket4Net;
     using Xunit;
     using Xunit.Abstractions;
@@ -23,14 +22,14 @@
     {
         private static readonly Fixture AutoFixture = new Fixture();
 
-        private readonly XUnitLogger _helper;
+        private readonly ILogger _helper;
         private readonly WebSocket _socket = Substitute.For<WebSocket>();
 
         private CancellationToken TimeoutToken => CreateTimeoutToken();
 
         public DdpFacts(ITestOutputHelper helper)
         {
-            _helper = new XUnitLogger(helper);
+            _helper = NLog.LogManager.GetCurrentClassLogger();
         }
 
         [Fact]
@@ -133,7 +132,7 @@
 
         public void Dispose()
         {
-            _helper.Dispose();
+            
         }
     }
 }

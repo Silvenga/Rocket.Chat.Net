@@ -7,19 +7,21 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Tests.Helpers;
 
+    using NLog;
+
     using Xunit;
     using Xunit.Abstractions;
 
     [Trait("Category", "Driver")]
     public class DdpFacts : IDisposable
     {
-        private readonly XUnitLogger _helper;
+        private readonly ILogger _helper;
 
         private CancellationToken TimeoutToken => CreateTimeoutToken();
 
         public DdpFacts(ITestOutputHelper helper)
         {
-            _helper = new XUnitLogger(helper);
+            _helper = NLog.LogManager.GetCurrentClassLogger();
         }
 
         [Fact]
@@ -45,7 +47,6 @@
 
         public void Dispose()
         {
-            _helper.Dispose();
         }
     }
 }

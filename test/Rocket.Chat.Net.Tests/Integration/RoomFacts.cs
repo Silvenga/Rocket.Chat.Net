@@ -11,6 +11,7 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
@@ -237,7 +238,7 @@
         {
             var driver = new RocketChatDriver(Constants.RocketServer, false);
             await driver.ConnectAsync();
-            await driver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword);
+            await driver.LoginWithEmailAsync(new EmailLoginOption() { Email = Constants.OneEmail, Password = Constants.OnePassword });
             await driver.SubscribeToRoomListAsync();
 
             return driver;
