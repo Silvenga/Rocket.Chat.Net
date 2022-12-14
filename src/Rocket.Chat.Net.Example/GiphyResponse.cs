@@ -38,7 +38,7 @@
 
         private string GetGiphy(string search)
         {
-            var request = new RestRequest("/v1/gifs/translate", Method.GET);
+            var request = new RestRequest("/v1/gifs/translate", Method.Get);
             request.AddQueryParameter("s", search);
             request.AddQueryParameter("rating", Rating);
             request.AddQueryParameter("api_key", GiphyApiKey);

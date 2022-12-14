@@ -27,7 +27,7 @@
 
         private CancellationToken TimeoutToken => CreateTimeoutToken();
 
-        public DdpFacts(ITestOutputHelper helper)
+        public DdpFacts()
         {
             _helper = NLog.LogManager.GetCurrentClassLogger();
         }

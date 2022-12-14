@@ -11,6 +11,7 @@ using NLog;
 using WebSocketSharp;
 using RestSharp.Authenticators;
 using NLog.LayoutRenderers.Wrappers;
+using Rocket.Chat.Net.Models.RestResults;
 
 namespace Rocket.Chat.Net.Driver
 {
@@ -87,13 +88,17 @@ namespace Rocket.Chat.Net.Driver
 
         public async Task LoginAsync(object args)
         {
-            JObject response = await CallAsync("POST", "login", CancellationToken.None, args).ConfigureAwait(false);
-            if (response["status"].ToObject<String>() == "success")
+            var response = await CallAsync("POST", "login", CancellationToken.None, args).ConfigureAwait(false);
+            var result = response.ToObject<RestResult<RestLoginResult>>();
+            if (result.Success)
             {
-                string authToken = response["status"]["authToken"].ToObject<String>();
-                string userId = response["status"]["userId"].ToObject<String>();
+                string authToken = result.Data.AuthToken;
+                string userId = result.Data.UserId;
                 _client.Authenticator = new RocketAuthenticator(userId, authToken);
                 _isLoggedIn = true;
+            } else
+            {
+                _logger.Error($"Login Error: {result.Error}");
             }
         }
     }

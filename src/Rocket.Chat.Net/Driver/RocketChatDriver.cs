@@ -20,6 +20,7 @@
     using Rocket.Chat.Net.Models.Collections;
     using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Models.MethodResults;
+    using Rocket.Chat.Net.Models.RestResults;
     using Rocket.Chat.Net.Models.SubscriptionResults;
 
     public class RocketChatDriver : IRocketChatDriver
@@ -495,6 +496,13 @@
             };
             var result = await _client.CallAsync("sendMessage", TimeoutToken, request).ConfigureAwait(false);
             return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
+        }
+
+        public async Task<RestResult> UploadFileToRoomAsync(string roomId, params object[] args)
+        {
+            var data = await _restClient.CallAsync("POST", $"rooms.upload/{roomId}", CancellationToken.None, args).ConfigureAwait(false);
+            return data.ToObject<RestResult>(JsonSerializer);
+            
         }
 
         public async Task<MethodResult> UpdateMessageAsync(string messageId, string roomId, string newMessage)
