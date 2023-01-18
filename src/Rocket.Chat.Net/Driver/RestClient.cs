@@ -22,10 +22,10 @@ namespace Rocket.Chat.Net.Driver
         private bool _isLoggedIn;
         ILogger _logger;
 
-        public RestClient(string instanceUrl, ILogger logger)
+        public RestClient(string instanceUrl, bool useSsl, ILogger logger)
         {
             _logger = logger;
-            _client = new RestSharp.RestClient(instanceUrl + "/api/v1/");
+            _client = new RestSharp.RestClient(useSsl ? "https" : "http"  + "://" + instanceUrl + "/api/v1/");
         }
 
         private bool disposedValue;
@@ -44,16 +44,36 @@ namespace Rocket.Chat.Net.Driver
         /// <param name="token"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public async Task<JObject> CallAsync(string method, string path, CancellationToken token, params object[] args)
+        public async Task<JObject> CallAsync(RestSharp.Method method, string path, CancellationToken token, params object[] args)
         {
-            var request = new RestRequest(path, (Method) Enum.Parse(typeof(Method), method));
-            JObject data = JObject.FromObject(args);
+            var request = new RestRequest(path, method);
+            JArray data = JArray.FromObject(args);
             if (data != null)
             {
-                request.AddBody(data);
+                request.AddBody(data.ToString());
             }
             var response = await _client.ExecuteAsync(request).ConfigureAwait(false);
-            return JObject.FromObject(response.Content);
+            return JObject.Parse(response.Content);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="method">HTTP method, such as GET, POST, PUT etc.</param>
+        /// <param name="path"></param>
+        /// <param name="token"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public async Task<JObject> CallAsync(RestSharp.Method method, string path, CancellationToken token, object data)
+        {
+            var request = new RestRequest(path, method);
+            if (data != null)
+            {
+                // TODO default serialization 
+                request.AddBody(JObject.FromObject(data).ToString());
+            }
+            var response = await _client.ExecuteAsync(request).ConfigureAwait(false);
+            return JObject.Parse(response.Content);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -88,7 +108,7 @@ namespace Rocket.Chat.Net.Driver
 
         public async Task LoginAsync(object args)
         {
-            var response = await CallAsync("POST", "login", CancellationToken.None, args).ConfigureAwait(false);
+            var response = await CallAsync(Method.Post, "login", CancellationToken.None, args).ConfigureAwait(false);
             var result = response.ToObject<RestResult<RestLoginResult>>();
             if (result.Success)
             {

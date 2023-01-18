@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
 
     using Rocket.Chat.Net.Interfaces;
+    using System.Text.Json.Serialization;
 
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     public class ResumeLoginOption : ILoginOption
@@ -15,13 +16,15 @@
         /// Active login token given from a successful, previous login.
         /// </summary>
         public string Token { get; set; }
-
+        
+        [JsonIgnore]
         public Totp TOTPSeed
         {
             get => totpSeed;
             set => totpSeed = value;
         }
 
+        [JsonIgnore]
         public string TOTPToken
         {
             get

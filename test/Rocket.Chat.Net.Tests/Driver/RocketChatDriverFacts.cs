@@ -59,7 +59,7 @@
             await _driver.SubscribeToRoomAsync();
 
             // Assert
-            await _mockClient.Received().SubscribeAsync("stream-messages", CancellationToken, null, "10");
+            await _mockClient.Received().SubscribeAsync("stream-room-messages", CancellationToken, null, "10");
         }
 
         [Fact]
@@ -127,7 +127,7 @@
         [Fact]
         public void When_login_option_is_unknown_throw()
         {
-            var options = AutoFixture.Create<DummyLoginOption>();
+            var options = AutoFixture.Build<DummyLoginOption>().Without(p => p.TOTPSeed).Without(p => p.TOTPToken).Create();
 
             // Act
             Action action = () => _driver.LoginAsync(options).Wait();

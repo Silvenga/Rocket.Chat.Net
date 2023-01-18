@@ -5,14 +5,11 @@ using System.Text;
 
 namespace Rocket.Chat.Net.JsonConverters
 {
-    public class RestApiConverter : JsonConverter
+    public class RestApiStatusConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            if (objectType == typeof(string)) 
-                return true;
-            else 
-                return false;
+            return objectType == typeof(string);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

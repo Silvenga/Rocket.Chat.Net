@@ -23,13 +23,15 @@
         private static readonly Fixture AutoFixture = new Fixture();
 
         private readonly ILogger _helper;
-        private readonly WebSocket _socket = Substitute.For<WebSocket>();
+        private readonly IWebSocketWrapper _socket; 
 
         private CancellationToken TimeoutToken => CreateTimeoutToken();
 
         public DdpFacts()
         {
             _helper = NLog.LogManager.GetCurrentClassLogger();
+            // new WebSocket();
+            _socket = Substitute.For<IWebSocketWrapper>();
         }
 
         [Fact]
@@ -43,7 +45,7 @@
                 session = sessionId,
                 msg = "connected"
             };
-            var jsonMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(message));
+            var jsonMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(message));
 
             // Act
             _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), jsonMessage);
@@ -63,7 +65,7 @@
                 id = subId,
                 msg = "nosub"
             };
-            var jsonMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(message));
+            var jsonMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(message));
 
             // Act
             var task = client.UnsubscribeAsync(subId, TimeoutToken);
@@ -82,13 +84,13 @@
             var client = new DdpClient(_socket, _helper);
             client.DdpReconnect += () => reconnected = true;
 
-            var firstMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(new
+            var firstMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(new
             {
                 session = AutoFixture.Create<string>(),
                 msg = "connected"
             }));
 
-            var secondMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(new
+            var secondMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(new
             {
                 session = AutoFixture.Create<string>(),
                 msg = "connected"

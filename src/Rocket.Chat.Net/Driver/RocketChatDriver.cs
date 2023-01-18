@@ -60,7 +60,7 @@
             _client.DdpReconnect += OnDdpReconnect;
             SetJsonOptions(jsonSerializerSettings);
 
-            _restClient = new RestClient(url, logger);
+            _restClient = new RestClient(url, useSsl, logger);
         }
 
         public RocketChatDriver(ILogger logger, IDdpClient client, IStreamCollectionDatabase collectionDatabaseDatabase, bool isBot = true,
@@ -500,7 +500,7 @@
 
         public async Task<RestResult> UploadFileToRoomAsync(string roomId, params object[] args)
         {
-            var data = await _restClient.CallAsync("POST", $"rooms.upload/{roomId}", CancellationToken.None, args).ConfigureAwait(false);
+            var data = await _restClient.CallAsync(RestSharp.Method.Post, $"rooms.upload/{roomId}", CancellationToken.None, args).ConfigureAwait(false);
             return data.ToObject<RestResult>(JsonSerializer);
             
         }

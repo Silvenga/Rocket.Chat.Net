@@ -4,7 +4,8 @@
     using System.Threading.Tasks;
 
     using FluentAssertions;
-
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using Ploeh.AutoFixture;
     using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Tests.Helpers;
@@ -104,5 +105,19 @@
             // Assert
             action.ShouldThrow<NotSupportedException>();
         }
+
+        [Fact]
+        public void Seralization_of_username_login()
+        {
+            // Act 
+            var options = AutoFixture.Build<UsernameLoginOption>().Without(p => p.TOTPSeed).Without(p => p.TOTPToken).Create();
+
+            var jO = JObject.FromObject(options);
+
+            // Assert
+            Assert.True(jO.ContainsKey("user"));
+            Assert.Equal(options.Username, jO["user"]);
+        }
+
     }
 }

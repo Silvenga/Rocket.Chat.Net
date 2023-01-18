@@ -11,7 +11,7 @@ namespace Rocket.Chat.Net.Interfaces
     {
         string Url { get; }
         bool IsDisposed { get; }
-        Task<JObject> CallAsync(string method, string path, CancellationToken token, params object[] args);
+        Task<JObject> CallAsync(RestSharp.Method method, string path, CancellationToken token, params object[] args);
         Task LoginAsync(object args);
 
     }

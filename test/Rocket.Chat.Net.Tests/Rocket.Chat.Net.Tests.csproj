@@ -305,6 +305,7 @@
     <Compile Include="Helpers\MeteorDateSerializerModel.cs" />
     <Compile Include="Models\Fixtures\IDummySubscriber.cs" />
     <Compile Include="Models\MeteorDateConverterFacts.cs" />
+    <Compile Include="Models\RestResultConverterFacts.cs" />
     <Compile Include="Models\RocketMessageConverterFacts.cs" />
     <Compile Include="Models\RocketReactionConverterFacts.cs" />
     <Compile Include="Models\StreamCollectionFacts.cs" />
