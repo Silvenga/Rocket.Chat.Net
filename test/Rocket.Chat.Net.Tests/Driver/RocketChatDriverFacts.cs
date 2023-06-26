@@ -9,18 +9,20 @@
     using Newtonsoft.Json.Linq;
 
     using NSubstitute;
+    using NLog;
 
     using Ploeh.AutoFixture;
 
     using Rocket.Chat.Net.Collections;
     using Rocket.Chat.Net.Driver;
-    using Rocket.Chat.Net.Helpers;
+    
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
     using Rocket.Chat.Net.Models.MethodResults;
-    using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
+    using Rocket.Chat.Net.Helpers;
+    using Rocket.Chat.Net.Tests.Helpers;
 
     public class RocketChatDriverFacts
     {
@@ -57,7 +59,7 @@
             await _driver.SubscribeToRoomAsync();
 
             // Assert
-            await _mockClient.Received().SubscribeAsync("stream-messages", CancellationToken, null, "10");
+            await _mockClient.Received().SubscribeAsync("stream-room-messages", CancellationToken, null, "10");
         }
 
         [Fact]
@@ -116,7 +118,7 @@
                                    .Returns(Task.FromResult(collection));
 
             // Act
-            await _driver.LoginWithEmailAsync(email, password);
+            await _driver.LoginWithEmailAsync(new Net.Models.LoginOptions.EmailLoginOption { Email = email, Password = password });
 
             // Assert
             await _mockClient.ReceivedWithAnyArgs().CallAsync("login", CancellationToken, payload);
@@ -125,10 +127,10 @@
         [Fact]
         public void When_login_option_is_unknown_throw()
         {
-            var options = AutoFixture.Create<DummyLoginOption>();
+            var options = AutoFixture.Build<DummyLoginOption>().Without(p => p.TOTPSeed).Without(p => p.TOTPToken).Create();
 
             // Act
-            Action action = () => _driver.LoginAsync(options).Wait();
+            System.Action action = () => _driver.LoginAsync(options).Wait();
 
             // 
             action.ShouldThrow<NotSupportedException>();

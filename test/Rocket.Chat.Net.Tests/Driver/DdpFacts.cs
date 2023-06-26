@@ -6,7 +6,7 @@
     using FluentAssertions;
 
     using Newtonsoft.Json;
-
+    using NLog;
     using NSubstitute;
 
     using Ploeh.AutoFixture;
@@ -14,8 +14,7 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Portability.Websockets;
-    using Rocket.Chat.Net.Tests.Helpers;
-
+    using WebSocket4Net;
     using Xunit;
     using Xunit.Abstractions;
 
@@ -23,14 +22,16 @@
     {
         private static readonly Fixture AutoFixture = new Fixture();
 
-        private readonly XUnitLogger _helper;
-        private readonly IWebSocketWrapper _socket = Substitute.For<IWebSocketWrapper>();
+        private readonly ILogger _helper;
+        private readonly IWebSocketWrapper _socket; 
 
         private CancellationToken TimeoutToken => CreateTimeoutToken();
 
-        public DdpFacts(ITestOutputHelper helper)
+        public DdpFacts()
         {
-            _helper = new XUnitLogger(helper);
+            _helper = NLog.LogManager.GetCurrentClassLogger();
+            // new WebSocket();
+            _socket = Substitute.For<IWebSocketWrapper>();
         }
 
         [Fact]
@@ -44,10 +45,10 @@
                 session = sessionId,
                 msg = "connected"
             };
-            var jsonMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(message));
+            var jsonMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(message));
 
             // Act
-            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), jsonMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), jsonMessage);
 
             // Assert
             client.SessionId.Should().Be(sessionId);
@@ -64,11 +65,11 @@
                 id = subId,
                 msg = "nosub"
             };
-            var jsonMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(message));
+            var jsonMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(message));
 
             // Act
             var task = client.UnsubscribeAsync(subId, TimeoutToken);
-            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), jsonMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), jsonMessage);
 
             Action action = async () => await task;
 
@@ -83,22 +84,22 @@
             var client = new DdpClient(_socket, _helper);
             client.DdpReconnect += () => reconnected = true;
 
-            var firstMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(new
+            var firstMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(new
             {
                 session = AutoFixture.Create<string>(),
                 msg = "connected"
             }));
 
-            var secondMessage = new PortableMessageReceivedEventArgs(JsonConvert.SerializeObject(new
+            var secondMessage = new MessageReceivedEventArgs(JsonConvert.SerializeObject(new
             {
                 session = AutoFixture.Create<string>(),
                 msg = "connected"
             }));
 
             // Act
-            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), firstMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), firstMessage);
             _socket.Closed += Raise.Event<EventHandler>();
-            _socket.MessageReceived += Raise.Event<EventHandler<PortableMessageReceivedEventArgs>>(new object(), secondMessage);
+            _socket.MessageReceived += Raise.Event<EventHandler<MessageReceivedEventArgs>>(new object(), secondMessage);
 
             // Assert
             _socket.Received().Open();
@@ -116,7 +117,7 @@
             var exception = new Exception(message);
 
             // Act
-            _socket.Error += Raise.Event<EventHandler<PortableErrorEventArgs>>(new object(), new PortableErrorEventArgs(exception));
+            _socket.Error += Raise.Event<EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>>(new object(), new SuperSocket.ClientEngine.ErrorEventArgs(exception));
 
             // Assert
             logger.Received().Info($"ERROR: {message}");
@@ -133,7 +134,7 @@
 
         public void Dispose()
         {
-            _helper.Dispose();
+            
         }
     }
 }

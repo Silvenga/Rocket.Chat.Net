@@ -5,7 +5,7 @@
     using FluentAssertions;
 
     using Ploeh.AutoFixture;
-
+    using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Tests.Helpers;
 
     using Xunit;
@@ -53,6 +53,14 @@
 
             // Assert
             userData.Should().BeNull();
+        }
+
+
+        [Fact]
+        public async Task Rest_login()
+        {
+            var option = new UsernameLoginOption() { Username = Constants.OneUsername, Password = Constants.OnePassword };
+            await RocketChatDriver.LoginRestApi(option);
         }
     }
 }

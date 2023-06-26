@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
 
     using FluentAssertions;
-
+    using NLog;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
 
@@ -16,6 +16,7 @@
     using Rocket.Chat.Net.Bot.Models;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
+    using Rocket.Chat.Net.Models.LoginOptions;
     using Rocket.Chat.Net.Models.MethodResults;
 
     using Xunit;
@@ -134,7 +135,7 @@
             var resumeResult = AutoFixture.Build<MethodResult<LoginResult>>()
                                           .With(x => x.Error, null)
                                           .Create();
-            _driverMock.LoginResumeAsync(loginResult.Result.Token)
+            _driverMock.LoginResumeAsync(new ResumeLoginOption() { Token = loginResult.Result.Token })
                        .Returns(Task.FromResult(resumeResult));
 
             var bot = new RocketChatBot(_driverMock, _loggerMock);
@@ -158,7 +159,7 @@
 
             var resumeResult = AutoFixture.Build<MethodResult<LoginResult>>()
                                           .Create();
-            _driverMock.LoginResumeAsync(loginResult.Result.Token)
+            _driverMock.LoginResumeAsync(new ResumeLoginOption() { Token = loginResult.Result.Token })
                        .Returns(Task.FromResult(resumeResult));
 
             var bot = new RocketChatBot(_driverMock, _loggerMock);
@@ -316,7 +317,7 @@
             var resumeResult = AutoFixture.Build<MethodResult<LoginResult>>()
                                           .With(x => x.Error, null)
                                           .Create();
-            _driverMock.LoginResumeAsync(loginResult.Result.Token)
+            _driverMock.LoginResumeAsync(new ResumeLoginOption() { Token = loginResult.Result.Token })
                        .Returns(Task.FromResult(resumeResult));
 
             var bot = new RocketChatBot(_driverMock, _loggerMock);
@@ -327,7 +328,7 @@
             Thread.Sleep(200);
 
             // Assert
-            await _driverMock.Received().LoginResumeAsync(Arg.Any<string>());
+            await _driverMock.Received().LoginResumeAsync(new ResumeLoginOption() { Token = Arg.Any<string>() });
         }
     }
 

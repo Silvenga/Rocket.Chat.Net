@@ -16,7 +16,7 @@
         /// <param name="text">Text of the message</param>
         /// <param name="roomId">The room to send to</param>
         /// <returns></returns>
-        Task<MethodResult<RocketMessage>> SendMessageAsync(string text, string roomId);
+        Task<MethodResult<RocketMessage>> SendMessageAsync(string text, string roomId, Attachment[] attachments = null);
 
         /// <summary>
         /// Edit a message by messageId
@@ -91,5 +91,13 @@
         /// <param name="roomId">Room to send to</param>
         /// <returns></returns>
         Task<MethodResult<RocketMessage>> SendCustomMessageAsync(Attachment attachment, string roomId);
+
+        /// <summary>
+        /// Send a message with an attachment.
+        /// </summary>
+        /// <param name="attachment">Attachment to include</param>
+        /// <param name="roomId">Room to send to</param>
+        /// <returns></returns>
+        Task<MethodResult<RocketMessage>> SendCustomMessageAsync(Attachment[] attachments, string roomId);
     }
 }

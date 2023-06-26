@@ -5,20 +5,23 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Tests.Helpers;
 
+    using NLog;
+
     using Xunit;
     using Xunit.Abstractions;
+    using Rocket.Chat.Net.Models.LoginOptions;
 
     [Trait("Category", "Sandbox")]
     public class SandboxFacts : DriverFactsBase
     {
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ITestOutputHelper _helper;
-        private readonly XUnitLogger _xUnitLogger;
+        private readonly ILogger _xUnitLogger;
 
         public SandboxFacts(ITestOutputHelper helper) : base(helper)
         {
             _helper = helper;
-            _xUnitLogger = new XUnitLogger(_helper);
+            _xUnitLogger = NLog.LogManager.GetCurrentClassLogger();
         }
 
         [Fact(Skip = "skip")]
@@ -31,7 +34,7 @@
             var driver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
 
             await driver.ConnectAsync();
-            var loginResult = await driver.LoginWithEmailAsync(Constants.OneEmail, Constants.OnePassword);
+            var loginResult = await driver.LoginWithEmailAsync(new EmailLoginOption() { Email = Constants.OneEmail, Password = Constants.OnePassword });
 
             var roomId = await driver.GetRoomIdAsync("GENERAL");
 
@@ -56,7 +59,7 @@
             var driver = new RocketChatDriver(Constants.RocketServer, false, _xUnitLogger);
 
             await driver.ConnectAsync();
-            await driver.LoginWithEmailAsync(userName, password);
+            await driver.LoginWithEmailAsync(new EmailLoginOption() { Email = Constants.OneEmail, Password = Constants.OnePassword });
 
             var roomId = await driver.GetRoomIdAsync("GENERAL");
 
@@ -77,7 +80,6 @@
 
         public override void Dispose()
         {
-            _xUnitLogger.Dispose();
         }
     }
 }

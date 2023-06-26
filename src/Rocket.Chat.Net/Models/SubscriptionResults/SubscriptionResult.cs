@@ -4,6 +4,7 @@ namespace Rocket.Chat.Net.Models.SubscriptionResults
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Rocket.Chat.Net.Models.MethodResults;
 
     public class SubscriptionResult<T>
     {
@@ -13,6 +14,8 @@ namespace Rocket.Chat.Net.Models.SubscriptionResults
         public string Collection { get; set; }
 
         public string Id { get; set; }
+
+        public ErrorResult Error { get; set; } 
 
         public T Fields { get; set; }
 

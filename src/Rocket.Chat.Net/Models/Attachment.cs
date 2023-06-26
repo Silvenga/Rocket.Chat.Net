@@ -1,11 +1,13 @@
 namespace Rocket.Chat.Net.Models
 {
     using System;
-
+    using System.Collections;
+    using System.Collections.Generic;
     using Newtonsoft.Json;
 
     using Rocket.Chat.Net.JsonConverters;
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Attachment
     {
         [JsonProperty(PropertyName = "title")]
@@ -32,20 +34,24 @@ namespace Rocket.Chat.Net.Models
         [JsonProperty(PropertyName = "thumb_url")]
         public string ThumbUrl { get; set; }
 
+        [JsonProperty(PropertyName = "actions")]
+        public IEnumerable<Action> Actions { get; set; }
+
         /// <summary>
         /// e.g. #FF0000
         /// </summary>
         [JsonProperty(PropertyName = "color")]
         public string Color { get; set; }
 
-        [JsonProperty(PropertyName = "ts"), JsonConverter(typeof(MeteorDateConverter))]
+        // [JsonProperty(PropertyName = "ts"), JsonConverter(typeof(MeteorDateConverter))]
+        [JsonProperty(PropertyName = "ts")]
         public DateTime? Timestamp { get; set; }
 
         protected bool Equals(Attachment other)
         {
             return string.Equals(Title, other.Title) && string.Equals(TitleLink, other.TitleLink) && TitleLinkDownloadable == other.TitleLinkDownloadable
                    && string.Equals(Text, other.Text) && string.Equals(ImageUrl, other.ImageUrl) && string.Equals(AuthorName, other.AuthorName)
-                   && string.Equals(AuthorIcon, other.AuthorIcon) && string.Equals(ThumbUrl, other.ThumbUrl) && string.Equals(Color, other.Color)
+                   && string.Equals(AuthorIcon, other.AuthorIcon) && string.Equals(ThumbUrl, other.ThumbUrl) && string.Equals(Color, other.Color) && string.Equals(Actions, other.Actions)
                    && Timestamp.Equals(other.Timestamp);
         }
 

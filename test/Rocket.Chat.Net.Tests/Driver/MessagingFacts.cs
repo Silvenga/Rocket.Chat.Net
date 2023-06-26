@@ -3,7 +3,7 @@
     using FluentAssertions;
 
     using Newtonsoft.Json.Linq;
-
+    using NLog;
     using NSubstitute;
 
     using Ploeh.AutoFixture;
@@ -119,13 +119,12 @@
             var payload = new
             {
                 id = AutoFixture.Create<string>(),
-                msg = "added",
-                collection = "stream-messages",
+                msg = "changed",
+                collection = "stream-room-messages",
                 fields = new
                 {
                     args = new object[]
                     {
-                        AutoFixture.Create<string>(),
                         rocketMessage
                     }
                 }
@@ -150,13 +149,12 @@
             var payload = new
             {
                 id = AutoFixture.Create<string>(),
-                msg = "added",
-                collection = "stream-messages",
+                msg = "changed",
+                collection = "stream-room-messages",
                 fields = new
                 {
                     args = new object[]
                     {
-                        AutoFixture.Create<string>(),
                         rocketMessage
                     }
                 }

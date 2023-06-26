@@ -12,10 +12,18 @@
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
     using Rocket.Chat.Net.Models;
-    using Rocket.Chat.Net.Tests.Helpers;
+
+    using NLog;
 
     using Xunit;
     using Xunit.Abstractions;
+    using Rocket.Chat.Net.Tests.Helpers;
+    using Rocket.Chat.Net.Models.LoginOptions;
+    using Action = Net.Models.Action;
+    using System.IO;
+    using System.Reflection;
+    using RestSharp;
+    using System.Collections.Generic;
 
     [Trait("Category", "Driver")]
     public class MessagingFacts : IDisposable
@@ -353,11 +361,12 @@
             await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
             await _fixture.Slave.InitAsync(Constants.TwoUsername, Constants.TwoPassword);
 
-            await _fixture.Master.Driver.SubscribeToRoomListAsync();
-            await _fixture.Slave.Driver.SubscribeToRoomListAsync();
+            // await _fixture.Master.Driver.SubscribeToRoomAsync(_fixture.RoomId);
+            // await _fixture.Slave.Driver.SubscribeToRoomAsync(_fixture.RoomId);
 
             // Act
-            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+            var result = await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+            result.HasError.Should().BeFalse();
 
             masterReceived.WaitOne(_timeout);
             slaveReceived.WaitOne(_timeout);
@@ -373,7 +382,7 @@
         [Fact]
         public async Task When_bot_sends_message_on_receive_set_myself_flag()
         {
-            var text = AutoFixture.Create<string>() + " @" + Constants.OneUsername;
+            var text = AutoFixture.Create<string>() + " @" + Constants.TwoUsername;
 
             var masterReceived = new AutoResetEvent(false);
             RocketMessage masterMessage = null;
@@ -403,7 +412,8 @@
             await _fixture.Slave.InitAsync(Constants.TwoUsername, Constants.TwoPassword);
 
             // Act
-            await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+            var result = await _fixture.Master.Driver.SendMessageAsync(text, _fixture.RoomId);
+            result.HasError.Should().BeFalse();
 
             masterReceived.WaitOne(_timeout);
             slaveReceived.WaitOne(_timeout);
@@ -470,6 +480,92 @@
             result.Result.Messages.Should().Contain(x => x.Message == text);
         }
 
+        [Fact]
+        public async Task Send_attachment()
+        {
+            var text = AutoFixture.Create<string>();
+            Attachment attachment = new Attachment();
+            attachment.Text = "Hello world!";
+            var result = await _fixture.Fixture.Driver.CreatePrivateMessageAsync("antonio.zhu");
+            await _fixture.Fixture.Driver.SendCustomMessageAsync(attachment, result.Result.RoomId);
+
+
+        }
+
+        [Fact]
+        public async Task Send_action_buttons()
+        {
+            var text = AutoFixture.Create<string>();
+            Attachment attachment = new Attachment();
+            attachment.Actions = new Action[]
+            {
+                new Action()
+                {
+                    Type = "button",
+                    MsgInChatWindow = true,
+                    Text = "1",
+                    Message = "1"
+                },
+                new Action()
+                {
+                    Type = "button",
+                    MsgInChatWindow = true,
+                    Text = "2",
+                    Message = "2"
+                }
+            };
+            var result = await _fixture.Fixture.Driver.CreatePrivateMessageAsync("antonio.zhu");
+            await _fixture.Fixture.Driver.SendCustomMessageAsync(attachment, result.Result.RoomId);
+
+            
+        }
+
+        [Fact]
+        public async Task Download_Attachments()
+        {
+            var text = AutoFixture.Create<string>();
+            await _fixture.Master.InitAsync(Constants.OneUsername, Constants.OnePassword);
+            await _fixture.Slave.InitAsync(Constants.OneUsername, Constants.OnePassword);
+
+            await _fixture.Slave.Driver.SubscribeToRoomAsync("GENERAL");
+
+            var slaveReceived = new AutoResetEvent(false);
+            _fixture.Slave.Driver.MessageReceived += (msg) =>
+            {
+                if (msg.Attachments != null && msg.Attachments.Count > 0)
+                {
+                    IEnumerable<string> paths = _fixture.Slave.Driver.GetAttachments(msg).Result;
+                }
+                slaveReceived.Set();
+
+            };
+            var sentMessage = await _fixture.Master.Driver.UploadFileToRoomAsync("GENERAL", "Assets\\random-image.png");
+            slaveReceived.WaitOne();
+            
+        }
+
+        [Fact]
+        public async Task Upload_file_to_room()
+        { 
+            var text = AutoFixture.Create<string>();
+            // var result = await _fixture.Fixture.Driver.UploadFileToRoomAsync("general", @"C:\Users\antonio.zhu\repos\sbw\Rocket.Chat.Net\test\Rocket.Chat.Net.Tests\bin\Debug\Assets\random-image.png");
+            
+            var result = await _fixture.Fixture.Driver.UploadFileToRoomAsync("GENERAL", "./Assets/random-image.png");
+            result.Success.Should().BeTrue();
+
+        }
+
+        [Fact]
+        public async Task Upload_filestream_to_room()
+        {
+            var text = AutoFixture.Create<string>();
+            using (var fs = System.IO.File.OpenRead(".\\Assets\\random-image.png"))
+            {
+                var result = await _fixture.Fixture.Driver.UploadFileToRoomAsync("GENERAL", fs);
+                result.Success.Should().BeTrue();
+            }
+        }
+
         public void Dispose()
         {
             _fixture.Dispose();
@@ -478,7 +574,7 @@
 
     public class MessagingFixture : IDisposable
     {
-        private readonly XUnitLogger _logger;
+        private readonly ILogger _logger;
         public RocketChatDriverFixture Fixture { get; }
         public RocketChatDriverFixture Master { get; }
         public RocketChatDriverFixture Slave { get; }
@@ -489,7 +585,7 @@
         public MessagingFixture(ITestOutputHelper helper, string roomName)
         {
             RoomName = roomName;
-            _logger = new XUnitLogger(helper);
+            _logger = NLog.LogManager.GetCurrentClassLogger();
             Master = new RocketChatDriverFixture(_logger);
             Slave = new RocketChatDriverFixture(_logger);
 
@@ -500,8 +596,6 @@
 
         public void Dispose()
         {
-            _logger.Dispose();
-
             Fixture.Driver.EraseRoomAsync(RoomId).Wait();
 
             Fixture.Dispose();
@@ -522,7 +616,7 @@
         public async Task InitAsync(string username, string password)
         {
             await Driver.ConnectAsync();
-            await Driver.LoginWithUsernameAsync(username, password);
+            await Driver.LoginAsync(new UsernameLoginOption() { Username = username, Password = password });
             await Driver.SubscribeToRoomAsync();
         }
 

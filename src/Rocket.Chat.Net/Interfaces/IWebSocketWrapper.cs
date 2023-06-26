@@ -2,13 +2,14 @@
 {
     using System;
 
-    using Rocket.Chat.Net.Portability.Websockets;
+    using WebSocket4Net;
+    using SuperSocket.ClientEngine;
 
     public interface IWebSocketWrapper
     {
-        event EventHandler<PortableMessageReceivedEventArgs> MessageReceived;
+        event EventHandler<MessageReceivedEventArgs> MessageReceived;
         event EventHandler Closed;
-        event EventHandler<PortableErrorEventArgs> Error;
+        event EventHandler<ErrorEventArgs> Error;
         event EventHandler Opened;
         void Open();
         void Close();

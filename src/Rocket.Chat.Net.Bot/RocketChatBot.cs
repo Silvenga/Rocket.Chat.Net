@@ -3,12 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
+    using NLog;
     using Rocket.Chat.Net.Bot.Interfaces;
     using Rocket.Chat.Net.Bot.Models;
     using Rocket.Chat.Net.Driver;
     using Rocket.Chat.Net.Interfaces;
-    using Rocket.Chat.Net.Loggers;
     using Rocket.Chat.Net.Models;
 
     public class RocketChatBot : IDisposable
@@ -23,7 +22,7 @@
         public RocketChatBot(IRocketChatDriver driver, ILogger logger)
         {
             Driver = driver;
-            _logger = logger ?? new DummyLogger();
+            _logger = logger ?? NLog.LogManager.CreateNullLogger();
 
             Driver.MessageReceived += DriverOnMessageReceived;
             Driver.DdpReconnect += DriverOnDdpReconnect;
@@ -54,6 +53,9 @@
         public async Task SubscribeAsync()
         {
             await Driver.SubscribeToRoomAsync().ConfigureAwait(false);
+            // https://developer.rocket.chat/reference/api/realtime-api/subscriptions/stream-room-messages 
+            // subscribe to bot's private direct messages 
+            await Driver.SubscribeToRoomAsync("__my_messages__");
         }
 
         public async Task ResumeAsync()
@@ -64,7 +66,7 @@
             }
 
             _logger.Info($"Resuming session {LoginToken}.");
-            var result = await Driver.LoginResumeAsync(LoginToken).ConfigureAwait(false);
+            var result = await Driver.LoginResumeAsync(new Net.Models.LoginOptions.ResumeLoginOption() { Token = LoginToken }).ConfigureAwait(false);
             if (result.HasError)
             {
                 throw new Exception($"Resume failed: {result.Error.Message}.");
@@ -156,7 +158,7 @@
             else
             {
                 throw new InvalidOperationException(
-                    $"The result of {nameof(IBotResponse.GetResponse)} is either null or not of a supported type.");
+                    $"The result of {nameof(IBotResponse.GetResponse)} is either null or not of a supported type.");    
             }
         }
 
