@@ -96,7 +96,7 @@ namespace Rocket.Chat.Net.Driver
         /// <returns></returns>
         public async Task<string> DownloadAsync(string path, CancellationToken token)
         {
-            var request = new RestRequest(_useSsl ? "https" : "http" + "://" + _instanceUrl +  path, RestSharp.Method.Get);
+            var request = new RestRequest((_useSsl ? "https" : "http") + "://" + _instanceUrl + path, RestSharp.Method.Get);
             var response = await _client.ExecuteAsync(request).ConfigureAwait(false);
             if (response.RawBytes != null)
             {

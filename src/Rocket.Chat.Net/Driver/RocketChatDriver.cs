@@ -531,7 +531,15 @@
                     {
                         attachmentPath = await _restClient.DownloadAsync(attachment.ImageUrl, TimeoutToken);
                     }
-                    result.Add(attachmentPath);
+                    if (attachmentPath != null)
+                    {
+                        result.Add(attachmentPath);
+                    }
+                    else
+                    {
+                        _logger.Warn("Attachment could not be downloaded!");
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -729,7 +737,9 @@
 
         public async Task SetUserPresence(string status)
         {
-            await _client.CallAsync("UserPresence:setDefaultStatus", TimeoutToken, status);
+            // await _client.CallAsync("UserPresence:setDefaultStatus", TimeoutToken, status);
+            await _client.CallAsync($"UserPresence:{status}", TimeoutToken);
+
         }
 
         public void Dispose()

@@ -130,7 +130,7 @@
             var options = AutoFixture.Build<DummyLoginOption>().Without(p => p.TOTPSeed).Without(p => p.TOTPToken).Create();
 
             // Act
-            Action action = () => _driver.LoginAsync(options).Wait();
+            System.Action action = () => _driver.LoginAsync(options).Wait();
 
             // 
             action.ShouldThrow<NotSupportedException>();
