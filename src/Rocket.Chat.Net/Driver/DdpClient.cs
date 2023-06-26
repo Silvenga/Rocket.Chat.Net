@@ -212,6 +212,7 @@
 
             await SendObjectAsync(request, token).ConfigureAwait(false);
             JObject result = await WaitForIdOrReadyAsync(id, token).ConfigureAwait(false);
+            var subscriptionResult = result.ToObject<Rocket.Chat.Net.Models.SubscriptionResults.SubscriptionResult<Object>>();
             return id;
         }
 

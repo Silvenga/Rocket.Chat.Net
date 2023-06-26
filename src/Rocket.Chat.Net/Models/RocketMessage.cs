@@ -15,6 +15,7 @@
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     [SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class RocketMessage
     {
         public RocketMessage()

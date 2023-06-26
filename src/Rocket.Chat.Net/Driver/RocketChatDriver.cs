@@ -190,7 +190,7 @@
             if (roomId == null)
             {
                 var methodResult = await GetAvailableRoomInfoCollection().ConfigureAwait(false);
-                ids.AddRange(methodResult.Result.Select(roomInfo => roomInfo.Id));
+                ids.AddRange(methodResult.Result.Where(roomInfo => roomInfo.Type != RoomType.DirectMessage).Select(roomInfo => roomInfo.Id));
             } else
             // Subsribe to given roomId 
             {
@@ -207,7 +207,7 @@
             }
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
-            
+            await _client.SubscribeAndWaitAsync("stream-notify-user", TimeoutToken, $"{UserId}/subscriptions -changed", false);
         }
 
         public async Task SubscribeToRoomInformationAsync(string roomName, RoomType type)
@@ -257,6 +257,10 @@
         // TODO: Reuse login option for REST?
         public async Task<MethodResult<LoginResult>> LoginAsync(ILoginOption loginOption)
         {
+            if (loginOption is IRestLoginOption)
+            {
+                await LoginRestApi(loginOption);
+            }
             var ldapLogin = loginOption as LdapLoginOption;
             if (ldapLogin != null)
             {
@@ -406,6 +410,7 @@
             var collection = await _collectionDatabase.WaitForObjectInCollectionAsync("users", userId, TimeoutToken).ConfigureAwait(false);
             var user = collection.GetById<FullUser>(userId);
             Username = user?.Username;
+            _logger.Info($"Logged in to RocketChat with the following username: {Username}");
         }
 
         public async Task<JObject> RegisterUserAsync(string name, string emailOrUsername, string password)
@@ -469,14 +474,28 @@
             return result.ToObject<MethodResult>(JsonSerializer);
         }
 
-        public async Task<MethodResult<RocketMessage>> SendMessageAsync(string text, string roomId)
+        public async Task<MethodResult<RocketMessage>> SendMessageAsync(string text, string roomId, Attachment[] attachments = null)
         {
             _logger.Info($"Sending message to #{roomId}: {text}");
             var request = new
             {
                 msg = text,
                 rid = roomId,
-                bot = IsBot
+                bot = IsBot,
+                attachments
+            };
+            var result = await _client.CallAsync("sendMessage", TimeoutToken, request).ConfigureAwait(false);
+            return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
+        }
+
+        public async Task<MethodResult<RocketMessage>> SendCustomMessageAsync(Attachment[] attachments, string roomId)
+        {
+            var request = new
+            {
+                msg = "",
+                rid = roomId,
+                bot = IsBot,
+                attachments
             };
             var result = await _client.CallAsync("sendMessage", TimeoutToken, request).ConfigureAwait(false);
             return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
@@ -484,25 +503,44 @@
 
         public async Task<MethodResult<RocketMessage>> SendCustomMessageAsync(Attachment attachment, string roomId)
         {
-            var request = new
-            {
-                msg = "",
-                rid = roomId,
-                bot = IsBot,
-                attachments = new[]
-                {
-                    attachment
-                }
-            };
-            var result = await _client.CallAsync("sendMessage", TimeoutToken, request).ConfigureAwait(false);
-            return result.ToObject<MethodResult<RocketMessage>>(JsonSerializer);
+            return await SendCustomMessageAsync(new Attachment[] { attachment }, roomId).ConfigureAwait(false);
         }
 
         public async Task<RestResult> UploadFileToRoomAsync(string roomId, params object[] args)
         {
-            var data = await _restClient.CallAsync(RestSharp.Method.Post, $"rooms.upload/{roomId}", CancellationToken.None, args).ConfigureAwait(false);
+            var data = await _restClient.UploadAsync(RestSharp.Method.Post, $"rooms.upload/{roomId}", TimeoutToken, args).ConfigureAwait(false);
+            
             return data.ToObject<RestResult>(JsonSerializer);
             
+        }
+
+        public async Task<IEnumerable<string>> GetAttachments(RocketMessage message)
+        {
+            // TODO: Media handling
+            List<string> result = new List<string>(); 
+            foreach (Attachment attachment in message.Attachments)
+            {
+                try
+                {
+                    string attachmentPath = String.Empty;
+                    if (attachment.TitleLinkDownloadable ?? false)
+                    {
+                        attachmentPath = await _restClient.DownloadAsync(attachment.TitleLink, TimeoutToken);
+                    }
+                    else if (attachment.ImageUrl != null)
+                    {
+                        attachmentPath = await _restClient.DownloadAsync(attachment.ImageUrl, TimeoutToken);
+                    }
+                    result.Add(attachmentPath);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                }
+
+                
+            }
+            return result;
         }
 
         public async Task<MethodResult> UpdateMessageAsync(string messageId, string roomId, string newMessage)
@@ -566,13 +604,13 @@
             return results.ToObject<MethodResult<CreateRoomResult>>(JsonSerializer);
         }
 
-        public async Task<MethodResult<int>> EraseRoomAsync(string roomId)
+        public async Task<MethodResult<bool>> EraseRoomAsync(string roomId)
         {
             _logger.Info($"Deleting room {roomId}.");
             var results =
                 await _client.CallAsync("eraseRoom", TimeoutToken, roomId).ConfigureAwait(false);
 
-            return results.ToObject<MethodResult<int>>(JsonSerializer);
+            return results.ToObject<MethodResult<bool>>(JsonSerializer);
         }
 
         public async Task<MethodResult> ResetAvatarAsync()
@@ -677,16 +715,21 @@
         }
 
         public async Task<MethodResult<IEnumerable<RoomInfo>>> GetAvailableRoomInfoCollection()
-        {
-            JObject result = await _client.CallAsync("rooms/get", CancellationToken.None, 0).ConfigureAwait(false);
+        {  
+            JObject result = await _client.CallAsync("rooms/get", TimeoutToken, 0).ConfigureAwait(false);
             return result.ToObject<MethodResult<IEnumerable<RoomInfo>>>(JsonSerializer);
         }
 
         public async Task<TypedStreamCollection<Room>> GetAvailableRoomsCollection()
         {
-            JObject result = await _client.CallAsync("rooms/get", CancellationToken.None, new object[] { 0 }).ConfigureAwait(false);
+            JObject result = await _client.CallAsync("rooms/get", TimeoutToken, new object[] { 0 }).ConfigureAwait(false);
             MethodResult<IEnumerable<RoomInfo>> roomMethodResult = result.ToObject<MethodResult<IEnumerable<RoomInfo>>>(JsonSerializer);
             throw new NotImplementedException();
+        }
+
+        public async Task SetUserPresence(string status)
+        {
+            await _client.CallAsync("UserPresence:setDefaultStatus", TimeoutToken, status);
         }
 
         public void Dispose()

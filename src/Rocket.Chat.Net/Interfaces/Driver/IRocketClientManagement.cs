@@ -78,5 +78,7 @@
         /// <param name="o">Parameters to include in the subscription</param>
         /// <returns></returns>
         Task SubscribeToAsync(string streamName, params object[] o);
+
+        Task SetUserPresence(string status);
     }
 }

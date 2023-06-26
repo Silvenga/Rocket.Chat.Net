@@ -53,6 +53,9 @@
         public async Task SubscribeAsync()
         {
             await Driver.SubscribeToRoomAsync().ConfigureAwait(false);
+            // https://developer.rocket.chat/reference/api/realtime-api/subscriptions/stream-room-messages 
+            // subscribe to bot's private direct messages 
+            await Driver.SubscribeToRoomAsync("__my_messages__");
         }
 
         public async Task ResumeAsync()
@@ -155,7 +158,7 @@
             else
             {
                 throw new InvalidOperationException(
-                    $"The result of {nameof(IBotResponse.GetResponse)} is either null or not of a supported type.");
+                    $"The result of {nameof(IBotResponse.GetResponse)} is either null or not of a supported type.");    
             }
         }
 

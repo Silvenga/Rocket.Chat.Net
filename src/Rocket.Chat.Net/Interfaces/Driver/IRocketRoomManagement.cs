@@ -58,7 +58,7 @@
         /// </summary>
         /// <param name="roomId">Room to delete by id</param>
         /// <returns>Number impacted?</returns>
-        Task<MethodResult<int>> EraseRoomAsync(string roomId);
+        Task<MethodResult<bool>> EraseRoomAsync(string roomId);
 
         /// <summary>
         /// Creates a new private group.
@@ -91,6 +91,12 @@
 
         [Obsolete("Use the property Rooms instead. This will be removed in version 2.")]
         TypedStreamCollection<RoomInfo> GetRoomInfoCollection();
+
+        /// <summary>
+        /// This is the method call used to get all the rooms a user belongs to.  
+        /// </summary>
+        /// <returns></returns>
+        Task<MethodResult<IEnumerable<RoomInfo>>> GetAvailableRoomInfoCollection();
 
         /// <summary>
         /// Subscribe to information about a single room.
